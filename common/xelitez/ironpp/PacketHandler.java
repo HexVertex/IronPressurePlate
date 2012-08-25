@@ -5,12 +5,13 @@
  */
 package xelitez.ironpp;
 
+import xelitez.ironpp.client.GuiAPressurePlate;
+import xelitez.ironpp.client.GuiModifyPressurePlate;
+
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.NetworkManager;
 import net.minecraft.src.PPManager;
 import net.minecraft.src.Packet250CustomPayload;
@@ -70,8 +71,8 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public void handleClientPacket(NetworkManager manager, Packet250CustomPayload packet, Player player, ByteArrayDataInput dat, short ID)
 	{
-		EntityPlayer thePlayer = FMLClientHandler.instance().getClient().thePlayer;
-		World world = FMLClientHandler.instance().getClient().theWorld;
+		EntityPlayer thePlayer = (EntityPlayer)player;
+		World world = IronPP.proxy.getClientWorld();
 		if(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate)
 		{
 			if(ID == 1)
@@ -268,7 +269,6 @@ public class PacketHandler implements IPacketHandler
 				return;
 			}
 		}
-		System.out.println(new StringBuilder().append("Client recieved a packet with an invalid id: ").append(ID).toString());
 	}
 	
 	/**
@@ -414,10 +414,6 @@ public class PacketHandler implements IPacketHandler
    			}
    			return;
 		}
-		
-		System.out.println(new StringBuilder().append("Sever recieved a packet with an invalid id: ").append(ID).toString());
 	}
-	
-	
 
 }

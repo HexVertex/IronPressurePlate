@@ -3,11 +3,16 @@
  * 
  * @author Kalvin
  */
-package xelitez.ironpp;
+package xelitez.ironpp.client;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import xelitez.ironpp.ContainerPressurePlate;
+import xelitez.ironpp.PPPlayerList;
+import xelitez.ironpp.PacketSendManager;
+import xelitez.ironpp.TileEntityPressurePlate;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;

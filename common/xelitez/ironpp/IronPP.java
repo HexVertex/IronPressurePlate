@@ -7,12 +7,15 @@
 package xelitez.ironpp;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.NULL;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
@@ -40,7 +43,7 @@ import net.minecraftforge.common.Property;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, 
 	versionBounds = "[4.0]",
 	channels = {"IPP"},
-	packetHandler = PacketHandler.class)
+	packetHandler = xelitez.ironpp.PacketHandler.class)
 public class IronPP 
 {
 	Configuration P;
@@ -50,8 +53,11 @@ public class IronPP
 	 */
 	public int defaultPressurePlateIronId = 150;
 	public int defaultAPressurePlateIronId = 151;
+	private int BlockPPiD;
+	private int BlockAPPiD;
     public static Block PressurePlateIron;
     public static Block APressurePlateIron;
+    private boolean customTexture;
     
     /**
      * Temporary storage for the iron pressure plate block texture index.
@@ -61,17 +67,37 @@ public class IronPP
     /**
      * Instances of the proxy and this class to be used by other classes.
      */
+    @SidedProxy(clientSide = "xelitez.ironpp.client.ClientProxy", serverSide = "xelitez.ironpp.CommonProxy")
     public static CommonProxy proxy = new CommonProxy();
-    private static IronPP INSTANCE;
+    @Instance
+    public static IronPP instance;
     
     /**
      * Since the INSTANCE is private I use this method to gain access to the class.
      */
-    public static IronPP getInstance()
+    @PreInit
+    public void preload(FMLPreInitializationEvent evt)
     {
-    	return INSTANCE;
+    	evt.getModMetadata().version = "v3.0 for Minecraft 1.3.2";
+    	P = new Configuration(evt.getSuggestedConfigurationFile()); //sets the file to create or load for the configuration file.
+    	try
+    	{
+    		P.load(); //loads the configuration file.
+    		BlockPPiD = P.getOrCreateBlockIdProperty("PressurePlateIronId", defaultPressurePlateIronId).getInt(150); //gets the ID that's currently set in the configuration file or sets it with the default.
+    		BlockAPPiD = P.getOrCreateBlockIdProperty("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(151);	
+    		Property PressurePlateIronTexture = P.getOrCreateBooleanProperty("PressurePlateIronCustomTexture", P.CATEGORY_GENERAL, false); //gets the boolean if the user wants to use a custom texture.
+    		PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
+    		customTexture = PressurePlateIronTexture.getBoolean(false);
+    	}
+    	catch(Exception E)
+    	{
+    		FMLLog.log(Level.SEVERE, E, "Failed to load Iron Pressure Plate configuration");
+    	}
+    	finally
+    	{
+    		P.save(); //saves the configuration file.
+    	}
     }
-    
     /**
      * forge load method to load and register everything needed.
      * @param evt
@@ -79,14 +105,7 @@ public class IronPP
 	@Init
 	public void load(FMLInitializationEvent evt) 
 	{
-		INSTANCE = this;  //Registers this class to instance.
-		P = new Configuration(new File(Minecraft.getMinecraftDir(), "/XEliteZ/Iron Pressure Plate.cfg")); //sets the file to create or load for the configuration file.
-		P.load(); //loads the configuration file.
-		Property PressurePlateIronId = P.getOrCreateIntProperty("PressurePlateIronId", P.CATEGORY_BLOCK, defaultPressurePlateIronId); //gets the ID that's currently set in the configuration file or sets it with the default.
-		Property APressurePlateIronId = P.getOrCreateIntProperty("AdvancedPressurePlateIronId", P.CATEGORY_BLOCK, defaultAPressurePlateIronId);	
-		Property PressurePlateIronTexture = P.getOrCreateBooleanProperty("PressurePlateIronCustomTexture", P.CATEGORY_GENERAL, false); //gets the boolean if the user wants to use a custom texture.
-		PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
-		if(Boolean.parseBoolean(PressurePlateIronTexture.value))
+		if(customTexture)
 		{
 			PPT = RenderingRegistry.addTextureOverride("/terrain.png", "/IronPP.png"); //replacement for ModLoaders addOverride method.
 		}
@@ -95,15 +114,14 @@ public class IronPP
 			PPT = Block.blockSteel.blockIndexInTexture; //sets the block texture to the same as the one of the Iron Block
 		}
 		//the next two methods creates the instances of the blocks used in this mod.
-		PressurePlateIron = new BlockPressurePlate(Integer.parseInt(PressurePlateIronId.value), Block.blockSteel.blockIndexInTexture, EnumMobType.players, Material.iron).setHardness(0.5F).setStepSound(Block.soundMetalFootstep).setBlockName("pressurePlate");
-		APressurePlateIron = new BlockAPressurePlate(Integer.parseInt(APressurePlateIronId.value), PPT, Material.iron).setHardness(0.5F).setStepSound(Block.soundMetalFootstep).setBlockName("ApressurePlate");
+		PressurePlateIron = new BlockPressurePlate(BlockPPiD, Block.blockSteel.blockIndexInTexture, EnumMobType.players, Material.iron).setHardness(0.5F).setStepSound(Block.soundMetalFootstep).setBlockName("pressurePlate");
+		APressurePlateIron = new BlockAPressurePlate(BlockAPPiD, PPT, Material.iron).setHardness(0.5F).setStepSound(Block.soundMetalFootstep).setBlockName("ApressurePlate");
 		GameRegistry.registerBlock(PressurePlateIron); //Registers the block in the game.(replaces ModLoaders registerBlock method)
 		GameRegistry.registerBlock(APressurePlateIron);
 		LanguageRegistry.addName(APressurePlateIron, new StringBuilder().append("Advanced ").append(StatCollector.translateToLocal("tile.pressurePlate.name")).toString()); //adds a display name for Items or Blocks.(replaces ModLoaders addName method) 
 		GameRegistry.addRecipe(new ItemStack(PressurePlateIron, 1), new Object[] {"##", '#', Item.ingotIron}); //Registers a new recipe used in the crafting bench.(replaces ModLoaders addRecipe method)
 		GameRegistry.addRecipe(new ItemStack(APressurePlateIron, 2), new Object[] {"###","@#@", '#', Item.ingotIron, '@', Item.redstone});
 		GameRegistry.registerTileEntity(TileEntityPressurePlate.class, "Advanced Pressure Plate"); //registers the TileEntity of the advanced iron pressure plate.(replaces ModLoaders registerTileEntity method)
-		NetworkRegistry.instance().registerGuiHandler(INSTANCE, proxy); //Registers a GuiHandler assigned to this mod.(mostly for Network SMP Gui's)
-		P.save(); //saves the configuration file.
+		NetworkRegistry.instance().registerGuiHandler(instance, proxy); //Registers a GuiHandler assigned to this mod.(mostly for Network SMP Gui's)
 	}
 }

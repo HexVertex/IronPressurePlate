@@ -3,9 +3,11 @@
  * 
  * @author Kalvin
  */
-package xelitez.ironpp;
+package xelitez.ironpp.client;
 
 import org.lwjgl.input.Keyboard;
+
+import xelitez.ironpp.PacketSendManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;

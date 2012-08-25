@@ -12,6 +12,9 @@ import ibxm.Player;
 import java.util.List;
 import java.util.Random;
 
+import xelitez.ironpp.client.GuiAPressurePlate;
+import xelitez.ironpp.client.GuiModifyPressurePlate;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.server.FMLServerHandler;
@@ -220,29 +223,7 @@ public class BlockAPressurePlate extends BlockContainer
             par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
             par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
         }
-        
-        if(!par1World.isRemote)
-        {
-	        if((FMLClientHandler.instance().getClient().currentScreen instanceof GuiModifyPressurePlate))
-	        {
-	        	if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == par2 && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == par3 && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == par4)
-	        	{
-	        		FMLClientHandler.instance().getClient().thePlayer.closeScreen();
-	        	}
-	        }
-	        
-	        if((FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate))
-	        {
-	        	if(GuiAPressurePlate.tpp.xCoord == par2 && GuiAPressurePlate.tpp.yCoord == par3 && GuiAPressurePlate.tpp.zCoord == par4)
-	        	{
-	        		FMLClientHandler.instance().getClient().thePlayer.closeScreen();
-	        	}
-	        }
-        }
-        else
-        {
-        	PacketSendManager.sendCloseGuiPacketToAllPlayers(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)));
-        }
+        PacketSendManager.sendCloseGuiPacketToAllPlayers(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)));
 
         super.breakBlock(par1World, par2, par3, par4, par5, par6);
         par1World.removeBlockTileEntity(par2, par3, par4);
@@ -304,14 +285,14 @@ public class BlockAPressurePlate extends BlockContainer
     	}
     	if(FMLCommonHandler.instance().getSide().isServer())
     	{
-        	par5EntityPlayer.openGui(IronPP.getInstance(), 0, par1World, par2, par3, par4);
+        	par5EntityPlayer.openGui(IronPP.instance, 0, par1World, par2, par3, par4);
         	return true;
     	}
     	if(par1World.isRemote)
     	{
         	return true;
     	}
-    	par5EntityPlayer.openGui(IronPP.getInstance(), 0, par1World, par2, par3, par4);
+    	par5EntityPlayer.openGui(IronPP.instance, 0, par1World, par2, par3, par4);
     	return true;
     }
 

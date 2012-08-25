@@ -5,6 +5,7 @@
  */
 package xelitez.ironpp;
 
+import xelitez.ironpp.client.GuiAPressurePlate;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
@@ -38,6 +39,11 @@ public class CommonProxy implements IGuiHandler
 		{
 			return null;
 		}
+	}
+	
+	public World getClientWorld()
+	{
+		return null;
 	}
 
 }

@@ -39,9 +39,9 @@ import net.minecraftforge.common.Property;
 /**
  * Mod registration stuff.
  */
-@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "v3.0")
+@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.0.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, 
-	versionBounds = "[4.0]",
+	versionBounds = "[3.0.2]",
 	channels = {"IPP"},
 	packetHandler = xelitez.ironpp.PacketHandler.class)
 public class IronPP 

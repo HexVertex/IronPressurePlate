@@ -78,7 +78,7 @@ public class IronPP
     @PreInit
     public void preload(FMLPreInitializationEvent evt)
     {
-    	evt.getModMetadata().version = "v3.0 for Minecraft 1.3.2";
+    	evt.getModMetadata().version = "v3.0.2";
     	P = new Configuration(evt.getSuggestedConfigurationFile()); //sets the file to create or load for the configuration file.
     	try
     	{

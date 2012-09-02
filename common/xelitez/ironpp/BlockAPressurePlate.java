@@ -24,19 +24,26 @@ import net.minecraft.src.BlockContainer;
 import net.minecraft.src.BlockFence;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.Entity;
+import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityLiving;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EnumMobType;
 import net.minecraft.src.IBlockAccess;
+import net.minecraft.src.ItemBlock;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
+import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.PPManager;
 import net.minecraft.src.TileEntity;
+import net.minecraft.src.TileEntityChest;
 import net.minecraft.src.World;
 import net.minecraft.src.Entity;
 
 public class BlockAPressurePlate extends BlockContainer
 {
     private EnumMobType triggerMobType;
+    
+    private Random random = new Random();
 
 	protected BlockAPressurePlate(int par1, int par2, Material par3Material) {
 		super(par1, par2, par3Material);
@@ -113,7 +120,7 @@ public class BlockAPressurePlate extends BlockContainer
     {
         if (!par1World.isRemote)
         {
-            if (par1World.getBlockMetadata(par2, par3, par4) != 0)
+            if (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated)
             {
                 this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4);
             }
@@ -124,7 +131,7 @@ public class BlockAPressurePlate extends BlockContainer
     {
         if (!par1World.isRemote)
         {
-            if (par1World.getBlockMetadata(par2, par3, par4) != 1)
+            if (!((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated)
             {
                 this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4);
             }
@@ -141,7 +148,7 @@ public class BlockAPressurePlate extends BlockContainer
      */
     private void setStateIfMobInteractsWithPlate(World par1World, int par2, int par3, int par4)
     {
-        boolean var5 = par1World.getBlockMetadata(par2, par3, par4) == 1;
+        boolean var5 = ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated;
         boolean var6 = false;
         float var7 = 0.125F;
         List var8 = null;
@@ -181,23 +188,34 @@ public class BlockAPressurePlate extends BlockContainer
 	        	}
 	        }
         }
-
-        if (var6 && !var5)
+        if(par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)
         {
-            par1World.setBlockMetadataWithNotify(par2, par3, par4, 1);
-            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
-            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
-            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
-            par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
-        }
-
-        if (!var6 && var5)
-        {
-            par1World.setBlockMetadataWithNotify(par2, par3, par4, 0);
-            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
-            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
-            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
-            par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
+        	TileEntityPressurePlate tpp = (TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4);
+	        if (var6 && !var5)
+	        {
+	            tpp.activated = true;
+	            if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
+	            {
+	            	PacketSendManager.sendBlockBooleanToClient(tpp, true);
+	            }
+	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
+	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
+	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
+	            par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
+	        }
+	
+	        if (!var6 && var5)
+	        {
+	            tpp.activated = false;
+	            if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
+	            {
+	            	PacketSendManager.sendBlockBooleanToClient(tpp, false);
+	            }
+	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
+	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
+	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
+	            par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
+	        }
         }
 
         if (var6)
@@ -224,6 +242,44 @@ public class BlockAPressurePlate extends BlockContainer
             par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
         }
         PacketSendManager.sendCloseGuiPacketToAllPlayers(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)));
+        TileEntityPressurePlate var7 = (TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4);
+
+        if (var7 != null)
+        {
+            for (int var8 = 0; var8 < var7.getSizeInventory(); ++var8)
+            {
+                ItemStack var9 = var7.getStackInSlot(var8);
+
+                if (var9 != null)
+                {
+                    float var10 = this.random.nextFloat() * 0.8F + 0.1F;
+                    float var11 = this.random.nextFloat() * 0.8F;
+                    EntityItem var14;
+
+                    for (float var12 = this.random.nextFloat() * 0.8F + 0.1F; var9.stackSize > 0; par1World.spawnEntityInWorld(var14))
+                    {
+                        int var13 = this.random.nextInt(21) + 10;
+
+                        if (var13 > var9.stackSize)
+                        {
+                            var13 = var9.stackSize;
+                        }
+
+                        var9.stackSize -= var13;
+                        var14 = new EntityItem(par1World, (double)((float)par2 + var10), (double)((float)par3 + var11), (double)((float)par4 + var12), new ItemStack(var9.itemID, var13, var9.getItemDamage()));
+                        float var15 = 0.05F;
+                        var14.motionX = (double)((float)this.random.nextGaussian() * var15);
+                        var14.motionY = (double)((float)this.random.nextGaussian() * var15 + 0.1F);
+                        var14.motionZ = (double)((float)this.random.nextGaussian() * var15);
+
+                        if (var9.hasTagCompound())
+                        {
+                            var14.item.setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
+                        }
+                    }
+                }
+            }
+        }
 
         super.breakBlock(par1World, par2, par3, par4, par5, par6);
         par1World.removeBlockTileEntity(par2, par3, par4);
@@ -231,7 +287,7 @@ public class BlockAPressurePlate extends BlockContainer
     
     public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
-        boolean var5 = par1IBlockAccess.getBlockMetadata(par2, par3, par4) == 1;
+        boolean var5 = ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated;
         float var6 = 0.0625F;
 
         if (var5)
@@ -246,12 +302,12 @@ public class BlockAPressurePlate extends BlockContainer
     
     public boolean isPoweringTo(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return par1IBlockAccess.getBlockMetadata(par2, par3, par4) > 0;
+        return ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated;
     }
     
     public boolean isIndirectlyPoweringTo(World par1World, int par2, int par3, int par4, int par5)
     {
-        return par1World.getBlockMetadata(par2, par3, par4) == 0 ? false : par5 == 1;
+        return !(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated) ? false : par5 == 1;
     }
     
     public boolean canProvidePower()
@@ -295,5 +351,35 @@ public class BlockAPressurePlate extends BlockContainer
     	par5EntityPlayer.openGui(IronPP.instance, 0, par1World, par2, par3, par4);
     	return true;
     }
+    
+    public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
+    	TileEntity te = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(par2, par3, par4);
+    	if(te != null && (te instanceof TileEntityPressurePlate))
+    	{
+    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
+    		if(tpp.getStackInSlot(0) != null && tpp.getStackInSlot(0).itemID != IronPP.APressurePlateIron.blockID)
+    		{
+    			return this.blocksList[tpp.getStackInSlot(0).itemID].getBlockTextureFromSideAndMetadata(par5, tpp.getStackInSlot(0).getItemDamage());
+    		}
+    	}
+        return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
+    }
+    
+    public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+    	TileEntity te = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(par2, par3, par4);
+    	if(te != null && (te instanceof TileEntityPressurePlate))
+    	{
+    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
+    		if(tpp.getStackInSlot(0) != null && tpp.getStackInSlot(0).itemID != IronPP.APressurePlateIron.blockID)
+    		{
+    			return this.blocksList[tpp.getStackInSlot(0).itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
+    		}
+    	}
+        return super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
+    }
+    
+    
 
 }

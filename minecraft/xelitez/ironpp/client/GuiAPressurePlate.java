@@ -5,6 +5,7 @@
  */
 package xelitez.ironpp.client;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -17,9 +18,11 @@ import xelitez.ironpp.TileEntityPressurePlate;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.FontRenderer;
+import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.RenderHelper;
 import net.minecraft.src.ScaledResolution;
+import net.minecraft.src.Slot;
 import net.minecraft.src.StatCollector;
 
 public class GuiAPressurePlate extends GuiContainer
@@ -27,7 +30,7 @@ public class GuiAPressurePlate extends GuiContainer
 	/**
 	 * two things I need to use in this mod.
 	 */
-    private ContainerPressurePlate cpp;
+    public static ContainerPressurePlate cpp;
     public static TileEntityPressurePlate tpp;
     
     /**
@@ -67,6 +70,10 @@ public class GuiAPressurePlate extends GuiContainer
      */
     private int tabOpen = 0;
     private boolean playerTabIsOpen = false;
+    
+    private int tab2Open;
+    private boolean textureTabIsOpen = false;
+    private GuiButton selectedButton = null;
     
     /**
      * the size of the Gui
@@ -113,7 +120,7 @@ public class GuiAPressurePlate extends GuiContainer
      */
     public GuiAPressurePlate(TileEntityPressurePlate tpp)
     {
-    	super(new ContainerPressurePlate(tpp));
+    	super(new ContainerPressurePlate(tpp, game.thePlayer.inventory));
         listHeight = 0;
         scrollY = 0;
         scrollHeight = 0;
@@ -183,11 +190,11 @@ public class GuiAPressurePlate extends GuiContainer
      */
     protected void mouseClicked(int i, int j, int k)
     {
-        super.mouseClicked(i, j, k);
+    	super.mouseClicked(i, j, k);
         int l = (width - xSize) / 2;
         int i1 = (height - ySize) / 2;
         i -= l;
-        j -= i1;       
+        j -= i1;  
         if(k == 0 && i >= 257 && i <= 262 && j >= 125 &&  j <= 130)
         {
             if(this.playerTabIsOpen)
@@ -255,6 +262,22 @@ public class GuiAPressurePlate extends GuiContainer
         		this.playerTabIsOpen = false;
         	}
         }
+        if(k == 0 && i >= -10 && i <= -1 && j >= 5 && j <= 64)
+        {
+        	if(!this.textureTabIsOpen)
+        	{
+        		this.textureTabIsOpen = true;
+        		cpp.drawSlots(game.thePlayer.inventory, tpp);
+        	}
+        }
+        if(k == 0 && i >= -95 && i <= -86 && j >= 5 && j <= 64)
+        {
+        	if(this.textureTabIsOpen)
+        	{
+        		this.textureTabIsOpen = false;
+        		cpp.removeAllSlots();
+        	}
+        }
     }
     
     /**
@@ -278,6 +301,10 @@ public class GuiAPressurePlate extends GuiContainer
      */
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
     {
+		if(!this.textureTabIsOpen && cpp.inventorySlots.size() > 0)
+		{
+			cpp.removeAllSlots();
+		}
     	int k = (width - xSize) / 2;
         int l = (height - ySize) / 2;
         int i1 = mc.renderEngine.getTexture("/gui/APP.png");
@@ -285,17 +312,18 @@ public class GuiAPressurePlate extends GuiContainer
         mc.renderEngine.bindTexture(i1);
         int j1 = k;
         int l1 = l;
+        drawTextureTab(j1,l1);
         drawTexturedModalRect(j1, l1, 0, 0, this.xSize, this.ySize);
         if(!this.playerTabIsOpen)
         {
         	drawTexturedModalRect(j1 + 176, l1 + 5, 177, 12, 10, 44);
-        	drawTexturedModalRect(j1 + 176, l1 + 20, 177, 16, 10, 47);
+        	drawTexturedModalRect(j1 + 176, l1 + 20, 177, 16, 10, 44);
         	drawTexturedModalRect(j1 + 177, l1 + 55, 187, 12, 5, 5);
         }
         else
         {
         	drawTexturedModalRect(j1 + 256, l1 + 5, 177, 12, 10, 44);
-        	drawTexturedModalRect(j1 + 256, l1 + 20, 177, 16, 10, 47);
+        	drawTexturedModalRect(j1 + 256, l1 + 20, 177, 16, 10, 44);
         	drawTexturedModalRect(j1 + 257, l1 + 55, 187, 17, 5, 5);
         	drawTexturedModalRect(j1 + 176, l1 + 5, 5, 0, 80, 4);
         	drawTexturedModalRect(j1 + 176, l1 + 130, 96, 162, 80, 4);
@@ -546,6 +574,79 @@ public class GuiAPressurePlate extends GuiContainer
         }
     }
     
+    private void drawTextureTab(int i, int j) 
+    {
+    	if(!this.textureTabIsOpen)
+    	{
+	    	drawTexturedModalRect(i - 6, j + 5, 177, 12, 6, 44);
+	    	drawTexturedModalRect(i - 10, j + 5, 0, 0, 4, 44);
+	    	drawTexturedModalRect(i - 10, j + 49, 0, 150, 4, 16);
+	    	drawTexturedModalRect(i - 6, j + 49, 177, 44, 6, 16);
+	    	drawTexturedModalRect(i - 6, j + 56, 187, 17, 5, 5);
+    	}
+    	else
+    	{
+    		for(int var1 = 0;var1 < 9;var1++)
+    		{
+    			for(int var2 = 0; var2 < 3;var2++)
+    			{
+    				drawTexturedModalRect(i - 82 + var2 * 18, j + 6 + var1 * 18, 176, 60, 18, 18);		
+    			}
+				drawTexturedModalRect(i - 23, j + 6 + var1 * 18, 176, 60, 18, 18);		
+    		}
+			drawTexturedModalRect(i - 28, j + 6, 194, 0, 4, 162);
+			drawTexturedModalRect(i - 5, j + 6, 194, 0, 4, 162);
+			drawTexturedModalRect(i - 1, j + 6, 194, 0, 1, 162);
+			drawTexturedModalRect(i - 86, j + 2, 0, 0, 86, 4);
+			drawTexturedModalRect(i - 86, j + 6, 0, 4, 4, 150);
+			drawTexturedModalRect(i - 86, j + 156, 0, 149, 4, 17);
+			drawTexturedModalRect(i - 82, j + 168, 10, 161, 23, 5);
+			drawTexturedModalRect(i - 55, j + 172, 176, 60, 18, 18);
+			drawTexturedModalRect(i - 60, j + 172, 0, 144, 5, 22);
+			drawTexturedModalRect(i - 55, j + 190, 5, 162, 18, 4);
+			drawTexturedModalRect(i - 37, j + 172, 171, 144, 5, 22);
+			drawTexturedModalRect(i - 59, j + 168, 20, 5, 26, 4);
+			drawTexturedModalRect(i - 59, j + 171, 1, 60, 1, 1);
+			drawTexturedModalRect(i - 33, j + 168, 140, 161, 36, 5);
+			drawTexturedModalRect(i - 34, j + 171, 174, 60, 1, 1);
+			drawTexturedModalRect(i, j + 163, 173, 140, 3, 5);
+			
+	    	drawTexturedModalRect(i - 85, j + 8, 177, 15, 3, 40);
+	    	drawTexturedModalRect(i - 85, j + 48, 177, 15, 3, 16);
+	    	drawTexturedModalRect(i - 84, j + 7, 20, 15, 1, 1);
+	    	drawTexturedModalRect(i - 85, j + 63, 1, 15, 1, 1);
+	    	drawTexturedModalRect(i - 91, j + 5, 177, 12, 6, 44);
+	    	drawTexturedModalRect(i - 95, j + 5, 0, 0, 4, 44);
+	    	drawTexturedModalRect(i - 95, j + 49, 0, 150, 4, 16);
+	    	drawTexturedModalRect(i - 91, j + 49, 176, 44, 6, 16);
+	    	drawTexturedModalRect(i - 91, j + 56, 187, 12, 5, 5);
+    	}
+	}
+    
+    private void drawTextureText(FontRenderer var1)
+    {
+    	if(!this.textureTabIsOpen)
+    	{
+			var1.drawString("T", -6, -10, 0x404040);
+			var1.drawString("e", -6, -4, 0x404040);
+			var1.drawString("x", -6, 2, 0x404040);
+			var1.drawString("t", -5, 9, 0x404040);
+			var1.drawString("u", -6, 15, 0x404040);
+			var1.drawString("r", -6, 22, 0x404040);
+			var1.drawString("e", -6, 28, 0x404040);
+    	}
+    	else
+    	{
+			var1.drawString("T", -91, -10, 0x404040);
+			var1.drawString("e", -91, -4, 0x404040);
+			var1.drawString("x", -91, 2, 0x404040);
+			var1.drawString("t", -90, 9, 0x404040);
+			var1.drawString("u", -91, 15, 0x404040);
+			var1.drawString("r", -91, 22, 0x404040);
+			var1.drawString("e", -91, 28, 0x404040);
+    	}
+    }
+    
     /**
      * this is for cutting out the area of the mobs.
      * most of the credit for this goes to Risugami.
@@ -615,28 +716,29 @@ public class GuiAPressurePlate extends GuiContainer
     	RenderHelper.disableStandardItemLighting();
     	FontRenderer var1 = game.fontRenderer;
 		var1.drawString("Advanced " + StatCollector.translateToLocal("tile.pressurePlate.name"), 8, -13, 0x404040);
-    	    if(!this.playerTabIsOpen)
-    	    {
-	    		var1.drawString("P", 177, -11, 0x404040);
-	    		var1.drawString("l", 178, -3, 0x404040);
-	    		var1.drawString("a", 177, 3, 0x404040);
-	    		var1.drawString("y", 177, 9, 0x404040);
-	    		var1.drawString("e", 177, 16, 0x404040);
-	    		var1.drawString("r", 177, 22, 0x404040);
-	    		var1.drawString("s", 177, 28, 0x404040);
-    	    }
-    	    else
-    	    {
-	    		var1.drawString("P", 257, -11, 0x404040);
-	    		var1.drawString("l", 258, -3, 0x404040);
-	    		var1.drawString("a", 257, 3, 0x404040);
-	    		var1.drawString("y", 257, 9, 0x404040);
-	    		var1.drawString("e", 257, 16, 0x404040);
-	    		var1.drawString("r", 257, 22, 0x404040);
-	    		var1.drawString("s", 257, 28, 0x404040);
-	    		var1.drawString("+", 257, 105, 0xffffff);
-    	    }
-        int i = (width - xSize) / 2;
+		if(!this.playerTabIsOpen)
+		{
+			var1.drawString("P", 177, -11, 0x404040);
+			var1.drawString("l", 178, -3, 0x404040);
+			var1.drawString("a", 177, 3, 0x404040);
+			var1.drawString("y", 177, 9, 0x404040);
+			var1.drawString("e", 177, 16, 0x404040);
+			var1.drawString("r", 177, 22, 0x404040);
+			var1.drawString("s", 177, 28, 0x404040);
+		}
+		else
+		{
+			var1.drawString("P", 257, -11, 0x404040);
+			var1.drawString("l", 258, -3, 0x404040);
+			var1.drawString("a", 257, 3, 0x404040);
+			var1.drawString("y", 257, 9, 0x404040);
+			var1.drawString("e", 257, 16, 0x404040);
+			var1.drawString("r", 257, 22, 0x404040);
+			var1.drawString("s", 257, 28, 0x404040);
+			var1.drawString("+", 257, 105, 0xffffff);
+		}
+		drawTextureText(var1);
+		int i = (width - xSize) / 2;
         int j = (height - ySize) / 2;
         clip(i, j);
 
@@ -703,23 +805,26 @@ public class GuiAPressurePlate extends GuiContainer
      */
     private void drawPlayerScrollBar()
     {
-    	int j = 0;
-        int i = ((width - xSize) / 2) + 243;
-        if(playerListHeight != 0)
-        {
-        	j = ((height - ySize) / 2) + 11+ (playerScrollY * (118 - playerScrollHeight)) / playerListHeight;
-        }
-        int k = j;
-        drawTexturedModalRect(i, k, 176, 9, 5, 1);
-        if(enabledPlayers.length != 0)
-        {
-	        for (k++; k < (j + playerScrollHeight) - 1; k++)
+    	if(this.enabledPlayers.length != 0)
+    	{
+	    	int j = 0;
+	        int i = ((width - xSize) / 2) + 243;
+	        if(playerListHeight != 0)
 	        {
-	            drawTexturedModalRect(i, k, 176, 10, 5, 1);
+	        	j = ((height - ySize) / 2) + 11+ (playerScrollY * (118 - playerScrollHeight)) / playerListHeight;
 	        }
-	        
-	        drawTexturedModalRect(i, k, 176, 11, 5, 1);
-        }
+	        int k = j;
+	        drawTexturedModalRect(i, k, 176, 9, 5, 1);
+	        if(enabledPlayers.length != 0)
+	        {
+		        for (k++; k < (j + playerScrollHeight) - 1; k++)
+		        {
+		            drawTexturedModalRect(i, k, 176, 10, 5, 1);
+		        }
+		        
+		        drawTexturedModalRect(i, k, 176, 11, 5, 1);
+	        }
+    	}
     }
     
     /**

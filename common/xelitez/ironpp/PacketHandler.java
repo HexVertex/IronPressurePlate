@@ -12,6 +12,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.NetworkManager;
 import net.minecraft.src.PPManager;
 import net.minecraft.src.Packet250CustomPayload;
@@ -268,6 +269,42 @@ public class PacketHandler implements IPacketHandler
 				}
 				return;
 			}
+		}
+		if(ID == 7 && !(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate))
+		{
+			int coords[]  = new int[3];
+			for(int var1 = 0;var1 < 3;var1++)
+			{
+				coords[var1] = dat.readInt();
+			}
+			TileEntityPressurePlate tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+			if(tpp.xCoord == coords[0] && tpp.yCoord == coords[1] && tpp.zCoord == coords[2])
+			{
+				int itemId = dat.readInt();
+				int stackSize = dat.readInt();
+				int itemDamage = dat.readInt();
+				if(itemId == 0 && stackSize == 0 & itemDamage == 0)
+				{
+					tpp.setInventorySlotContents(0, null);
+				}
+				else
+				{
+					tpp.setInventorySlotContents(0, new ItemStack(itemId, stackSize, itemDamage));
+				}
+			}
+			return;
+		}
+		if(ID == 8)
+		{
+			int coords[]  = new int[3];
+			for(int var1 = 0;var1 < 3;var1++)
+			{
+				coords[var1] = dat.readInt();
+			}
+			TileEntityPressurePlate tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+			tpp.activated = dat.readBoolean();
+			world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
+			return;
 		}
 	}
 	

@@ -39,9 +39,9 @@ import net.minecraftforge.common.Property;
 /**
  * Mod registration stuff.
  */
-@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.0.2")
+@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, 
-	versionBounds = "[3.0.2]",
+	versionBounds = "[3.1]",
 	channels = {"IPP"},
 	packetHandler = xelitez.ironpp.PacketHandler.class)
 public class IronPP 
@@ -58,6 +58,7 @@ public class IronPP
     public static Block PressurePlateIron;
     public static Block APressurePlateIron;
     private boolean customTexture;
+    public static int updateTexture;
     
     /**
      * Temporary storage for the iron pressure plate block texture index.
@@ -78,7 +79,7 @@ public class IronPP
     @PreInit
     public void preload(FMLPreInitializationEvent evt)
     {
-    	evt.getModMetadata().version = "v3.0.2";
+    	evt.getModMetadata().version = "v3.1 MC:1.3.2";
     	P = new Configuration(evt.getSuggestedConfigurationFile()); //sets the file to create or load for the configuration file.
     	try
     	{
@@ -87,7 +88,10 @@ public class IronPP
     		BlockAPPiD = P.getOrCreateBlockIdProperty("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(151);	
     		Property PressurePlateIronTexture = P.getOrCreateBooleanProperty("PressurePlateIronCustomTexture", P.CATEGORY_GENERAL, false); //gets the boolean if the user wants to use a custom texture.
     		PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
+    		Property TextureUpdate = P.getOrCreateIntProperty("TextureUpdateTime", P.CATEGORY_GENERAL, 10);
+    		TextureUpdate.comment = "This sets the amount of seconds between updates to update the Texture of the block. Note: this has to do with sending packets to the client so raise if the game gets laggy.";
     		customTexture = PressurePlateIronTexture.getBoolean(false);
+    		updateTexture = TextureUpdate.getInt(10) * 20;
     	}
     	catch(Exception E)
     	{

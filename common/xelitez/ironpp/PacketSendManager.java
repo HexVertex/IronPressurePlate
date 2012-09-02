@@ -22,6 +22,7 @@ import cpw.mods.fml.server.FMLServerHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.Packet250CustomPayload;
 
 public class PacketSendManager 
@@ -513,6 +514,74 @@ public class PacketSendManager
         	{
         		data.writeChar(username.charAt(var4));
         	}
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToAllPlayers(packet);
+	}
+	
+	public static void sendItemStackToClients(TileEntityPressurePlate tpp)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(7);
+            int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var11 = 0;var11 < 3;var11++)
+        	{
+        		data.writeInt(coords[var11]);
+        	}
+        	ItemStack slotC = tpp.getStackInSlot(0);
+        	if(slotC != null)
+        	{
+        		data.writeInt(slotC.itemID);
+        		data.writeInt(slotC.stackSize);
+        		data.writeInt(slotC.getItemDamage());
+        	}
+        	else
+        	{
+        		data.writeInt(0);
+        		data.writeInt(0);
+        		data.writeInt(0);
+        	}
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToAllPlayers(packet);
+	}
+	
+	public static void sendBlockBooleanToClient(TileEntityPressurePlate tpp, boolean b)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(8);
+            int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var11 = 0;var11 < 3;var11++)
+        	{
+        		data.writeInt(coords[var11]);
+        	}
+        	data.writeBoolean(b);
         }
         catch(IOException e)
         {

@@ -19,7 +19,7 @@ public class CommonProxy implements IGuiHandler
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 		if(te != null && te instanceof TileEntityPressurePlate)
 		{
-			return new ContainerPressurePlate((TileEntityPressurePlate)te);
+			return new ContainerPressurePlate((TileEntityPressurePlate)te, player.inventory);
 		}
 		else
 		{

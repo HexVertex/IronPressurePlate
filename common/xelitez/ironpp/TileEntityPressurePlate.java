@@ -16,25 +16,61 @@ import java.util.Map;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.IInventory;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
-public class TileEntityPressurePlate extends TileEntity
+public class TileEntityPressurePlate extends TileEntity implements IInventory
 {
-	
+	private ItemStack[] item;
 	/**
 	 * registeres the lists of mobs and players.
 	 */
 	public PPList[] allowedMobs;
 	public List mobs  = new ArrayList();
 	public List allowedPlayers = new ArrayList();
+	public boolean update = false;
+	private int countdown = 0;
+	public boolean activated = false;
+	private boolean check = false;
 	
 	public TileEntityPressurePlate()
     {
+		item = new ItemStack[1];
     	registerMobs();
+        scheduleUpdate(20);
+    }
+	
+    public void updateEntity() 
+    {
+    	if(countdown > 0)
+    	{
+    		countdown--;
+    	}
+    	if(worldObj != null && update == true && !worldObj.isRemote && countdown == 0)
+    	{
+    		PacketSendManager.sendItemStackToClients(this);
+    		update = false;
+            scheduleUpdate(IronPP.updateTexture);
+            if(check)
+            {
+            	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, IronPP.APressurePlateIron.blockID);
+            	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, IronPP.APressurePlateIron.blockID);            	
+            }
+    	}
+    }
+    
+    public void scheduleUpdate(int i)
+    {
+    	update = true;
+    	countdown = i;
     }
     
 	/**
@@ -318,6 +354,21 @@ public class TileEntityPressurePlate extends TileEntity
                 this.allowedPlayers.add(new PPPlayerList(var10, var11));
             }
     	}
+        NBTTagList var11 = par1NBTTagCompound.getTagList("Items");
+        this.item = new ItemStack[this.getSizeInventory()];
+
+        for (int var12 = 0; var12 < var11.tagCount(); ++var12)
+        {
+            NBTTagCompound var14 = (NBTTagCompound)var11.tagAt(var12);
+            int var13 = var14.getByte("Slot") & 255;
+
+            if (var13 >= 0 && var13 < this.item.length)
+            {
+                this.item[var13] = ItemStack.loadItemStackFromNBT(var14);
+            }
+        }
+        scheduleUpdate(20);
+        check = true;
     }
 
     /**
@@ -348,7 +399,112 @@ public class TileEntityPressurePlate extends TileEntity
 	        }
 	        par1NBTTagCompound.setTag("Players", var6);
         }
+        NBTTagList var8 = new NBTTagList();
+
+        for (int var9 = 0; var9 < this.item.length; ++var9)
+        {
+            if (this.item[var9] != null)
+            {
+                NBTTagCompound var10 = new NBTTagCompound();
+                var10.setByte("Slot", (byte)var9);
+                this.item[var9].writeToNBT(var10);
+                var8.appendTag(var10);
+            }
+        }
+
+        par1NBTTagCompound.setTag("Items", var8);
     }
+
+	@Override
+	public int getSizeInventory() 
+	{
+		return item.length;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int par1) 
+	{
+		return item[par1];
+	}
+
+	@Override
+	public ItemStack decrStackSize(int par1, int par2) 
+	{
+		ItemStack stack = this.getStackInSlot(par1);
+		if(stack != null)
+		{
+			if(stack.stackSize <= par2)
+			{
+				setInventorySlotContents(par1, null);
+			}
+			else
+			{
+				stack = stack.splitStack(par2);
+				if(stack.stackSize == 0)
+				{
+					setInventorySlotContents(par1, null);
+				}
+			}
+		}
+		return stack;
+	}
+
+	@Override
+	public ItemStack getStackInSlotOnClosing(int par1) 
+	{
+		ItemStack stack = getStackInSlot(par1);
+		if(stack != null)
+		{
+			setInventorySlotContents(par1, null);
+		}
+		return stack;
+	}
+
+	@Override
+	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) 
+	{
+        this.item[par1] = par2ItemStack;
+
+        if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
+        {
+            par2ItemStack.stackSize = this.getInventoryStackLimit();
+        }
+        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+        if(!worldObj.isRemote)
+        {
+        	PacketSendManager.sendItemStackToClients(this);
+        }
+	}
+
+	@Override
+	public String getInvName() 
+	{
+		return "Advanced Pressure Plate";
+	}
+
+	@Override
+	public int getInventoryStackLimit() 
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer) 
+	{
+		return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
+	}
+
+	@Override
+	public void openChest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closeChest() {
+		// TODO Auto-generated method stub
+		
+	}
     
     
 

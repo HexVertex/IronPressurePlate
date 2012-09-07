@@ -171,6 +171,7 @@ public class BlockAPressurePlate extends BlockContainer
         {
 	        for(int var10 = 0;var10 < var8.size();var10++)
 	        {
+	        	System.out.println(((Entity)var8.get(var10)).getEntityName());
 	        	if (var8.size() > 0 && (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName(PPManager.getEntityString((Entity)var8.get(var10)))))
 	        	{
 	        		var6 = true;
@@ -279,6 +280,7 @@ public class BlockAPressurePlate extends BlockContainer
                     }
                 }
             }
+            PPRegistry.removePressurePlate(var7);
         }
 
         super.breakBlock(par1World, par2, par3, par4, par5, par6);

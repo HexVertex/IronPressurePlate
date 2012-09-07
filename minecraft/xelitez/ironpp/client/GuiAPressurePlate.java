@@ -708,6 +708,26 @@ public class GuiAPressurePlate extends GuiContainer
         return i >= l - 1 && i < l + 9 && j >= i1 - 1 && j < i1 + 10;
     }
     
+    private void Textclip1(int i, int j)
+    {
+        int k = (i + 99) * scaling.getScaleFactor();
+        int l = (((j + 20) + 24) + 2) * scaling.getScaleFactor();
+        int i1 = 64 * scaling.getScaleFactor();
+        int j1 = 139 * scaling.getScaleFactor();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(k, l, i1, j1);
+    }
+    
+    private void Textclip2(int i, int j)
+    {
+        int k = (i + 10) * scaling.getScaleFactor();
+        int l = (((j + 20) + 24) + 2) * scaling.getScaleFactor();
+        int i1 = 79 * scaling.getScaleFactor();
+        int j1 = 139 * scaling.getScaleFactor();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(k, l, i1, j1);
+    }
+    
     /**
      * draws the texts of the gui.
      */
@@ -740,7 +760,6 @@ public class GuiAPressurePlate extends GuiContainer
 		drawTextureText(var1);
 		int i = (width - xSize) / 2;
         int j = (height - ySize) / 2;
-        clip(i, j);
 
         for (int k = 0; k < tpp.allowedMobs.length; k++)
         {
@@ -762,10 +781,18 @@ public class GuiAPressurePlate extends GuiContainer
             {
             	s1 = "Items";
             }
+            if((k & 1) != 0)
+            {
+            	Textclip1(i, j);
+            }
+            else
+            {
+            	Textclip2(i, j);
+            }
 
             var1.drawString(s1, l, i1 - 18, 0xffffff);
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
         }
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
         
         if(this.playerTabIsOpen)
         {

@@ -16,6 +16,7 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NetworkManager;
 import net.minecraft.src.PPManager;
 import net.minecraft.src.Packet250CustomPayload;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.WorldServer;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -73,238 +74,266 @@ public class PacketHandler implements IPacketHandler
 	public void handleClientPacket(NetworkManager manager, Packet250CustomPayload packet, Player player, ByteArrayDataInput dat, short ID)
 	{
 		EntityPlayer thePlayer = (EntityPlayer)player;
-		World world = IronPP.proxy.getClientWorld();
-		if(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate)
+		World world = thePlayer.worldObj;
+		if(world != null)
 		{
-			if(ID == 1)
+			if(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate)
 			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
+				if(ID == 1)
 				{
-					coords[var1] = dat.readInt();
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+					{
+						PPManager.closeGuiScreen(thePlayer);
+					}
+					return;
 				}
-				if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+				if(ID == 2)
 				{
-					PPManager.closeGuiScreen(thePlayer);
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					int allowedmobs = dat.readInt();
+					if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+					{
+						for(int var1 = 0;var1 < allowedmobs;var1++)
+						{
+							boolean bool = dat.readBoolean();
+							GuiAPressurePlate.enabled[var1] = bool;
+						}
+					}
+					return;
 				}
-				return;
+				if(ID == 3)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+					{
+						GuiAPressurePlate.tpp.allowedPlayers.clear();
+						int allowedPlayers = dat.readInt();
+						{
+							for(int var1 = 0;var1 < allowedPlayers;var1++)
+							{
+								short nameLength = dat.readShort();
+								String username = "";
+								for(int var2 = 0;var2 < nameLength;var2++)
+								{
+									username = new StringBuilder().append(username).append(dat.readChar()).toString();
+								}
+								boolean bool = dat.readBoolean();
+								GuiAPressurePlate.tpp.addPlayer(username);
+								GuiAPressurePlate.tpp.setEnabledForPlayer(username, bool);
+							}
+							GuiAPressurePlate.lineUp();
+						}
+					}
+					return;
+				}
+				if(ID == 4)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					int index = dat.readInt();
+					if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+					{
+						GuiAPressurePlate.switchbutton(index);
+					}
+					return;
+				}
 			}
-			if(ID == 2)
+			if(FMLClientHandler.instance().getClient().currentScreen instanceof GuiModifyPressurePlate)
 			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
+				if(ID == 1)
 				{
-					coords[var1] = dat.readInt();
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+					{
+						PPManager.closeGuiScreen(thePlayer);
+					}
 				}
-				int allowedmobs = dat.readInt();
-				if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+				if(ID == 3)
 				{
-					for(int var1 = 0;var1 < allowedmobs;var1++)
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+					{
+						((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.allowedPlayers.clear();
+						int allowedPlayers = dat.readInt();
+						{
+							for(int var1 = 0;var1 < allowedPlayers;var1++)
+							{
+								short nameLength = dat.readShort();
+								String username = "";
+								for(int var2 = 0;var2 < nameLength;var2++)
+								{
+									username = new StringBuilder().append(username).append(dat.readChar()).toString();
+								}
+								boolean bool = dat.readBoolean();
+								((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.setEnabledForPlayer(username, bool);
+							}
+							((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).lineUp();
+						}
+					}
+					return;
+				}
+				if(ID == 4)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					int index = dat.readInt();
+					if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+					{
+						((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).switchbutton(index);
+					}
+					return;
+				}
+				if(ID == 5)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
 					{
 						boolean bool = dat.readBoolean();
-						GuiAPressurePlate.enabled[var1] = bool;
-					}
-				}
-				return;
-			}
-			if(ID == 3)
-			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
-				{
-					coords[var1] = dat.readInt();
-				}
-				if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
-				{
-					GuiAPressurePlate.tpp.allowedPlayers.clear();
-					int allowedPlayers = dat.readInt();
-					{
-						for(int var1 = 0;var1 < allowedPlayers;var1++)
+						int usernamelength = dat.readInt();
+						String username = "";
+						for(int var2 = 0;var2 < usernamelength;var2++)
 						{
-							short nameLength = dat.readShort();
-							String username = "";
-							for(int var2 = 0;var2 < nameLength;var2++)
+							char c = dat.readChar();
+							username = new StringBuilder().append(username).append(c).toString();
+						}
+						if(thePlayer.username.matches(username))
+						{
+							if(bool)
 							{
-								username = new StringBuilder().append(username).append(dat.readChar()).toString();
+								GuiModifyPressurePlate.showText("Player added", 20);
 							}
-							boolean bool = dat.readBoolean();
-							GuiAPressurePlate.tpp.addPlayer(username);
-							GuiAPressurePlate.tpp.setEnabledForPlayer(username, bool);
-						}
-						GuiAPressurePlate.lineUp();
-					}
-				}
-				return;
-			}
-			if(ID == 4)
-			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
-				{
-					coords[var1] = dat.readInt();
-				}
-				int index = dat.readInt();
-				if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
-				{
-					GuiAPressurePlate.switchbutton(index);
-				}
-				return;
-			}
-		}
-		if(FMLClientHandler.instance().getClient().currentScreen instanceof GuiModifyPressurePlate)
-		{
-			if(ID == 1)
-			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
-				{
-					coords[var1] = dat.readInt();
-				}
-				if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
-				{
-					PPManager.closeGuiScreen(thePlayer);
-				}
-			}
-			if(ID == 3)
-			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
-				{
-					coords[var1] = dat.readInt();
-				}
-				if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
-				{
-					((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.allowedPlayers.clear();
-					int allowedPlayers = dat.readInt();
-					{
-						for(int var1 = 0;var1 < allowedPlayers;var1++)
-						{
-							short nameLength = dat.readShort();
-							String username = "";
-							for(int var2 = 0;var2 < nameLength;var2++)
+							else
 							{
-								username = new StringBuilder().append(username).append(dat.readChar()).toString();
+								GuiModifyPressurePlate.showText("Player is already in list", 20);
 							}
-							boolean bool = dat.readBoolean();
-							((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.setEnabledForPlayer(username, bool);
 						}
-						((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).lineUp();
 					}
+					return;
 				}
-				return;
+				if(ID == 6)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+					{
+						boolean bool = dat.readBoolean();
+						int usernamelength = dat.readInt();
+						String username = "";
+						for(int var2 = 0;var2 < usernamelength;var2++)
+						{
+							char c = dat.readChar();
+							username = new StringBuilder().append(username).append(c).toString();
+						}
+						if(thePlayer.username.matches(username))
+						{
+							if(bool)
+							{
+								GuiModifyPressurePlate.showText("Player removed", 20);
+							}
+							else
+							{
+								GuiModifyPressurePlate.showText("Player is not in list", 20);
+							}
+						}
+					}
+					return;
+				}
 			}
-			if(ID == 4)
+			if(ID == 7 && !(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate))
 			{
 				int coords[]  = new int[3];
 				for(int var1 = 0;var1 < 3;var1++)
 				{
 					coords[var1] = dat.readInt();
 				}
-				int index = dat.readInt();
-				if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+				TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+				TileEntityPressurePlate tpp = null;
+				if(te != null || te instanceof TileEntityPressurePlate)
 				{
-					((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).switchbutton(index);
+					tpp = (TileEntityPressurePlate)te;
 				}
-				return;
-			}
-			if(ID == 5)
-			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
-				{
-					coords[var1] = dat.readInt();
-				}
-				if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
-				{
-					boolean bool = dat.readBoolean();
-					int usernamelength = dat.readInt();
-					String username = "";
-					for(int var2 = 0;var2 < usernamelength;var2++)
-					{
-						char c = dat.readChar();
-						username = new StringBuilder().append(username).append(c).toString();
-					}
-					if(thePlayer.username.matches(username))
-					{
-						if(bool)
-						{
-							GuiModifyPressurePlate.showText("Player added", 20);
-						}
-						else
-						{
-							GuiModifyPressurePlate.showText("Player is already in list", 20);
-						}
-					}
-				}
-				return;
-			}
-			if(ID == 6)
-			{
-				int coords[]  = new int[3];
-				for(int var1 = 0;var1 < 3;var1++)
-				{
-					coords[var1] = dat.readInt();
-				}
-				if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
-				{
-					boolean bool = dat.readBoolean();
-					int usernamelength = dat.readInt();
-					String username = "";
-					for(int var2 = 0;var2 < usernamelength;var2++)
-					{
-						char c = dat.readChar();
-						username = new StringBuilder().append(username).append(c).toString();
-					}
-					if(thePlayer.username.matches(username))
-					{
-						if(bool)
-						{
-							GuiModifyPressurePlate.showText("Player removed", 20);
-						}
-						else
-						{
-							GuiModifyPressurePlate.showText("Player is not in list", 20);
-						}
-					}
-				}
-				return;
-			}
-		}
-		if(ID == 7 && !(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate))
-		{
-			int coords[]  = new int[3];
-			for(int var1 = 0;var1 < 3;var1++)
-			{
-				coords[var1] = dat.readInt();
-			}
-			TileEntityPressurePlate tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
-			if(tpp.xCoord == coords[0] && tpp.yCoord == coords[1] && tpp.zCoord == coords[2])
-			{
 				int itemId = dat.readInt();
 				int stackSize = dat.readInt();
 				int itemDamage = dat.readInt();
-				if(itemId == 0 && stackSize == 0 & itemDamage == 0)
+				if(tpp != null)
 				{
-					tpp.setInventorySlotContents(0, null);
+					if(itemId == 0 && stackSize == 0 & itemDamage == 0)
+					{
+						tpp.item[0] = null;
+						world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
+					}
+					else
+					{
+						tpp.item[0] = new ItemStack(itemId, stackSize, itemDamage);
+						world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
+					}
 				}
 				else
 				{
-					tpp.setInventorySlotContents(0, new ItemStack(itemId, stackSize, itemDamage));
+
 				}
+				return;
 			}
-			return;
-		}
-		if(ID == 8)
-		{
-			int coords[]  = new int[3];
-			for(int var1 = 0;var1 < 3;var1++)
+			if(ID == 8)
 			{
-				coords[var1] = dat.readInt();
+				int coords[]  = new int[3];
+				for(int var1 = 0;var1 < 3;var1++)
+				{
+					coords[var1] = dat.readInt();
+				}
+				TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+				TileEntityPressurePlate tpp = null;
+				if(te == null || !(te instanceof TileEntityPressurePlate))
+				{
+					world.setBlockTileEntity(coords[0], coords[1], coords[2], new TileEntityPressurePlate());
+					tpp = (TileEntityPressurePlate)te;
+				}
+				else
+				{
+					tpp = (TileEntityPressurePlate)te;
+				}
+				tpp.activated = dat.readBoolean();
+				world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
+				return;
 			}
-			TileEntityPressurePlate tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
-			tpp.activated = dat.readBoolean();
-			world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
-			return;
+			if(ID == 9)
+			{
+				PPRegistry.sendToServer = true;
+			}
 		}
 	}
 	
@@ -450,6 +479,10 @@ public class PacketHandler implements IPacketHandler
    		        PacketSendManager.sendPressurePlatePlayerDataToClient(tpp);
    			}
    			return;
+		}
+		if(ID == 7)
+		{
+			PPRegistry.loggedIn = true;
 		}
 	}
 

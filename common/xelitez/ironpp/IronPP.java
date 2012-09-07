@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -22,6 +23,7 @@ import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -43,7 +45,8 @@ import net.minecraftforge.common.Property;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, 
 	versionBounds = "[3.1]",
 	channels = {"IPP"},
-	packetHandler = xelitez.ironpp.PacketHandler.class)
+	packetHandler = xelitez.ironpp.PacketHandler.class,
+	connectionHandler = xelitez.ironpp.PPRegistry.class)
 public class IronPP 
 {
 	Configuration P;
@@ -58,7 +61,6 @@ public class IronPP
     public static Block PressurePlateIron;
     public static Block APressurePlateIron;
     private boolean customTexture;
-    public static int updateTexture;
     
     /**
      * Temporary storage for the iron pressure plate block texture index.
@@ -88,10 +90,7 @@ public class IronPP
     		BlockAPPiD = P.getOrCreateBlockIdProperty("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(151);	
     		Property PressurePlateIronTexture = P.getOrCreateBooleanProperty("PressurePlateIronCustomTexture", P.CATEGORY_GENERAL, false); //gets the boolean if the user wants to use a custom texture.
     		PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
-    		Property TextureUpdate = P.getOrCreateIntProperty("TextureUpdateTime", P.CATEGORY_GENERAL, 10);
-    		TextureUpdate.comment = "This sets the amount of seconds between updates to update the Texture of the block. Note: this has to do with sending packets to the client so raise if the game gets laggy.";
     		customTexture = PressurePlateIronTexture.getBoolean(false);
-    		updateTexture = TextureUpdate.getInt(10) * 20;
     	}
     	catch(Exception E)
     	{
@@ -127,5 +126,7 @@ public class IronPP
 		GameRegistry.addRecipe(new ItemStack(APressurePlateIron, 2), new Object[] {"###","@#@", '#', Item.ingotIron, '@', Item.redstone});
 		GameRegistry.registerTileEntity(TileEntityPressurePlate.class, "Advanced Pressure Plate"); //registers the TileEntity of the advanced iron pressure plate.(replaces ModLoaders registerTileEntity method)
 		NetworkRegistry.instance().registerGuiHandler(instance, proxy); //Registers a GuiHandler assigned to this mod.(mostly for Network SMP Gui's)
+		TickRegistry.registerTickHandler(new PPRegistry(), Side.CLIENT);
+		TickRegistry.registerTickHandler(new PPRegistry(), Side.SERVER);
 	}
 }

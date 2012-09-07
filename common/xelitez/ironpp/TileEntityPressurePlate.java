@@ -13,9 +13,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
@@ -29,13 +31,15 @@ import net.minecraft.src.World;
 
 public class TileEntityPressurePlate extends TileEntity implements IInventory
 {
-	private ItemStack[] item;
+	public ItemStack[] item = new ItemStack[1];
 	/**
 	 * registeres the lists of mobs and players.
 	 */
 	public PPList[] allowedMobs;
 	public List mobs  = new ArrayList();
 	public List allowedPlayers = new ArrayList();
+	List living = new ArrayList();
+	List other = new ArrayList();
 	public boolean update = false;
 	private int countdown = 0;
 	public boolean activated = false;
@@ -45,20 +49,27 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     {
 		item = new ItemStack[1];
     	registerMobs();
-        scheduleUpdate(20);
     }
 	
     public void updateEntity() 
     {
+    	if(this.xCoord != 0 && this.yCoord != 0 && this.zCoord != 0)
+    	{
+    		if(!PPRegistry.getContainsPressurePlate(this))
+    		{
+    			PPRegistry.addPressurePlate(this);
+    		}
+    	}
     	if(countdown > 0)
     	{
     		countdown--;
     	}
-    	if(worldObj != null && update == true && !worldObj.isRemote && countdown == 0)
+    	if(worldObj != null && update == true)
     	{
-    		PacketSendManager.sendItemStackToClients(this);
-    		update = false;
-            scheduleUpdate(IronPP.updateTexture);
+    		if(PPRegistry.world == null)
+    		{
+    			PPRegistry.world = this.worldObj;
+    		}
             if(check)
             {
             	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, IronPP.APressurePlateIron.blockID);
@@ -108,7 +119,15 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
                                 }) != null && !Modifier.isAbstract(class1.getModifiers()))
                         {
                             String s1 = (String)map.get(class1);
-                            mobs.add(s1);
+                            living.add(s1);
+                        }
+                        if ((net.minecraft.src.Entity.class).isAssignableFrom(class1) && !(net.minecraft.src.EntityLiving.class).isAssignableFrom(class1) && class1.getConstructor(new Class[]
+                                {
+                                    net.minecraft.src.World.class
+                                }) != null && !Modifier.isAbstract(class1.getModifiers()))
+                        {
+                            String s1 = (String)map.get(class1);
+                            other.add(s1);
                         }
                     }
                     catch (SecurityException securityexception)
@@ -118,10 +137,19 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
                     catch (NoSuchMethodException nosuchmethodexception) { }
                 }
             }
-
-            Collections.sort(mobs);
+            Collections.sort(living);
+            Collections.sort(other);
+            int var1;
+            for(var1 = 0;var1 < living.size();var1++)
+            {
+            	mobs.add(living.get(var1));
+            }
+            for(var1 = 0;var1 < other.size();var1++)
+            {
+            	mobs.add(other.get(var1));
+            }
             mobs.add(0, "humanoid");
-            mobs.add(1, "Item");
+            mobs.remove("item");
         }
         if(allowedMobs == null)
         {
@@ -331,44 +359,64 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.readFromNBT(par1NBTTagCompound);
-        NBTTagList var2 = par1NBTTagCompound.getTagList("Mobs");
-        this.registerMobs();
-    	for(int var3 = 0; var3 < mobs.size();var3++)
-    	{
-            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
-            int var5 = var4.getByte("mob");
-            if (var5 >= 0 && var5 < this.allowedMobs.length)
-            {
-                this.allowedMobs[var5] = PPList.loadSettingsFromNBT(var4, (String)mobs.get(var3));
-            }
-    	}
-        NBTTagList var6 = par1NBTTagCompound.getTagList("Players");
-    	for(int var7 = 0; var7 < var6.tagCount();var7++)
-    	{
-            NBTTagCompound var8 = (NBTTagCompound)var6.tagAt(var7);
-            int var9 = var8.getByte("player");
-            String var10 = var8.getString("username");
-            boolean var11 = var8.getBoolean("isEnabled");
-            if (var9 >= 0 && var9 < this.allowedMobs.length)
-            {
-                this.allowedPlayers.add(new PPPlayerList(var10, var11));
-            }
-    	}
-        NBTTagList var11 = par1NBTTagCompound.getTagList("Items");
-        this.item = new ItemStack[this.getSizeInventory()];
-
-        for (int var12 = 0; var12 < var11.tagCount(); ++var12)
+        try
         {
-            NBTTagCompound var14 = (NBTTagCompound)var11.tagAt(var12);
-            int var13 = var14.getByte("Slot") & 255;
-
-            if (var13 >= 0 && var13 < this.item.length)
-            {
-                this.item[var13] = ItemStack.loadItemStackFromNBT(var14);
-            }
+	        NBTTagList var2 = par1NBTTagCompound.getTagList("Mobs");
+	        this.registerMobs();
+	    	for(int var3 = 0; var3 < mobs.size();var3++)
+	    	{
+	            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
+	            int var5 = var4.getByte("mob");
+	            if (var5 >= 0 && var5 < this.allowedMobs.length)
+	            {
+	                this.allowedMobs[var5] = PPList.loadSettingsFromNBT(var4, (String)mobs.get(var3));
+	            }
+	    	}
         }
-        scheduleUpdate(20);
+        catch(Exception e)
+        {
+        	this.registerMobs();
+        }
+        try
+        {
+	        NBTTagList var6 = par1NBTTagCompound.getTagList("Players");
+	    	for(int var7 = 0; var7 < var6.tagCount();var7++)
+	    	{
+	            NBTTagCompound var8 = (NBTTagCompound)var6.tagAt(var7);
+	            int var9 = var8.getByte("player");
+	            String var10 = var8.getString("username");
+	            boolean var11 = var8.getBoolean("isEnabled");
+	            if (var9 >= 0 && var9 < this.allowedMobs.length)
+	            {
+	                this.allowedPlayers.add(new PPPlayerList(var10, var11));
+	            }
+	    	}
+        } catch(Exception e)
+        {
+        }
+    	try
+    	{
+	        NBTTagList var11 = par1NBTTagCompound.getTagList("Items");
+	        this.item = new ItemStack[this.getSizeInventory()];
+	
+	        for (int var12 = 0; var12 < var11.tagCount(); ++var12)
+	        {
+	            NBTTagCompound var14 = (NBTTagCompound)var11.tagAt(var12);
+	            int var13 = var14.getByte("Slot") & 255;
+	
+	            if (var13 >= 0 && var13 < this.item.length)
+	            {
+	                this.item[var13] = ItemStack.loadItemStackFromNBT(var14);
+	            }
+	        }
+    	} catch(Exception e)
+    	{
+    		FMLLog.log(Level.FINE, e, "no items found, adding...");
+    		item = new ItemStack[1];
+    	}
+    	PPRegistry.addPressurePlate(this);
         check = true;
+        this.scheduleUpdate(0);
     }
 
     /**
@@ -463,6 +511,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 	@Override
 	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) 
 	{
+		PPRegistry.removePressurePlate(this);
         this.item[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
@@ -470,10 +519,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
             par2ItemStack.stackSize = this.getInventoryStackLimit();
         }
         worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
-        if(!worldObj.isRemote)
-        {
-        	PacketSendManager.sendItemStackToClients(this);
-        }
+        PPRegistry.addPressurePlate(this);
 	}
 
 	@Override

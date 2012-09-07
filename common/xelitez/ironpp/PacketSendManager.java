@@ -22,6 +22,7 @@ import cpw.mods.fml.server.FMLServerHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Packet250CustomPayload;
 
@@ -289,6 +290,28 @@ public class PacketSendManager
    		sendPacketToServer(packet);
 	}
 	
+	public static void sendIsReadyToServer()
+	{
+    	ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+   		DataOutputStream data = new DataOutputStream(bytes);
+   		try
+   		{
+        	data.writeBoolean(true);
+   			data.writeShort(7);
+   		}
+   		catch(IOException e)
+   		{
+   			e.printStackTrace();
+   		}
+   		
+   		Packet250CustomPayload packet = new Packet250CustomPayload();
+   		packet.channel = "IPP";
+   		packet.data = bytes.toByteArray();
+   		packet.length = packet.data.length;
+   		
+   		sendPacketToServer(packet);
+	}
+	
 	/**
 	 * send a packet to all players that closes
 	 * the gui of the players if the gui of the
@@ -528,7 +551,7 @@ public class PacketSendManager
         sendPacketToAllPlayers(packet);
 	}
 	
-	public static void sendItemStackToClients(TileEntityPressurePlate tpp)
+	public static void sendItemStackToClients(int x, int y, int z, int stack, int damage, int stacksize)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(bytes);
@@ -536,24 +559,12 @@ public class PacketSendManager
         {
         	data.writeBoolean(false);
             data.writeShort(7);
-            int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
-        	for(int var11 = 0;var11 < 3;var11++)
-        	{
-        		data.writeInt(coords[var11]);
-        	}
-        	ItemStack slotC = tpp.getStackInSlot(0);
-        	if(slotC != null)
-        	{
-        		data.writeInt(slotC.itemID);
-        		data.writeInt(slotC.stackSize);
-        		data.writeInt(slotC.getItemDamage());
-        	}
-        	else
-        	{
-        		data.writeInt(0);
-        		data.writeInt(0);
-        		data.writeInt(0);
-        	}
+        	data.writeInt(x);
+        	data.writeInt(y);
+        	data.writeInt(z);
+        	data.writeInt(stack);
+        	data.writeInt(stacksize);
+        	data.writeInt(damage);
         }
         catch(IOException e)
         {
@@ -594,6 +605,28 @@ public class PacketSendManager
         packet.length = packet.data.length;
         
         sendPacketToAllPlayers(packet);
+	}
+	
+	public static void SendIsReadyToClient(Player player)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(9);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+		PacketDispatcher.sendPacketToPlayer(packet, player);
 	}
 
 }

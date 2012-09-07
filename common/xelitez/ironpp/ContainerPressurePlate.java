@@ -90,7 +90,6 @@ public class ContainerPressurePlate extends Container
     {
         ItemStack stack = null;
         Slot slot = (Slot)this.inventorySlots.get(par1);
-    	System.out.println(par1);
 
         if (slot != null && slot.getHasStack())
         {

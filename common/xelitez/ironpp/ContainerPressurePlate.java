@@ -6,6 +6,8 @@
  */
 package xelitez.ironpp;
 
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
@@ -14,6 +16,7 @@ import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 
+@SideOnly(Side.CLIENT)
 public class ContainerPressurePlate extends Container
 {
 	public TileEntityPressurePlate tpp;
@@ -88,36 +91,58 @@ public class ContainerPressurePlate extends Container
 	
     public ItemStack transferStackInSlot(int par1)
     {
-        ItemStack stack = null;
-        Slot slot = (Slot)this.inventorySlots.get(par1);
+        ItemStack var2 = null;
+        Slot var3 = (Slot)this.inventorySlots.get(par1);
 
-        if (slot != null && slot.getHasStack())
+        if (var3 != null && var3.getHasStack())
         {
-            ItemStack stackInSlot = slot.getStack();
-            stack = stackInSlot.copy();
-            if(par1 == 0)
+            ItemStack var4 = var3.getStack();
+            var2 = var4.copy();
+
+            if (par1 == 0)
             {
-            	if(!mergeItemStack(stackInSlot, 1, inventorySlots.size(), true))
-            	{
-            		return null;
-            	}
-            } 
-            else if(!mergeItemStack(stackInSlot, 0, 1, false))
-            {
-            	return null;
-            }
-            if(stackInSlot.stackSize == 0)
-            {
-            	slot.putStack(null);
+                if (!this.mergeItemStack(var4, 1, 37, true))
+                {
+                    return null;
+                }
             }
             else
             {
-            	slot.onSlotChanged();
+                if (((Slot)this.inventorySlots.get(0)).getHasStack() || !((Slot)this.inventorySlots.get(0)).isItemValid(var4))
+                {
+                    return null;
+                }
+
+                if (var4.hasTagCompound() && var4.stackSize == 1)
+                {
+                    ((Slot)this.inventorySlots.get(0)).putStack(var4.copy());
+                    var4.stackSize = 0;
+                }
+                else if (var4.stackSize >= 1)
+                {
+                    ((Slot)this.inventorySlots.get(0)).putStack(new ItemStack(var4.itemID, 1, var4.getItemDamage()));
+                    --var4.stackSize;
+                }
             }
 
+            if (var4.stackSize == 0)
+            {
+                var3.putStack((ItemStack)null);
+            }
+            else
+            {
+                var3.onSlotChanged();
+            }
+
+            if (var4.stackSize == var2.stackSize)
+            {
+                return null;
+            }
+
+            var3.onPickupFromSlot(var4);
         }
 
-        return stack;
+        return var2;
     }
 	
     public void switchMob(String var1)

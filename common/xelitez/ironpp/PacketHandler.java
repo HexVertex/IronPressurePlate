@@ -293,12 +293,16 @@ public class PacketHandler implements IPacketHandler
 				{
 					if(itemId == 0 && stackSize == 0 & itemDamage == 0)
 					{
+						PPRegistry.removePressurePlate(tpp);
 						tpp.item[0] = null;
+						PPRegistry.addPressurePlate(tpp);
 						world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
 					}
 					else
 					{
+						PPRegistry.removePressurePlate(tpp);
 						tpp.item[0] = new ItemStack(itemId, stackSize, itemDamage);
+						PPRegistry.addPressurePlate(tpp);
 						world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
 					}
 				}

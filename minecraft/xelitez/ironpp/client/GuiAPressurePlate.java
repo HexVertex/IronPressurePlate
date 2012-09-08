@@ -183,6 +183,26 @@ public class GuiAPressurePlate extends GuiContainer
         }
     }
     
+    private Slot getSlotAtPosition(int par1, int par2)
+    {
+        for (int var3 = 0; var3 < this.inventorySlots.inventorySlots.size(); ++var3)
+        {
+            Slot var4 = (Slot)this.inventorySlots.inventorySlots.get(var3);
+
+            if (this.isMouseOverSlot(var4, par1, par2))
+            {
+                return var4;
+            }
+        }
+
+        return null;
+    }
+    
+    private boolean isMouseOverSlot(Slot par1Slot, int par2, int par3)
+    {
+        return this.func_74188_c(par1Slot.xDisplayPosition, par1Slot.yDisplayPosition, 16, 16, par2, par3);
+    }
+    
     /**
      * called when the mouse is clicked.
      * handles everything that should happen when you click
@@ -190,7 +210,30 @@ public class GuiAPressurePlate extends GuiContainer
      */
     protected void mouseClicked(int i, int j, int k)
     {
-    	super.mouseClicked(i, j, k);
+        if (k == 0 || k == 1)
+        {
+            Slot var4 = this.getSlotAtPosition(i, j);
+            int var5 = this.guiLeft - 86;
+            int var6 = this.guiTop - 17;
+            boolean var7 = i < var5 || j < var6 || i >= var5 + this.xSize - 90 || j >= var6 + this.ySize - 12;
+            int var8 = -1;
+
+            if (var4 != null)
+            {
+                var8 = var4.slotNumber;
+            }
+
+            if (var7)
+            {
+                var8 = -999;
+            }
+
+            if (var8 != -1)
+            {
+                boolean var9 = var8 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
+                this.handleMouseClick(var4, var8, k, var9);
+            }
+        }
         int l = (width - xSize) / 2;
         int i1 = (height - ySize) / 2;
         i -= l;
@@ -270,7 +313,7 @@ public class GuiAPressurePlate extends GuiContainer
         		cpp.drawSlots(game.thePlayer.inventory, tpp);
         	}
         }
-        if(k == 0 && i >= -95 && i <= -86 && j >= 5 && j <= 64)
+        if(k == 0 && i >= -95 && i <= -87 && j >= 5 && j <= 64)
         {
         	if(this.textureTabIsOpen)
         	{

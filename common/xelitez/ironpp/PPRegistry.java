@@ -1,14 +1,18 @@
 package xelitez.ironpp;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.NetHandler;
 import net.minecraft.src.NetLoginHandler;
 import net.minecraft.src.NetworkManager;
 import net.minecraft.src.Packet1Login;
+import net.minecraft.src.Tessellator;
 import net.minecraft.src.World;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -126,6 +130,30 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		}
 		return false;
 	}
+	
+	public static ItemStack getItem(int i, int j, int k)
+	{
+		int[] data = new int[6];
+		data[0] = i;
+		data[1] = j;
+		data[2] = k;
+		for(int var1 = 0;var1 < PressurePlates.size();var1++)
+		{
+			int[] tempdata = (int[])PressurePlates.get(var1);
+			if(tempdata[0] == data[0] && tempdata[1] == data[1] && tempdata[2] == data[2])
+			{
+				if(tempdata[3] == 0 && tempdata[5] == 0 && tempdata[4] == 0)
+				{
+					return null;
+				}
+				else
+				{
+					return new ItemStack(tempdata[3], tempdata[5], tempdata[4]);
+				}
+			}
+		}
+		return null;
+	}
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler,
 			NetworkManager manager) 
@@ -163,9 +191,8 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 
 	@Override
 	public void clientLoggedIn(NetHandler clientHandler,
-			NetworkManager manager, Packet1Login login) {
-		// TODO Auto-generated method stub
-		
+			NetworkManager manager, Packet1Login login) 
+	{	
 	}
 
 	@Override

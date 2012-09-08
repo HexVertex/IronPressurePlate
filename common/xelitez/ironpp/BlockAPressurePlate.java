@@ -171,7 +171,6 @@ public class BlockAPressurePlate extends BlockContainer
         {
 	        for(int var10 = 0;var10 < var8.size();var10++)
 	        {
-	        	System.out.println(((Entity)var8.get(var10)).getEntityName());
 	        	if (var8.size() > 0 && (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName(PPManager.getEntityString((Entity)var8.get(var10)))))
 	        	{
 	        		var6 = true;
@@ -356,28 +355,20 @@ public class BlockAPressurePlate extends BlockContainer
     
     public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-    	TileEntity te = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(par2, par3, par4);
-    	if(te != null && (te instanceof TileEntityPressurePlate))
+    	ItemStack item = PPRegistry.getItem(par2, par3, par4);
+    	if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
     	{
-    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
-    		if(tpp.getStackInSlot(0) != null && tpp.getStackInSlot(0).itemID != IronPP.APressurePlateIron.blockID)
-    		{
-    			return this.blocksList[tpp.getStackInSlot(0).itemID].getBlockTextureFromSideAndMetadata(par5, tpp.getStackInSlot(0).getItemDamage());
-    		}
+    			return this.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
     	}
         return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
     }
     
     public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
-    	TileEntity te = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(par2, par3, par4);
-    	if(te != null && (te instanceof TileEntityPressurePlate))
+    	ItemStack item = PPRegistry.getItem(par2, par3, par4);
+    	if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
     	{
-    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
-    		if(tpp.getStackInSlot(0) != null && tpp.getStackInSlot(0).itemID != IronPP.APressurePlateIron.blockID)
-    		{
-    			return this.blocksList[tpp.getStackInSlot(0).itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
-    		}
+    		return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
     	}
         return super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
     }

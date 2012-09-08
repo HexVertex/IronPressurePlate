@@ -9,7 +9,13 @@ package xelitez.ironpp;
 import java.io.File;
 import java.util.logging.Level;
 
+import org.lwjgl.input.Keyboard;
+
+import xelitez.ironpp.client.KeyHandler;
+
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Side;
@@ -30,6 +36,7 @@ import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EnumMobType;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.KeyBinding;
 import net.minecraft.src.Material;
 import net.minecraft.src.ModLoader;
 import net.minecraft.src.StatCollector;
@@ -54,6 +61,7 @@ public class IronPP
 	/**
 	 * Registers the default BlockIDs and the blocks.
 	 */
+	public String version = "3.1";
 	public int defaultPressurePlateIronId = 150;
 	public int defaultAPressurePlateIronId = 151;
 	private int BlockPPiD;
@@ -128,5 +136,6 @@ public class IronPP
 		NetworkRegistry.instance().registerGuiHandler(instance, proxy); //Registers a GuiHandler assigned to this mod.(mostly for Network SMP Gui's)
 		TickRegistry.registerTickHandler(new PPRegistry(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new PPRegistry(), Side.SERVER);
+		proxy.RegisterKeyHandler();
 	}
 }

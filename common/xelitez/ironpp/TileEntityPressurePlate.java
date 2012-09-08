@@ -518,8 +518,19 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         {
             par2ItemStack.stackSize = this.getInventoryStackLimit();
         }
-        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+        if(worldObj != null && (!this.worldObj.isRemote || FMLCommonHandler.instance().getSide().isServer()))
+        {
+        	if(item[par1] != null)
+        	{
+        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, item[par1].itemID, item[par1].getItemDamage(), item[par1].stackSize);
+        	}
+        	else
+        	{
+        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, 0, 0, 0);
+        	}
+        }
         PPRegistry.addPressurePlate(this);
+        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override

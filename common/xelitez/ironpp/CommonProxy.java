@@ -9,6 +9,7 @@ import xelitez.ironpp.client.GuiAPressurePlate;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
+import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler
@@ -44,6 +45,16 @@ public class CommonProxy implements IGuiHandler
 	public World getClientWorld()
 	{
 		return null;
+	}
+	
+	public void RegisterKeyHandler()
+	{
+		
+	}
+	
+	public String getKey(int i)
+	{
+		return "";
 	}
 
 }

@@ -41,7 +41,7 @@ public class KeyHandler extends cpw.mods.fml.client.registry.KeyBindingRegistry.
 		if(kb == this.keyBindings[0] && !(currentscreen instanceof GuiControls))
 		{
 			FMLClientHandler.instance().displayGuiScreen(FMLClientHandler.instance().getClient().thePlayer, new ConfirmLink((GuiScreen)null, "http://adf.ly/Cg2Yv", 0));
-		}
+		}		
 	}
 	
 	public String getKey(int i)

@@ -348,6 +348,11 @@ public class GuiAPressurePlate extends GuiContainer
 		{
 			cpp.removeAllSlots();
 		}
+		if((Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) && !this.textureTabIsOpen)
+		{
+			this.textureTabIsOpen = true;
+    		cpp.drawSlots(game.thePlayer.inventory, tpp);
+		}
     	int k = (width - xSize) / 2;
         int l = (height - ySize) / 2;
         int i1 = mc.renderEngine.getTexture("/gui/APP.png");

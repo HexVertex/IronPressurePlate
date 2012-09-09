@@ -93,6 +93,31 @@ public class ContainerPressurePlate extends Container
     {
         ItemStack var2 = null;
         Slot var3 = (Slot)this.inventorySlots.get(par1);
+        if (var3 != null && !var3.getHasStack())
+        {
+            if (par1 != 0)
+            {
+            	if(tpp.getStackInSlot(0) != null)
+            	{
+                    ItemStack var4 = var3.getStack();
+	                if (!this.mergeItemStack(tpp.getStackInSlot(0), 1, 37, true))
+	                {
+	                    return null;
+	                }
+	                
+	                if (var4 == null || var4.stackSize == 0)
+	                {
+	                    ((Slot) this.inventorySlots.get(0)).putStack((ItemStack)null);
+	                }
+	                else
+	                {
+	                    var3.onSlotChanged();
+	                }
+
+	                var3.onPickupFromSlot(var4);
+            	}
+            }
+        }
 
         if (var3 != null && var3.getHasStack())
         {
@@ -108,9 +133,14 @@ public class ContainerPressurePlate extends Container
             }
             else
             {
-                if (((Slot)this.inventorySlots.get(0)).getHasStack() || !((Slot)this.inventorySlots.get(0)).isItemValid(var4))
+                if (!((Slot)this.inventorySlots.get(0)).isItemValid(var4))
                 {
                     return null;
+                }
+                
+                if(((Slot)this.inventorySlots.get(0)).getHasStack() && !this.mergeItemStack(tpp.getStackInSlot(0), 1, 37, true))
+                {
+                	return null;
                 }
 
                 if (var4.hasTagCompound() && var4.stackSize == 1)

@@ -20,6 +20,7 @@ import net.minecraft.src.Slot;
 public class ContainerPressurePlate extends Container
 {
 	public TileEntityPressurePlate tpp;
+	private IInventory inventory;
 	
 	public ContainerPressurePlate(TileEntityPressurePlate tpp, InventoryPlayer par1InventoryPlayer)
 	{
@@ -27,13 +28,15 @@ public class ContainerPressurePlate extends Container
 		this.drawSlots(par1InventoryPlayer, tpp);
 	}
 	
-	public void drawSlots(InventoryPlayer par1InventoryPlayer, IInventory var1)
+	public void drawSlots(IInventory par1IInventory, IInventory par2IInventory)
 	{
+		inventory = par2IInventory;
         int var4;
         int var5;
-        for (var5 = 0; var5 < var1.getSizeInventory(); ++var5)
+        par2IInventory.openChest();
+        for (var5 = 0; var5 < par2IInventory.getSizeInventory(); ++var5)
         {
-        	this.addSlotToContainer(new SlotPP(var1, 0, -54, 154));
+        	this.addSlotToContainer(new SlotPP(par2IInventory, 0, -54, 154));
         }
 
         int var6;
@@ -41,13 +44,13 @@ public class ContainerPressurePlate extends Container
         {
             for (int var7 = 0; var7 < 9; ++var7)
             {
-                this.addSlotToContainer(new Slot(par1InventoryPlayer, var7 + var6 * 9 + 9, -81 + var6 * 18, 132 - var7 * 18));
+                this.addSlotToContainer(new Slot(par1IInventory, var7 + var6 * 9 + 9, -81 + var6 * 18, 132 - var7 * 18));
             }
         }
 
         for (var6 = 0; var6 < 9; ++var6)
         {
-            this.addSlotToContainer(new Slot(par1InventoryPlayer, var6, -22, 132 - var6 * 18));
+            this.addSlotToContainer(new Slot(par1IInventory, var6, -22, 132 - var6 * 18));
         }
 	}
 	
@@ -219,6 +222,12 @@ public class ContainerPressurePlate extends Container
     		}
     	}
     	return;
+    }
+    
+    public void onCraftGuiClosed(EntityPlayer par1EntityPlayer)
+    {
+        super.onCraftGuiClosed(par1EntityPlayer);
+        this.inventory.closeChest();
     }
 
 }

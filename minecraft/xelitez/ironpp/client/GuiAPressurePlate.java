@@ -642,7 +642,7 @@ public class GuiAPressurePlate extends GuiContainer
     			}
 				drawTexturedModalRect(i - 23, j + 6 + var1 * 18, 176, 60, 18, 18);		
     		}
-			drawTexturedModalRect(i - 28, j + 6, 194, 0, 4, 162);
+			drawTexturedModalRect(i - 28, j + 6, 194, 0, 5, 162);
 			drawTexturedModalRect(i - 5, j + 6, 194, 0, 4, 162);
 			drawTexturedModalRect(i - 1, j + 6, 194, 0, 1, 162);
 			drawTexturedModalRect(i - 86, j + 2, 0, 0, 86, 4);

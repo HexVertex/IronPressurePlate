@@ -16,7 +16,6 @@ import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 
-@SideOnly(Side.CLIENT)
 public class ContainerPressurePlate extends Container
 {
 	public TileEntityPressurePlate tpp;

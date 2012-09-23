@@ -273,7 +273,7 @@ public class PacketHandler implements IPacketHandler
 					return;
 				}
 			}
-			if(ID == 7 && !(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate))
+			if(ID == 7)
 			{
 				int coords[]  = new int[3];
 				for(int var1 = 0;var1 < 3;var1++)
@@ -289,21 +289,22 @@ public class PacketHandler implements IPacketHandler
 				int itemId = dat.readInt();
 				int stackSize = dat.readInt();
 				int itemDamage = dat.readInt();
-				if(tpp != null)
+				int dimension = dat.readInt();
+				if(tpp != null && world.provider.worldType == dimension)
 				{
 					if(itemId == 0 && stackSize == 0 & itemDamage == 0)
 					{
-						PPRegistry.removePressurePlate(tpp);
+						PPRegistry.removePressurePlate(tpp, dimension);
 						tpp.item[0] = null;
-						PPRegistry.addPressurePlate(tpp);
-						world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
+						PPRegistry.addPressurePlate(tpp, dimension);
+						world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
 					}
 					else
 					{
-						PPRegistry.removePressurePlate(tpp);
+						PPRegistry.removePressurePlate(tpp, dimension);
 						tpp.item[0] = new ItemStack(itemId, stackSize, itemDamage);
-						PPRegistry.addPressurePlate(tpp);
-						world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
+						PPRegistry.addPressurePlate(tpp, dimension);
+						world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
 					}
 				}
 				else
@@ -353,7 +354,7 @@ public class PacketHandler implements IPacketHandler
 	public void handleServerPacket(NetworkManager manager, Packet250CustomPayload packet, Player player, ByteArrayDataInput dat, short ID)
 	{
 		EntityPlayer thePlayer = (EntityPlayer)player;
-		World world = FMLCommonHandler.instance().getMinecraftServerInstance().theWorldServer[thePlayer.dimension];
+		World world = thePlayer.worldObj;
     	if(ID == 1)
         {
     		int coords[] = new int[3];

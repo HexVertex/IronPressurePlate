@@ -7,6 +7,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.ChunkCache;
+import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NetHandler;
 import net.minecraft.src.NetLoginHandler;
@@ -28,70 +30,47 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 	public static boolean send = false;
 	public static boolean sendToServer = false;
 	static World world = null;
+	public static PPRegistry pp;
 	
 	public PPRegistry()
 	{
 		this.PressurePlates = new ArrayList();
+		pp = this;
 	}
 	
-	public static void addPressurePlate(TileEntityPressurePlate tpp)
+	public static void addPressurePlate(TileEntityPressurePlate tpp, int dimension)
 	{
-		int[] data = new int[6];
+		int[] data = new int[3];
 		if(tpp.getStackInSlot(0) != null)
 		{
-			data[0] = tpp.xCoord;
-			data[1] = tpp.yCoord;
-			data[2] = tpp.zCoord;
-			data[3] = tpp.getStackInSlot(0).itemID;
-			data[4] = tpp.getStackInSlot(0).getItemDamage();
-			data[5] = tpp.getStackInSlot(0).stackSize;
+			data[0] = tpp.getStackInSlot(0).itemID;
+			data[1] = tpp.getStackInSlot(0).getItemDamage();
+			data[2] = tpp.getStackInSlot(0).stackSize;
 		}
 		else
 		{
-			data[0] = tpp.xCoord;
-			data[1] = tpp.yCoord;
-			data[2] = tpp.zCoord;
-			data[3] = 0;
-			data[4] = 0;
-			data[5] = 0;
+			data[0] = 0;
+			data[1] = 0;
+			data[2] = 0;
 		}
 		for(int var1 = 0;var1 < PressurePlates.size();var1++)
 		{
-			int[] tempdata = (int[])PressurePlates.get(var1);
-			if(tempdata[0] == data[0] && tempdata[1] == data[1] && tempdata[2] == data[2])
+			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
+			if(tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.xCoord && tempdata.dimension == dimension)
 			{
 				return;
 			}
 		}
-		PressurePlates.add(data);
+		PressurePlates.add(new RegistrySettings(tpp.xCoord, tpp.yCoord, tpp.zCoord, data[0], data[1], data[2], tpp.worldObj.provider.worldType));
 		return;
 	}
 	
-	public static void removePressurePlate(TileEntityPressurePlate tpp)
+	public static void removePressurePlate(TileEntityPressurePlate tpp, int dimension)
 	{
-		int[] data = new int[6];
-		if(tpp.getStackInSlot(0) != null)
-		{
-			data[0] = tpp.xCoord;
-			data[1] = tpp.yCoord;
-			data[2] = tpp.zCoord;
-			data[3] = tpp.getStackInSlot(0).itemID;
-			data[4] = tpp.getStackInSlot(0).getItemDamage();
-			data[5] = tpp.getStackInSlot(0).stackSize;
-		}
-		else
-		{
-			data[0] = tpp.xCoord;
-			data[1] = tpp.yCoord;
-			data[2] = tpp.zCoord;
-			data[3] = 0;
-			data[4] = 0;
-			data[5] = 0;
-		}
 		for(int var1 = 0;var1 < PressurePlates.size();var1++)
 		{
-			int[] tempdata = (int[])PressurePlates.get(var1);
-			if(tempdata[0] == data[0] && tempdata[1] == data[1] && tempdata[2] == data[2])
+			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
+			if(tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.zCoord && tempdata.dimension == dimension)
 			{
 				PressurePlates.remove(var1);
 				return;
@@ -99,31 +78,12 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		}
 	}
 
-	public static boolean getContainsPressurePlate(TileEntityPressurePlate tpp)
+	public static boolean getContainsPressurePlate(TileEntityPressurePlate tpp, int dimension)
 	{
-		int[] data = new int[6];
-		if(tpp.getStackInSlot(0) != null)
-		{
-			data[0] = tpp.xCoord;
-			data[1] = tpp.yCoord;
-			data[2] = tpp.zCoord;
-			data[3] = tpp.getStackInSlot(0).itemID;
-			data[4] = tpp.getStackInSlot(0).getItemDamage();
-			data[5] = tpp.getStackInSlot(0).stackSize;
-		}
-		else
-		{
-			data[0] = tpp.xCoord;
-			data[1] = tpp.yCoord;
-			data[2] = tpp.zCoord;
-			data[3] = 0;
-			data[4] = 0;
-			data[5] = 0;
-		}
 		for(int var1 = 0;var1 < PressurePlates.size();var1++)
 		{
-			int[] tempdata = (int[])PressurePlates.get(var1);
-			if(tempdata[0] == data[0] && tempdata[1] == data[1] && tempdata[2] == data[2])
+			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
+			if(tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.xCoord && tempdata.dimension == dimension)
 			{
 				return true;
 			}
@@ -131,24 +91,21 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		return false;
 	}
 	
-	public static ItemStack getItem(int i, int j, int k)
+	public static ItemStack getItem(TileEntityPressurePlate tpp, int dimension)
 	{
-		int[] data = new int[6];
-		data[0] = i;
-		data[1] = j;
-		data[2] = k;
+		World world;
 		for(int var1 = 0;var1 < PressurePlates.size();var1++)
 		{
-			int[] tempdata = (int[])PressurePlates.get(var1);
-			if(tempdata[0] == data[0] && tempdata[1] == data[1] && tempdata[2] == data[2])
+			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
+			if(tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.zCoord && dimension == tempdata.dimension)
 			{
-				if(tempdata[3] == 0 && tempdata[5] == 0 && tempdata[4] == 0)
+				if(tempdata.itemId == 0 && tempdata.stackSize == 0 && tempdata.itemDamage == 0)
 				{
 					return null;
 				}
 				else
 				{
-					return new ItemStack(tempdata[3], tempdata[5], tempdata[4]);
+					return new ItemStack(tempdata.itemId, tempdata.stackSize, tempdata.itemDamage);
 				}
 			}
 		}
@@ -208,8 +165,8 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		{
 			for(int var1 = 0;var1 < PressurePlates.size();var1++)
 			{
-				int[] data = (int[])PressurePlates.get(var1);
-				PacketSendManager.sendItemStackToClients(data[0], data[1], data[2], data[3], data[4], data[5]);
+				RegistrySettings data = (RegistrySettings)PressurePlates.get(var1);
+				PacketSendManager.sendItemStackToClients(data.xCoord, data.yCoord, data.zCoord, data.itemId, data.itemDamage, data.stackSize, data.dimension);
 			}
 			loggedIn = false;
 			send = false;
@@ -233,6 +190,28 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 	public String getLabel() {
 		// TODO Auto-generated method stub
 		return "IronPP";
+	}
+	
+	private static class RegistrySettings
+	{
+		public int xCoord;
+		public int yCoord;
+		public int zCoord;
+		public int itemId;
+		public int itemDamage;
+		public int stackSize;
+		public int dimension;
+		
+		public RegistrySettings(int par1, int par2, int par3, int par4, int par5, int par6, int par7)
+		{
+			this.xCoord = par1;
+			this.yCoord = par2;
+			this.zCoord = par3;
+			this.itemId = par4;
+			this.itemDamage = par5;
+			this.stackSize = par6;
+			this.dimension = par7;
+		}
 	}
 
 }

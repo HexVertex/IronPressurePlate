@@ -60,7 +60,7 @@ public class ContainerPressurePlate extends Container
 	
     public Slot getSlot(int par1)
     {
-    	if(this.inventorySlots.size() >= par1)
+    	if(this.inventorySlots.size() > par1)
     	{
     		return (Slot)this.inventorySlots.get(par1);
     	}

@@ -21,6 +21,8 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
+import net.minecraft.src.Block;
+import net.minecraft.src.Chunk;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
@@ -44,6 +46,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 	private int countdown = 0;
 	public boolean activated = false;
 	private boolean check = false;
+	private boolean register = false;
 	
 	public TileEntityPressurePlate()
     {
@@ -51,14 +54,32 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     	registerMobs();
     }
 	
+	public void setActivated(boolean b, World world, int par1, int par2, int par3)
+	{
+		this.activated = b;
+		world.notifyBlockChange(par1, par2, par3, world.getBlockId(par1, par2, par3));
+        Chunk var5 = world.getChunkFromChunkCoords(par1 >> 4, par3 >> 4);
+        int var6 = par1 & 15;
+        int var7 = par3 & 15;
+        if ((world.isRemote || var5.deferRender && Block.requiresSelfNotify[var5.getBlockID(var6, par2, var7) & 4095]))
+        {
+            world.markBlockNeedsUpdate(par1, par2, par3);
+        }
+        if(!world.isRemote || FMLCommonHandler.instance().getSide().isServer())
+        {	
+        	PacketSendManager.sendBlockBooleanToClient(this, b);
+        }
+	}
+	
     public void updateEntity() 
     {
-    	if(this.xCoord != 0 && this.yCoord != 0 && this.zCoord != 0)
+    	if(this.xCoord != 0 && this.yCoord != 0 && this.zCoord != 0 && register && this.worldObj != null)
     	{
-    		if(!PPRegistry.getContainsPressurePlate(this))
+    		if(!PPRegistry.getContainsPressurePlate(this, this.worldObj.provider.worldType))
     		{
-    			PPRegistry.addPressurePlate(this);
+    			PPRegistry.addPressurePlate(this, this.worldObj.provider.worldType);
     		}
+    		register = false;
     	}
     	if(countdown > 0)
     	{
@@ -414,7 +435,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     		FMLLog.log(Level.FINE, e, "no items found, adding...");
     		item = new ItemStack[1];
     	}
-    	PPRegistry.addPressurePlate(this);
+    	register = true;
         check = true;
         this.scheduleUpdate(0);
     }
@@ -511,7 +532,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 	@Override
 	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) 
 	{
-		PPRegistry.removePressurePlate(this);
+		PPRegistry.removePressurePlate(this, this.worldObj.provider.worldType);
         this.item[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
@@ -522,14 +543,14 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         {
         	if(item[par1] != null)
         	{
-        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, item[par1].itemID, item[par1].getItemDamage(), item[par1].stackSize);
+        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, item[par1].itemID, item[par1].getItemDamage(), item[par1].stackSize, this.worldObj.provider.worldType);
         	}
         	else
         	{
-        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, 0, 0, 0);
+        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, 0, 0, 0, this.worldObj.provider.worldType);
         	}
         }
-        PPRegistry.addPressurePlate(this);
+        PPRegistry.addPressurePlate(this, this.worldObj.provider.worldType);
         worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
 	}
 

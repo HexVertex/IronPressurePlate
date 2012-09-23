@@ -193,11 +193,7 @@ public class BlockAPressurePlate extends BlockContainer
         	TileEntityPressurePlate tpp = (TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4);
 	        if (var6 && !var5)
 	        {
-	            tpp.activated = true;
-	            if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
-	            {
-	            	PacketSendManager.sendBlockBooleanToClient(tpp, true);
-	            }
+	            tpp.setActivated(true, par1World, par2, par3, par4);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
 	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
@@ -206,11 +202,7 @@ public class BlockAPressurePlate extends BlockContainer
 	
 	        if (!var6 && var5)
 	        {
-	            tpp.activated = false;
-	            if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
-	            {
-	            	PacketSendManager.sendBlockBooleanToClient(tpp, false);
-	            }
+	            tpp.setActivated(false, par1World, par2, par3, par4);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
 	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
@@ -279,7 +271,7 @@ public class BlockAPressurePlate extends BlockContainer
                     }
                 }
             }
-            PPRegistry.removePressurePlate(var7);
+            PPRegistry.removePressurePlate(var7, var7.worldObj.provider.worldType);
         }
 
         super.breakBlock(par1World, par2, par3, par4, par5, par6);
@@ -336,9 +328,9 @@ public class BlockAPressurePlate extends BlockContainer
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {  	
     	TileEntity te = par1World.getBlockTileEntity(par2, par3, par4);
-    	if (te == null || !(te instanceof TileEntityPressurePlate))
+    	if (te == null || !(te instanceof TileEntityPressurePlate) || par5EntityPlayer.isSneaking())
     	{
-    		return true;
+    		return false;
     	}
     	if(FMLCommonHandler.instance().getSide().isServer())
     	{
@@ -355,20 +347,30 @@ public class BlockAPressurePlate extends BlockContainer
     
     public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-    	ItemStack item = PPRegistry.getItem(par2, par3, par4);
-    	if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
+    	TileEntity te = par1IBlockAccess.getBlockTileEntity(par2, par3, par4);
+    	if(te instanceof TileEntityPressurePlate)
     	{
+    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
+    		ItemStack item = PPRegistry.getItem(tpp, tpp.worldObj.provider.worldType);
+    		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
+    		{
     			return this.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
+    		}
     	}
         return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
     }
     
     public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
-    	ItemStack item = PPRegistry.getItem(par2, par3, par4);
-    	if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
+    	TileEntity te = par1IBlockAccess.getBlockTileEntity(par2, par3, par4);
+    	if(te instanceof TileEntityPressurePlate)
     	{
-    		return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
+    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
+    		ItemStack item = PPRegistry.getItem(tpp, tpp.worldObj.provider.worldType);
+    		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
+    		{
+    			return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
+    		}
     	}
         return super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
     }

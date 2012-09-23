@@ -551,7 +551,7 @@ public class PacketSendManager
         sendPacketToAllPlayers(packet);
 	}
 	
-	public static void sendItemStackToClients(int x, int y, int z, int stack, int damage, int stacksize)
+	public static void sendItemStackToClients(int x, int y, int z, int stack, int damage, int stacksize, int dimension)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(bytes);
@@ -565,6 +565,7 @@ public class PacketSendManager
         	data.writeInt(stack);
         	data.writeInt(stacksize);
         	data.writeInt(damage);
+        	data.writeInt(dimension);
         }
         catch(IOException e)
         {

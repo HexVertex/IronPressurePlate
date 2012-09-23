@@ -7,6 +7,9 @@
 
 package net.minecraft.src;
 
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
+
 public class PPManager 
 {
 	public static String getEntityString(Entity entity)
@@ -22,5 +25,11 @@ public class PPManager
 	public static void closeGuiScreen(EntityPlayer player)
 	{
 		player.closeScreen();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static RenderItem getItemRenderer()
+	{
+		return GuiContainer.itemRenderer;
 	}
 }

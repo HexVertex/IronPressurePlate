@@ -48,9 +48,9 @@ import net.minecraftforge.common.Property;
 /**
  * Mod registration stuff.
  */
-@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.1.3")
+@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.1.4")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, 
-	versionBounds = "[3.1.3]",
+	versionBounds = "[3.1.4]",
 	channels = {"IPP"},
 	packetHandler = xelitez.ironpp.PacketHandler.class,
 	connectionHandler = xelitez.ironpp.PPRegistry.class)
@@ -88,7 +88,7 @@ public class IronPP
     @PreInit
     public void preload(FMLPreInitializationEvent evt)
     {
-    	evt.getModMetadata().version = "v3.1.2 MC:1.3.3";
+    	evt.getModMetadata().version = Version.getVersion() + " for " + Version.MC;
     	P = new Configuration(evt.getSuggestedConfigurationFile()); //sets the file to create or load for the configuration file.
     	try
     	{

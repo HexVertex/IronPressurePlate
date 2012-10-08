@@ -17,11 +17,15 @@ import xelitez.ironpp.client.GuiModifyPressurePlate;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.server.FMLServerHandler;
 
 import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.Block;
 import net.minecraft.src.BlockContainer;
 import net.minecraft.src.BlockFence;
+import net.minecraft.src.ChunkCache;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityItem;
@@ -94,9 +98,23 @@ public class BlockAPressurePlate extends BlockContainer
 
     public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving) 
     {
-    	if(par5EntityLiving instanceof EntityPlayer && par1World.getBlockTileEntity(par2, par3, par4) != null)
+    	if(par5EntityLiving instanceof EntityPlayer && par1World.getBlockTileEntity(par2, par3, par4) != null && par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)
     	{
-    		((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).registerPlayer(((EntityPlayer)par5EntityLiving).username);
+    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4);
+    		tpp.registerPlayer(((EntityPlayer)par5EntityLiving).username);
+            if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
+            {
+            	PacketSendManager.sendAddPressurePlateToClient(tpp, tpp.worldObj.provider.worldType);
+            	PacketSendManager.sendUsesPasswordToClient(par2, par3, par4, par1World.provider.worldType, tpp.getIsEnabled(2));
+            	if(tpp.item[0] != null)
+            	{
+            		PacketSendManager.sendItemStackToClients(par2, par3, par4, tpp.item[0].itemID, tpp.item[0].getItemDamage(), tpp.item[0].stackSize, par1World.provider.worldType);
+            	}
+            	else
+            	{
+            		PacketSendManager.sendItemStackToClients(par2, par3, par4, 0, 0, 0, par1World.provider.worldType);
+            	}
+            }
     	}
     }
     
@@ -180,9 +198,22 @@ public class BlockAPressurePlate extends BlockContainer
 	        	{
 	        		if((var8.get(var10) instanceof EntityPlayer))
 	        		{
-	        			if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).isInPlayerList(((EntityPlayer)var8.get(var10)).username) && ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName(PPManager.getEntityType((EntityLiving)var8.get(var10))))
+	        			if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName(PPManager.getEntityType((EntityLiving)var8.get(var10))))
 	        			{
-	        				var6 = true;
+	        				if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).isPlayerInList(((EntityPlayer)var8.get(var10)).username))
+	        				{
+	        					if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).isInPlayerList(((EntityPlayer)var8.get(var10)).username))
+	        					{
+	        						var6 = true;
+	        					}
+	        				}
+        					else
+        					{
+        						if( ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(0))
+        						{
+        							var6 = true;
+        						}
+        					}
 	        			}
 	        		}
 	        	}
@@ -197,7 +228,10 @@ public class BlockAPressurePlate extends BlockContainer
 	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
 	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
-	            par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
+	            if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
+	            {
+	            	par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
+	            }
 	        }
 	
 	        if (!var6 && var5)
@@ -206,7 +240,10 @@ public class BlockAPressurePlate extends BlockContainer
 	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
 	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
-	            par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
+	            if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
+	            {
+	            	par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
+	            }
 	        }
         }
 
@@ -272,6 +309,10 @@ public class BlockAPressurePlate extends BlockContainer
                 }
             }
             PPRegistry.removePressurePlate(var7, var7.worldObj.provider.worldType);
+            if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
+            {
+            	PacketSendManager.sendRemovePressurePlateToClient(var7, var7.worldObj.provider.worldType);
+            }
         }
 
         super.breakBlock(par1World, par2, par3, par4, par5, par6);
@@ -334,44 +375,54 @@ public class BlockAPressurePlate extends BlockContainer
     	}
     	if(FMLCommonHandler.instance().getSide().isServer())
     	{
-        	par5EntityPlayer.openGui(IronPP.instance, 0, par1World, par2, par3, par4);
-        	return true;
+    		if(PPRegistry.getUsesPassword((TileEntityPressurePlate)te, par1World.provider.worldType))
+    		{
+            	par5EntityPlayer.openGui(IronPP.instance, 1, par1World, par2, par3, par4);
+            	return true;
+    		}
+    		else
+    		{
+            	par5EntityPlayer.openGui(IronPP.instance, 0, par1World, par2, par3, par4);
+            	return true;
+    		}
     	}
     	if(par1World.isRemote)
     	{
         	return true;
     	}
-    	par5EntityPlayer.openGui(IronPP.instance, 0, par1World, par2, par3, par4);
-    	return true;
+		if(PPRegistry.getUsesPassword((TileEntityPressurePlate)te, par1World.provider.worldType))
+		{
+        	par5EntityPlayer.openGui(IronPP.instance, 1, par1World, par2, par3, par4);
+        	return true;
+		}
+		else
+		{
+        	par5EntityPlayer.openGui(IronPP.instance, 0, par1World, par2, par3, par4);
+        	return true;
+		}
     }
     
+    @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-    	TileEntity te = par1IBlockAccess.getBlockTileEntity(par2, par3, par4);
-    	if(te instanceof TileEntityPressurePlate)
-    	{
-    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
-    		ItemStack item = PPRegistry.getItem(tpp, tpp.worldObj.provider.worldType);
-    		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
-    		{
-    			return this.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
-    		}
-    	}
-        return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
+		World world = FMLClientHandler.instance().getClient().theWorld;
+		ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.worldType);
+		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
+		{
+			return this.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
+		}
+    	return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
     }
     
+    @SideOnly(Side.CLIENT)
     public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
-    	TileEntity te = par1IBlockAccess.getBlockTileEntity(par2, par3, par4);
-    	if(te instanceof TileEntityPressurePlate)
-    	{
-    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
-    		ItemStack item = PPRegistry.getItem(tpp, tpp.worldObj.provider.worldType);
-    		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
-    		{
-    			return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
-    		}
-    	}
+		World world = FMLClientHandler.instance().getClient().theWorld;
+		ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.worldType);
+		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
+		{
+			return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
+		}
         return super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
     }
     

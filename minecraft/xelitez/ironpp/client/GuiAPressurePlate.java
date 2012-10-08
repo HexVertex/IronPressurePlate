@@ -12,6 +12,8 @@ import org.lwjgl.opengl.GL12;
 
 import xelitez.ironpp.ContainerPressurePlate;
 import xelitez.ironpp.PPPlayerList;
+import xelitez.ironpp.PPSettings;
+import xelitez.ironpp.PPSettings.SettingsLine;
 import xelitez.ironpp.PacketSendManager;
 import xelitez.ironpp.TileEntityPressurePlate;
 
@@ -45,6 +47,7 @@ public class GuiAPressurePlate extends GuiContainer
      */
     public static boolean[] enabled;
     public static boolean[] enabledPlayers;
+    public static boolean[] enabledSettings;
     
     /**
      * stuff for the scrolling.
@@ -59,6 +62,10 @@ public class GuiAPressurePlate extends GuiContainer
     private int playerScrollY;
     private static int playerScrollHeight;
     private boolean playerIsScrolling;
+    private static int settingsListHeight;
+    private int settingsScrollY;
+    private static int settingsScrollHeight;
+    private boolean settingsIsScrolling;
     
     /**
      * sets the minecraft instance ready for usage.
@@ -77,7 +84,7 @@ public class GuiAPressurePlate extends GuiContainer
      */
     private int tabOpen = 0;
     
-    private int tab2Open;
+    public int tab2Open = 0;
     
     /**
      * the size of the Gui
@@ -187,6 +194,28 @@ public class GuiAPressurePlate extends GuiContainer
         }
     }
     
+    public static void LineUpSettings()
+    {
+        enabledSettings = new boolean[tpp.pps.buttons.size()];
+        for(int i = 0;i < tpp.pps.buttons.size();i++)
+        {
+        	if(tpp.pps.buttons.get(i) != null)
+        	{
+        		enabledSettings[i] = tpp.getIsEnabled(i);
+        	}
+        }
+        
+        if (tpp.pps.lines.size() > 0)
+        {
+            settingsListHeight = 14 * ((tpp.pps.lines.size())) - 137;
+            settingsScrollHeight = (int)((137D / (double)(settingsListHeight + 137)) * 137D);
+            if (settingsScrollHeight <= 0 || settingsScrollHeight >= 137)
+            {
+            	settingsScrollHeight = 137;
+            }
+        }
+    }
+    
     private Slot getSlotAtPosition(int par1, int par2)
     {
         for (int var3 = 0; var3 < this.inventorySlots.inventorySlots.size(); ++var3)
@@ -290,6 +319,37 @@ public class GuiAPressurePlate extends GuiContainer
                 break;
             }
         }
+        if(this.tab2Open == 2)
+        {
+            if (k == 0 && i >= -95 && i < -9 && j >= 16 && j < 154)
+            {
+            	for(int j1 = 0;j1 < tpp.pps.buttons.size();j1++)
+            	{
+                    if (mouseInSettingsRadioButton(i, j, j1))
+                    {
+	                    if(!game.theWorld.isRemote)
+	                    {
+	                    	cpp.tpp.switchSetting(j1);
+	                    }
+	                    else
+	                    {
+	                        PacketSendManager.sendSwitchSettingToServer(tpp, j1);
+	                    }
+                    }
+            	}
+            	for(int j1 = 0;j1 < tpp.pps.settingsLines.size();j1++)
+            	{
+            		if (mouseInSettingsLine(i, j, j1))
+            		{
+            			switch(j1)
+            			{
+            			case 0:
+            				mc.displayGuiScreen(new GuiPassword(this.tpp, true, tpp.xCoord, tpp.yCoord, tpp.zCoord));
+            			}
+            		}
+            	}
+            }
+        }
         if(this.enabled[0])
         {
 	        if(k == 0 && i >= 176 && i <= 185 && j >= 5 &&  j <= 63)
@@ -325,22 +385,21 @@ public class GuiAPressurePlate extends GuiContainer
         		cpp.removeAllSlots();
         	}
         }
-        if(false)
+        if(k == 0 && i >= -19 && i <= -1 && j >= 133 && j <= 154)
         {
-	        if(k == 0 && i >= -19 && i <= -1 && j >= 133 && j <= 154)
-	        {
-	        	if(this.tab2Open == 0)
-	        	{
-	        		tab2Open = 2;
-	        	}
-	        }
-	        if(k == 0 && i >= -119 && i <= -101 && j >= 133 && j <= 154)
-	        {
-	        	if(this.tab2Open == 2)
-	        	{
-	        		tab2Open = 0;
-	        	}
-	        }
+        	if(this.tab2Open == 0)
+        	{
+        		tab2Open = 2;
+                settingsScrollY = 0;
+                settingsIsScrolling = false;
+        	}
+        }
+        if(k == 0 && i >= -119 && i <= -101 && j >= 133 && j <= 154)
+        {
+        	if(this.tab2Open == 2)
+        	{
+        		tab2Open = 0;
+        	}
         }
     }
     
@@ -357,6 +416,18 @@ public class GuiAPressurePlate extends GuiContainer
     	else
     	{
     		enabled[i] = true;
+    	}
+    }
+    
+    public static void switchSettingsButton(int i)
+    {
+    	if(enabledSettings[i])
+    	{
+    		enabledSettings[i] = false;
+    	}
+    	else
+    	{
+    		enabledSettings[i] = true;
     	}
     }
     
@@ -387,8 +458,10 @@ public class GuiAPressurePlate extends GuiContainer
         }
         if(tab2Open == 0 || tab2Open == 2)
         {
-        	drawSettingsTab(j1, l1);
+        	drawSettingsTab(i, j);
         }
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.renderEngine.bindTexture(i1);
         drawTexturedModalRect(j1, l1, 0, 0, this.xSize, this.ySize);
         if(this.scrollHeight == 139)
         {
@@ -428,6 +501,10 @@ public class GuiAPressurePlate extends GuiContainer
         if(this.tabOpen == 1 && playerScrollHeight != 118)
         {
         	drawPlayerScrollBar();
+        }
+        if(this.tab2Open == 2 && settingsScrollHeight != 137)
+        {
+        	drawSettingsScrollBar();
         }
     	scaling = new ScaledResolution(game.gameSettings, game.displayWidth, game.displayHeight);
         clip(k, l);
@@ -552,7 +629,7 @@ public class GuiAPressurePlate extends GuiContainer
 
 
 
-            if(this.tabOpen == 0)
+            if(this.tabOpen == 0 && tab2Open == 0)
             {
 	            if (k2 < 0)
 	            {
@@ -602,7 +679,7 @@ public class GuiAPressurePlate extends GuiContainer
             	}
             }
         }
-        if(this.tabOpen == 1)
+        if(this.tabOpen == 1 && (tab2Open == 0 || tab2Open == 1))
         {
         	if (playerScrollHeight != 118)
             {
@@ -655,6 +732,168 @@ public class GuiAPressurePlate extends GuiContainer
 	            	}
 	            }  
             }
+        }
+        if(tab2Open == 2 && tabOpen == 0)
+        {
+        	if (settingsScrollHeight != 137)
+            {
+
+                if (Mouse.isButtonDown(0))
+                {
+                    if (i >= 243 && i < 247 && j >= 11 && j < 128)
+                    {
+                    	settingsIsScrolling = true;
+                    }
+                }
+                else
+                {
+                	settingsIsScrolling = false;
+                }
+
+                if (settingsIsScrolling)
+                {
+                	settingsScrollY = ((j - 20) * settingsListHeight) / (137 - (settingsScrollHeight >> 1));
+
+                    if (settingsScrollY < 0)
+                    {
+                    	settingsScrollY = 0;
+                    }
+
+                    if (settingsScrollY > settingsListHeight)
+                    {
+                    	settingsScrollY = settingsListHeight;
+                    }
+                }
+	            if(i < 0)
+	            {
+	            	if (k2 < 0)
+	            	{
+	            		settingsScrollY += 14;
+	            		
+	            		if (settingsScrollY > settingsListHeight)
+	            		{
+	            			settingsScrollY = settingsListHeight;
+	            		}
+	            	}
+	            	else if (k2 > 0)
+	            	{
+	            		settingsScrollY -= 14;
+	    	
+	            		if (settingsScrollY < 0)
+	            		{
+	            			settingsScrollY = 0;
+	            		}
+	            	}
+	            }  
+            }
+        }
+        if(tab2Open == 2)
+        {
+        	if (settingsScrollHeight != 137)
+            {
+
+                if (Mouse.isButtonDown(0))
+                {
+                    if (i >= -7 && i < -2 && j >= 16 && j < 153)
+                    {
+                    	settingsIsScrolling = true;
+                    }
+                }
+                else
+                {
+                	settingsIsScrolling = false;
+                }
+
+                if (settingsIsScrolling)
+                {
+                	settingsScrollY = ((j - 20) * settingsListHeight) / (137 - (settingsScrollHeight >> 1));
+
+                    if (settingsScrollY < 0)
+                    {
+                    	settingsScrollY = 0;
+                    }
+
+                    if (settingsScrollY > settingsListHeight)
+                    {
+                    	settingsScrollY = settingsListHeight;
+                    }
+                }
+            }
+        	
+        }
+        if(tab2Open == 2 && tabOpen == 1)
+        {
+	            if(i < 0)
+	            {
+	            	if (k2 < 0)
+	            	{
+	            		settingsScrollY += 14;
+	            		
+	            		if (settingsScrollY > settingsListHeight)
+	            		{
+	            			settingsScrollY = settingsListHeight;
+	            		}
+	            	}
+	            	else if (k2 > 0)
+	            	{
+	            		settingsScrollY -= 14;
+	    	
+	            		if (settingsScrollY < 0)
+	            		{
+	            			settingsScrollY = 0;
+	            		}
+	            	}
+	            }  
+            }
+        	if (playerScrollHeight != 118)
+            {
+                if (Mouse.isButtonDown(0))
+                {
+                    if (i >= 243 && i < 247 && j >= 11 && j < 128)
+                    {
+                        playerIsScrolling = true;
+                    }
+                }
+                else
+                {
+                    playerIsScrolling = false;
+                }
+
+                if (playerIsScrolling)
+                {
+                	playerScrollY = ((j - 20) * playerListHeight) / (118 - (playerScrollHeight >> 1));
+
+                    if (playerScrollY < 0)
+                    {
+                    	playerScrollY = 0;
+                    }
+
+                    if (playerScrollY > playerListHeight)
+                    {
+                    	playerScrollY = playerListHeight;
+                    }
+                }
+	            if(i >= 176)
+	            {
+	            	if (k2 < 0)
+	            	{
+	            		playerScrollY += 14;
+	            		
+	            		if (playerScrollY > playerListHeight)
+	            		{
+	            			playerScrollY = playerListHeight;
+	            		}
+	            	}
+	            	else if (k2 > 0)
+	            	{
+	            		playerScrollY -= 14;
+	    	
+	            		if (playerScrollY < 0)
+	            		{
+	            			playerScrollY = 0;
+	            		}
+	            	}
+	            }  
         }
     }
     
@@ -737,36 +976,114 @@ public class GuiAPressurePlate extends GuiContainer
     
     private void drawSettingsTab(int i, int j) 
     {
-    	if(false)
-    	{	
+		int k = (width - xSize) / 2;
+		int l = (height - ySize) / 2;
     	if(this.tab2Open == 0)
     	{
-	    	drawTexturedModalRect(i - 19, j + 133, 0, 0, 19, 17);
-	    	drawTexturedModalRect(i - 19, j + 150, 0, 161, 19, 7);
-	    	drawTexturedModalRect(i - 15, j + 137, 177, 95, 14, 14);
+	    	drawTexturedModalRect(k - 19, l + 133, 0, 0, 19, 17);
+	    	drawTexturedModalRect(k - 19, l + 150, 0, 161, 19, 7);
+	    	drawTexturedModalRect(k - 15, l + 137, 177, 95, 14, 14);
     	}
     	else
     	{
-	    	drawTexturedModalRect(i - 119, j + 133, 0, 0, 20, 17);
-	    	drawTexturedModalRect(i - 119, j + 150, 0, 161, 20, 7);
-	    	drawTexturedModalRect(i - 115, j + 137, 177, 95, 14, 14);
-			drawTexturedModalRect(i - 101, j + 2, 0, 0, 101, 4);
-			drawTexturedModalRect(i - 101, j + 6, 0, 4, 4, 128);
-			drawTexturedModalRect(i - 101, j + 154, 0, 161, 4, 6);
-			drawTexturedModalRect(i - 97, j + 155, 4, 162, 97, 4);
-			drawTexturedModalRect(i - 97, j + 6, 6, 9, 97, 13);
-			drawTexturedModalRect(i - 97, j + 19, 6, 19, 97, 130);
-			drawTexturedModalRect(i - 97, j + 149, 6, 154, 97, 6);
-			drawTexturedModalRect(i - 100, j + 135, 6, 19, 1, 18);
-			drawTexturedModalRect(i - 99, j + 134, 6, 6, 3, 12);
-			drawTexturedModalRect(i - 99, j + 146, 6, 6, 3, 8);
-			drawTexturedModalRect(i - 99, j + 134, 4, 2, 1, 1);
-			drawTexturedModalRect(i - 100, j + 135, 4, 2, 1, 1);			
-			drawTexturedModalRect(i - 100, j + 153, 4, 2, 1, 1);
-			drawTexturedModalRect(i - 10, j + 15, 160, 18, 10, 130);
-			drawTexturedModalRect(i - 10, j + 145, 160, 150, 10, 9);
-			drawTexturedModalRect(i - 7, j + 16, 130, 20, 5, 137);
-    	}
+	    	drawTexturedModalRect(k - 119, l + 133, 0, 0, 20, 17);
+	    	drawTexturedModalRect(k - 119, l + 150, 0, 161, 20, 7);
+	    	drawTexturedModalRect(k - 115, l + 137, 177, 95, 14, 14);
+			drawTexturedModalRect(k - 101, l + 2, 0, 0, 101, 4);
+			drawTexturedModalRect(k - 101, l + 6, 0, 4, 4, 128);
+			drawTexturedModalRect(k - 101, l + 154, 0, 161, 4, 6);
+			drawTexturedModalRect(k - 97, l + 155, 4, 162, 97, 4);
+			drawTexturedModalRect(k - 97, l + 6, 6, 9, 97, 13);
+			drawTexturedModalRect(k - 97, l + 19, 6, 19, 97, 130);
+			drawTexturedModalRect(k - 97, l + 149, 6, 154, 97, 6);
+			drawTexturedModalRect(k - 100, l + 135, 6, 19, 1, 18);
+			drawTexturedModalRect(k - 99, l + 134, 6, 6, 3, 12);
+			drawTexturedModalRect(k - 99, l + 146, 6, 6, 3, 8);
+			drawTexturedModalRect(k - 99, l + 134, 4, 2, 1, 1);
+			drawTexturedModalRect(k - 100, l + 135, 4, 2, 1, 1);			
+			drawTexturedModalRect(k - 100, l + 153, 4, 2, 1, 1);
+			drawTexturedModalRect(k - 10, l + 15, 160, 18, 10, 130);
+			drawTexturedModalRect(k - 10, l + 145, 160, 150, 10, 9);
+			this.lineUp();
+			this.settingsClip(k, l);
+			if(!game.theWorld.isRemote)
+			{
+				for (int j2 = 0; j2 < tpp.pps.buttons.size(); j2++)
+				{
+					int var1 = (Integer)cpp.tpp.pps.buttons.get(j2);
+					int k1 = k - 20;
+					int i2 = (l - 8 + 14 * (var1) + 20) - settingsScrollY;
+					if(cpp.tpp.getIsEnabled(j2))
+					{
+						drawTexturedModalRect(k1, i2, 176 + 8, 0, 8, 9);
+					}
+					else
+					{
+						drawTexturedModalRect(k1, i2, 176, 0, 8, 9);
+					}
+				}
+			}
+			else
+			{
+				for (int j2 = 0; j2 < tpp.pps.buttons.size(); j2++)
+				{
+					PPSettings.SettingsButton var1 = (PPSettings.SettingsButton)cpp.tpp.settings.get(j2);
+					int var2 = var1.line;
+					int k1 = k - 93;
+					int i2 = (l - 8 + 14 * (var2) + 10) - settingsScrollY;
+					if(this.tpp.getIsEnabled(j2))
+					{
+						drawTexturedModalRect(k1, i2, 176 + 8, 0, 8, 9);
+					}
+					else
+					{
+						drawTexturedModalRect(k1, i2, 176, 0, 8, 9);
+					}
+				}
+			}
+	        i -= k;
+	        j -= l;
+	        FontRenderer var3 = game.fontRenderer;
+	    	GL11.glDisable(GL11.GL_SCISSOR_TEST);
+	        var3.drawString("Settings", k - 95, l + 6, 0x404040);
+			this.settingsClip(k, l);
+	        for(int j2 = 0;j2 < tpp.pps.settingsLines.size();j2++)
+	        {
+	        	SettingsLine var1 = (SettingsLine)tpp.pps.settingsLines.get(j2);
+	        	int var2 = var1.line;
+	            int l1 = k - 94;
+	            int i1 = (l + 14 * (var2) + 15) - settingsScrollY;
+	            int var4 = 14737632;
+	            if(this.mouseInSettingsLine(i, j, j2))
+	            {
+		            var4 = 16777120;
+	            }
+	    		var3.drawString(var1.Text, l1, i1 - 12, var4);
+	        }
+	        int var2 = 0;
+	    	for(var2 = 0;var2 < tpp.pps.lines.size();var2++)
+	    	{
+	            int l1 = k - 94;
+	            int i1 = (l + 14 * (var2) + 17) - settingsScrollY;
+	    		var3.drawString((String)tpp.pps.lines.get(var2), l1, i1, 0xffffff);
+	    	}
+	    	for(var2 = 0;var2 < tpp.pps.buttons.size();var2++)
+	    	{
+				PPSettings.SettingsButton var4 = (PPSettings.SettingsButton)cpp.tpp.settings.get(var2);
+				int var5 = var4.line;
+	            int l1 = k - 83;
+	            int i1 = (l + 14 * (var5) + 3) - settingsScrollY;
+				if(tpp.getIsEnabled(var2))
+				{
+	    			var3.drawString(var4.TextEnabled, l1, i1, 0x404040);
+				}
+				else
+				{
+	    			var3.drawString(var4.TextDisabled, l1, i1, 0x404040);
+				}
+	            
+	    	}
+	    	GL11.glDisable(GL11.GL_SCISSOR_TEST);
     	}
 	}
     
@@ -807,6 +1124,16 @@ public class GuiAPressurePlate extends GuiContainer
         GL11.glScissor(k, l, i1, j1);
     }
     
+    private void settingsClip(int i, int j)
+    {
+        int k = (i - 95) * scaling.getScaleFactor();
+        int l = (j + 51) * scaling.getScaleFactor();
+        int i1 = 87 * scaling.getScaleFactor();
+        int j1 = 137 * scaling.getScaleFactor();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(k, l, i1, j1);
+    }
+    
     /**
      * checks if the mouse is in one of the mob buttons.
      * @param i
@@ -834,6 +1161,22 @@ public class GuiAPressurePlate extends GuiContainer
         int i1 = (-8 + 14 * (k) + 20) - playerScrollY;
         return i >= l - 1 && i < l + 9 && j >= i1 - 1 && j < i1 + 10;
     }
+    
+    public boolean mouseInSettingsRadioButton(int i, int j, int k)
+    {
+    	PPSettings.SettingsButton var1 = (PPSettings.SettingsButton)tpp.settings.get(k);
+        int l = - 93;
+        int i1 = (-17 + 14 * (var1.line) + 20) - settingsScrollY;
+        return i >= l && i < l + 8 && j >= i1 - 1 && j < i1 + 9;
+    }
+    
+    public boolean mouseInSettingsLine(int i, int j, int k)
+    {
+    	SettingsLine var1 = (SettingsLine)tpp.pps.settingsLines.get(k);
+        int l = - 93;
+        int i1 = (-17 + 14 * (var1.line) + 20) - settingsScrollY;
+        return i >= l - 2 && i < l + 86 && j >= i1 - 2 && j < i1 + 10;
+    }  
     
     private void Textclip1(int i, int j)
     {
@@ -979,6 +1322,30 @@ public class GuiAPressurePlate extends GuiContainer
 	        if(enabledPlayers.length != 0)
 	        {
 		        for (k++; k < (j + playerScrollHeight) - 1; k++)
+		        {
+		            drawTexturedModalRect(i, k, 176, 10, 5, 1);
+		        }
+		        
+		        drawTexturedModalRect(i, k, 176, 11, 5, 1);
+	        }
+    	}
+    }
+    
+    private void drawSettingsScrollBar()
+    {
+    	if(this.tpp.pps.lines.size() != 0)
+    	{
+	    	int j = 0;
+	        int i = ((width - xSize) / 2) - 7;
+	        if(settingsListHeight != 0)
+	        {
+	        	j = ((height - ySize) / 2) + 16 + (settingsScrollY * (137 - settingsScrollHeight)) / settingsListHeight;
+	        }
+	        int k = j;
+	        drawTexturedModalRect(i, k, 176, 9, 5, 1);
+	        if(this.tpp.pps.lines.size() != 0)
+	        {
+		        for (k++; k < (j + settingsScrollHeight) - 1; k++)
 		        {
 		            drawTexturedModalRect(i, k, 176, 10, 5, 1);
 		        }

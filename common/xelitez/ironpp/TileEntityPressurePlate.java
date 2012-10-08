@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import xelitez.ironpp.PPSettings.SettingsButton;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -47,11 +49,15 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 	public boolean activated = false;
 	private boolean check = false;
 	private boolean register = false;
+	public PPSettings pps;
+	public List settings;
+	public String password = "";
 	
 	public TileEntityPressurePlate()
     {
-		item = new ItemStack[1];
     	registerMobs();
+    	this.registerSettings();
+    	this.register = true;
     }
 	
 	public void setActivated(boolean b, World world, int par1, int par2, int par3)
@@ -175,21 +181,21 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         if(allowedMobs == null)
         {
         	allowedMobs = new PPList[mobs.size()];
+	        boolean[] bl;
+	        bl = new boolean[mobs.size()];
+	        for(int var1 = 0;var1 < mobs.size();var1++)
+	        {
+	        	if(allowedMobs[var1] == null)
+	        	{
+	        		allowedMobs[var1] = new PPList((String)mobs.get(var1));
+	        	}
+	        	else
+    			{
+    				bl[var1] = allowedMobs[var1].getEnabled();
+        			allowedMobs[var1] = new PPList((String)mobs.get(var1), bl[var1]);
+    			}
+    		}
         }
-        boolean[] bl;
-        bl = new boolean[mobs.size()];
-    	for(int var1 = 0;var1 < mobs.size();var1++)
-    	{
-    		if(allowedMobs[var1] == null)
-    		{
-    			allowedMobs[var1] = new PPList((String)mobs.get(var1));
-    		}
-    		else
-    		{
-        		bl[var1] = allowedMobs[var1].getEnabled();
-    			allowedMobs[var1] = new PPList((String)mobs.get(var1), bl[var1]);
-    		}
-    	}
     }
     
     /**
@@ -203,6 +209,24 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         {
         	addPlayer(username);
         }
+    }
+    
+    public void registerSettings()
+    {
+    	if(settings == null || settings.size() == 0)
+    	{
+	    	settings = new ArrayList();
+	    	pps = new PPSettings(this);
+	    	pps.addLineWithButton("Unlisted players are by default:", "Enabled", "Disabled", false, 0);
+	    	pps.addLineWithButton("Sound is:", "On", "Off", true, 1);
+	    	pps.addLineWithButton("Password", "Enabled", "Disabled", false, 2);
+	    	pps.addClickableLine("Set Password", 0);
+	    	pps.addLine("Note: if you have set no password but enabled password then just press enter if you get stuck on the gui screen");
+	    	for(int var1 = 0;var1 < pps.buttons.size();var1++)
+	    	{
+	    		settings.add(pps.buttons.get(var1));
+	    	}
+    	}
     }
     
     /**
@@ -357,6 +381,22 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     	return false;
     }
     
+    public boolean isPlayerInList(String username)
+    {
+    	for(int var1 = 0; var1 < allowedPlayers.size(); var1++)
+    	{
+    		PPPlayerList pp = (PPPlayerList)allowedPlayers.get(var1);
+    		if(username != null && pp != null)
+    		{
+    			if(pp.getUsername().matches(username))
+    			{
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
+    }
+    
     /**
      * a method to directly enable or disable a player.
      * @param username
@@ -374,16 +414,45 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     	}
     }
     
+    public void switchSetting(int index)
+    {
+		if(((SettingsButton)settings.get(index)).enabled)
+		{
+			((SettingsButton)settings.get(index)).enabled = false;
+		}
+		else
+		{
+			((SettingsButton)settings.get(index)).enabled = true;
+		}
+		if(index == 2)
+		{
+			PPRegistry.setUsesPassword(this, worldObj.provider.worldType, this.getIsEnabled(2));
+			PacketSendManager.sendUsesPasswordToClient(this.xCoord, this.yCoord, this.zCoord, this.worldObj.provider.worldType, this.getIsEnabled(2));
+		}
+		PacketSendManager.sendSettingsDataToClient(this);
+    }
+    
+    public void setSetting(int index, boolean b)
+    {
+		((SettingsButton)settings.get(index)).enabled = b;
+    }
+    
+	public boolean getIsEnabled(int index)
+	{	
+		return ((SettingsButton)settings.get(index)).enabled;
+	}
+    
     /**
      * loads the pressure plate data.
      */
     public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.readFromNBT(par1NBTTagCompound);
+        this.registerMobs();
+		this.registerSettings();
         try
         {
 	        NBTTagList var2 = par1NBTTagCompound.getTagList("Mobs");
-	        this.registerMobs();
 	    	for(int var3 = 0; var3 < mobs.size();var3++)
 	    	{
 	            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
@@ -396,7 +465,6 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         }
         catch(Exception e)
         {
-        	this.registerMobs();
         }
         try
         {
@@ -418,7 +486,6 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     	try
     	{
 	        NBTTagList var11 = par1NBTTagCompound.getTagList("Items");
-	        this.item = new ItemStack[this.getSizeInventory()];
 	
 	        for (int var12 = 0; var12 < var11.tagCount(); ++var12)
 	        {
@@ -434,6 +501,33 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     	{
     		FMLLog.log(Level.FINE, e, "no items found, adding...");
     		item = new ItemStack[1];
+    	}
+    	try
+    	{
+	        NBTTagList var11 = par1NBTTagCompound.getTagList("Settings");
+	        for(int var12 = 0;var12 < var11.tagCount();var12++)
+	        {
+	        	NBTTagCompound var14 = (NBTTagCompound)var11.tagAt(var12);
+	        	int var13 = var14.getByte("setting");
+	        	boolean var15 = var14.getBoolean("enabled");
+	        	if(var13 >= 0 && var13 < this.pps.buttons.size())
+	        	{
+	        		this.setSetting(var13, var15);
+	        	}
+	        }
+    	}
+    	catch(Exception e)
+    	{
+    		
+    	}
+    	try
+    	{
+    		password = par1NBTTagCompound.getString("password"); 
+    	}
+    	catch(Exception e)
+    	{
+    		FMLLog.log(Level.FINE, e, "no password setting found, adding...");
+    		password = "";
     	}
     	register = true;
         check = true;
@@ -480,8 +574,17 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
                 var8.appendTag(var10);
             }
         }
-
         par1NBTTagCompound.setTag("Items", var8);
+        NBTTagList var9 = new NBTTagList();
+        for (int var3 = 0;var3 < this.pps.buttons.size();var3++)
+        {
+            NBTTagCompound var4 = new NBTTagCompound();
+            var4.setByte("setting", (byte)var3);
+            var4.setBoolean("enabled", this.getIsEnabled(var3));
+            var9.appendTag(var4);
+        }
+        par1NBTTagCompound.setTag("Settings", var9);
+        par1NBTTagCompound.setString("password", password);
     }
 
 	@Override
@@ -532,25 +635,13 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 	@Override
 	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) 
 	{
-		PPRegistry.removePressurePlate(this, this.worldObj.provider.worldType);
         this.item[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
         {
             par2ItemStack.stackSize = this.getInventoryStackLimit();
         }
-        if(worldObj != null && (!this.worldObj.isRemote || FMLCommonHandler.instance().getSide().isServer()))
-        {
-        	if(item[par1] != null)
-        	{
-        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, item[par1].itemID, item[par1].getItemDamage(), item[par1].stackSize, this.worldObj.provider.worldType);
-        	}
-        	else
-        	{
-        		PacketSendManager.sendItemStackToClients(this.xCoord, yCoord, zCoord, 0, 0, 0, this.worldObj.provider.worldType);
-        	}
-        }
-        PPRegistry.addPressurePlate(this, this.worldObj.provider.worldType);
+        PPRegistry.setItem(this, this.worldObj.provider.worldType, this.item[0]);
         worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
 	}
 

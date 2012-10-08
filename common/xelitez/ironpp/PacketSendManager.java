@@ -263,7 +263,7 @@ public class PacketSendManager
 	 * data.(used for the gui)
 	 * @param tpp
 	 */
-	public static void requestPPDataFromServer(TileEntityPressurePlate tpp)
+	public static void requestPPDataFromServer(int xCoord, int yCoord, int zCoord)
 	{
     	ByteArrayOutputStream bytes = new ByteArrayOutputStream();
    		DataOutputStream data = new DataOutputStream(bytes);
@@ -271,7 +271,7 @@ public class PacketSendManager
    		{
         	data.writeBoolean(true);
    			data.writeShort(6);
-   			int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+   			int[] coords = {xCoord, yCoord, zCoord};
    			for(int var1 = 0;var1 < 3;var1++)
    			{
    				data.writeInt(coords[var1]);
@@ -288,6 +288,11 @@ public class PacketSendManager
    		packet.length = packet.data.length;
    		
    		sendPacketToServer(packet);
+	}
+	
+	public static void requestPPDataFromServer(TileEntityPressurePlate tpp)
+	{
+		requestPPDataFromServer(tpp.xCoord, tpp.yCoord, tpp.zCoord);
 	}
 	
 	public static void sendIsReadyToServer()
@@ -310,6 +315,147 @@ public class PacketSendManager
    		packet.length = packet.data.length;
    		
    		sendPacketToServer(packet);
+	}
+	
+	public static void sendSwitchSettingToServer(TileEntityPressurePlate tpp, int index)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(true);
+        	data.writeShort(8);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var1 = 0;var1 < 3;var1++)
+        	{
+        		data.writeInt(coords[var1]);
+        	}
+        	data.writeInt(index);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToServer(packet);
+	}
+	
+	public static void sendNewPasswordToServer(TileEntityPressurePlate tpp, String password)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(true);
+        	data.writeShort(9);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var1 = 0;var1 < 3;var1++)
+        	{
+        		data.writeInt(coords[var1]);
+        	}
+        	data.writeInt(password.length());
+        	data.writeChars(password);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToServer(packet);
+	}
+	
+	public static void sendPasswordToServer(TileEntityPressurePlate tpp, String password)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(true);
+        	data.writeShort(10);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var1 = 0;var1 < 3;var1++)
+        	{
+        		data.writeInt(coords[var1]);
+        	}
+        	data.writeInt(password.length());
+        	data.writeChars(password);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToServer(packet);
+	}
+	
+	public static void getPasswordFromServer(TileEntityPressurePlate tpp)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(true);
+        	data.writeShort(11);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var1 = 0;var1 < 3;var1++)
+        	{
+        		data.writeInt(coords[var1]);
+        	}
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToServer(packet);
+	}
+	
+	public static void sendOpenGuiPacketToServer(TileEntityPressurePlate tpp, int GuiID)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(true);
+        	data.writeShort(12);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var1 = 0;var1 < 3;var1++)
+        	{
+        		data.writeInt(coords[var1]);
+        	}
+        	data.writeInt(GuiID);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToServer(packet);
 	}
 	
 	/**
@@ -628,6 +774,234 @@ public class PacketSendManager
         packet.length = packet.data.length;
         
 		PacketDispatcher.sendPacketToPlayer(packet, player);
+	}
+	
+	public static void sendSwitchSettingButtonToClient(TileEntityPressurePlate tpp, int index)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(10);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var5 = 0;var5 < 3;var5++)
+        	{
+        		data.writeInt(coords[var5]);
+        	}
+        	data.writeInt(index);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToAllPlayers(packet);
+	}
+	
+	public static void sendSettingsDataToClient(TileEntityPressurePlate tpp)
+	{
+		ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes2);
+        try
+        {
+        	data.writeBoolean(false);
+        	data.writeShort(11);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var5 = 0;var5 < 3;var5++)
+        	{
+        		data.writeInt(coords[var5]);
+        	}
+        	data.writeInt(tpp.pps.buttons.size());
+        	for(int var6 = 0;var6 < tpp.pps.buttons.size();var6++)
+        	{
+        		data.writeBoolean(tpp.getIsEnabled(var6));
+        	}
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        Packet250CustomPayload packet2 = new Packet250CustomPayload();
+        packet2.channel = "IPP";
+        packet2.data = bytes2.toByteArray();
+        packet2.length = packet2.data.length;
+        
+        sendPacketToAllPlayers(packet2);
+	}
+	
+	public static void sendPasswordSetToClient(TileEntityPressurePlate tpp, Player player)
+	{
+		ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes2);
+        try
+        {
+        	data.writeBoolean(false);
+        	data.writeShort(12);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var5 = 0;var5 < 3;var5++)
+        	{
+        		data.writeInt(coords[var5]);
+        	}
+        	String name = ((EntityPlayer)player).username;
+        	data.writeInt(name.length());
+        	data.writeChars(name);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        Packet250CustomPayload packet2 = new Packet250CustomPayload();
+        packet2.channel = "IPP";
+        packet2.data = bytes2.toByteArray();
+        packet2.length = packet2.data.length;
+        
+        sendPacketToAllPlayers(packet2);
+	}
+	
+	public static void sendPasswordResponseToClient(TileEntityPressurePlate tpp, Boolean b, Player player)
+	{
+		ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes2);
+        try
+        {
+        	data.writeBoolean(false);
+        	data.writeShort(13);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var5 = 0;var5 < 3;var5++)
+        	{
+        		data.writeInt(coords[var5]);
+        	}
+        	data.writeBoolean(b);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        Packet250CustomPayload packet2 = new Packet250CustomPayload();
+        packet2.channel = "IPP";
+        packet2.data = bytes2.toByteArray();
+        packet2.length = packet2.data.length;
+        
+        PacketDispatcher.sendPacketToPlayer(packet2, player);
+	}
+	
+	public static void sendUsesPasswordToClient(int xCoord, int yCoord, int zCoord, int dimension, Boolean b)
+	{
+		ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes2);
+        try
+        {
+        	data.writeBoolean(false);
+        	data.writeShort(14);
+        	int[] coords = {xCoord, yCoord, zCoord};
+        	for(int var5 = 0;var5 < 3;var5++)
+        	{
+        		data.writeInt(coords[var5]);
+        	}
+        	data.writeInt(dimension);
+        	data.writeBoolean(b);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        Packet250CustomPayload packet2 = new Packet250CustomPayload();
+        packet2.channel = "IPP";
+        packet2.data = bytes2.toByteArray();
+        packet2.length = packet2.data.length;
+        
+        sendPacketToAllPlayers(packet2);
+	}
+	
+	public static void sendPasswordToClient(TileEntityPressurePlate tpp, Player player)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(15);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var6 = 0;var6 < 3;var6++)
+        	{
+        		data.writeInt(coords[var6]);
+        	}
+        	data.writeInt(tpp.password.length());
+        	data.writeChars(tpp.password);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        PacketDispatcher.sendPacketToPlayer(packet, player);
+	}
+	
+	public static void sendRemovePressurePlateToClient(TileEntityPressurePlate tpp, int dimension)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(16);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var6 = 0;var6 < 3;var6++)
+        	{
+        		data.writeInt(coords[var6]);
+        	}
+        	data.writeInt(dimension);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToAllPlayers(packet);
+	}
+	
+	public static void sendAddPressurePlateToClient(TileEntityPressurePlate tpp, int dimension)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(17);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var6 = 0;var6 < 3;var6++)
+        	{
+        		data.writeInt(coords[var6]);
+        	}
+        	data.writeInt(dimension);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToAllPlayers(packet);
 	}
 
 }

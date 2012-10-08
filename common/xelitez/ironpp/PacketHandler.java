@@ -5,8 +5,10 @@
  */
 package xelitez.ironpp;
 
+import xelitez.ironpp.PPSettings.SettingsButton;
 import xelitez.ironpp.client.GuiAPressurePlate;
 import xelitez.ironpp.client.GuiModifyPressurePlate;
+import xelitez.ironpp.client.GuiPassword;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -153,6 +155,48 @@ public class PacketHandler implements IPacketHandler
 					}
 					return;
 				}
+				if(ID == 11)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+					{
+						if(GuiAPressurePlate.tpp.settings == null)
+						{
+							GuiAPressurePlate.tpp.registerSettings();
+						}
+						int var2 = dat.readInt();
+						for(int var3 = 0;var3 < var2;var3++)
+						{
+							if(var3 <= GuiAPressurePlate.tpp.settings.size())
+							{
+								GuiAPressurePlate.tpp.setSetting(var3, dat.readBoolean());
+							}
+						}
+						GuiAPressurePlate.LineUpSettings();
+					}
+					return;
+				}
+				if(ID == 10)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
+					{
+						int var2 = dat.readInt();
+						if(GuiAPressurePlate.tpp.settings.size() >= var2)
+						{
+							GuiAPressurePlate.tpp.switchSetting(var2);
+						}
+					}
+					return;
+				}
 			}
 			if(FMLClientHandler.instance().getClient().currentScreen instanceof GuiModifyPressurePlate)
 			{
@@ -272,6 +316,117 @@ public class PacketHandler implements IPacketHandler
 					}
 					return;
 				}
+				if(ID == 10)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+					{
+						int index = dat.readInt();
+						if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.settings.size() >= index)
+						{
+							((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.switchSetting(index);
+						}
+					}
+					return;
+				}
+				if(ID == 11)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+					{
+						if(((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.settings == null)
+						{
+							((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.registerSettings();
+						}
+						int var2 = dat.readInt();
+						for(int var3 = 0;var3 < var2;var3++)
+						{
+							if(var3 <= ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.settings.size())
+							{
+								((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.setSetting(var3, dat.readBoolean());
+							}
+						}
+						((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).LineUpSettings();
+					}
+					return;
+				}
+			}
+			if(FMLClientHandler.instance().getClient().currentScreen instanceof GuiPassword)
+			{
+				if(ID == 12)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					int length = dat.readInt();
+					StringBuilder sb = new StringBuilder();
+					for(int var1 = 0;var1 < length;var1++)
+					{
+						sb.append(dat.readChar());
+					}
+					String name = sb.toString();
+					if(((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp != null && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.xCoord == coords[0] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.yCoord == coords[1] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.zCoord == coords[2])
+					{
+						if(name.matches(thePlayer.username))
+						{
+							GuiPassword gui = (GuiPassword)FMLClientHandler.instance().getClient().currentScreen;
+							gui.enterGui();
+						}
+					}
+					return;
+				}
+				if(ID == 13)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					boolean b = dat.readBoolean();
+					if(((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp != null && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.xCoord == coords[0] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.yCoord == coords[1] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.zCoord == coords[2])
+					{
+						GuiPassword gui = (GuiPassword)FMLClientHandler.instance().getClient().currentScreen;
+						if(b)
+						{
+							gui.enterGui();
+						}
+						else
+						{
+							gui.showText("Wrong Password!!!", 20);
+						}
+					}
+					return;
+				}
+				if(ID == 15)
+				{
+					int coords[]  = new int[3];
+					for(int var1 = 0;var1 < 3;var1++)
+					{
+						coords[var1] = dat.readInt();
+					}
+					int length = dat.readInt();
+					StringBuilder sb = new StringBuilder();
+					for(int var1 = 0; var1 < length;var1++)
+					{
+						sb.append(dat.readChar());
+					}
+					String password = sb.toString();
+					if(((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp != null && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.xCoord == coords[0] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.yCoord == coords[1] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.zCoord == coords[2])
+					{
+						((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).setPassword(password);
+					}
+					return;
+				}
 			}
 			if(ID == 7)
 			{
@@ -290,26 +445,27 @@ public class PacketHandler implements IPacketHandler
 				int stackSize = dat.readInt();
 				int itemDamage = dat.readInt();
 				int dimension = dat.readInt();
-				if(tpp != null && world.provider.worldType == dimension)
+				if(!PPRegistry.getContainsPressurePlate(coords[0], coords[1], coords[2], dimension))
 				{
-					if(itemId == 0 && stackSize == 0 & itemDamage == 0)
+					PPRegistry.addPressurePlate(coords[0], coords[1], coords[2], dimension, false, null);
+				}
+				if(itemId == 0 && stackSize == 0 & itemDamage == 0)
+				{
+					if(tpp != null)
 					{
-						PPRegistry.removePressurePlate(tpp, dimension);
 						tpp.item[0] = null;
-						PPRegistry.addPressurePlate(tpp, dimension);
-						world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
 					}
-					else
-					{
-						PPRegistry.removePressurePlate(tpp, dimension);
-						tpp.item[0] = new ItemStack(itemId, stackSize, itemDamage);
-						PPRegistry.addPressurePlate(tpp, dimension);
-						world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
-					}
+					PPRegistry.setItem(coords[0], coords[1], coords[2], dimension, null);
+					world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
 				}
 				else
 				{
-
+					if(tpp != null)
+					{
+						tpp.item[0] = new ItemStack(itemId, stackSize, itemDamage);
+					}
+					PPRegistry.setItem(coords[0], coords[1], coords[2], dimension, new ItemStack(itemId, stackSize, itemDamage));
+					world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
 				}
 				return;
 			}
@@ -331,13 +487,127 @@ public class PacketHandler implements IPacketHandler
 				{
 					tpp = (TileEntityPressurePlate)te;
 				}
-				tpp.activated = dat.readBoolean();
+				if(tpp != null)
+				{
+					tpp.activated = dat.readBoolean();
+				}
 				world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
 				return;
 			}
 			if(ID == 9)
 			{
 				PPRegistry.sendToServer = true;
+				return;
+			}
+			if(ID == 11)
+			{
+				int coords[]  = new int[3];
+				for(int var1 = 0;var1 < 3;var1++)
+				{
+					coords[var1] = dat.readInt();
+				}
+				TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+				TileEntityPressurePlate tpp = null;
+				if(te != null || te instanceof TileEntityPressurePlate)
+				{
+					tpp = (TileEntityPressurePlate)te;
+				}
+				if(tpp != null)
+				{
+					if(tpp.xCoord == coords[0] && tpp.yCoord == coords[1] && tpp.zCoord == coords[2])
+					{
+						if(tpp.settings == null)
+						{
+							tpp.registerSettings();
+						}
+						int var2 = dat.readInt();
+						for(int var3 = 0;var3 < var2;var3++)
+						{
+							if(var3 <= tpp.settings.size())
+							{
+								tpp.setSetting(var3, dat.readBoolean());
+							}
+						}
+					}
+				}
+				return;
+			}
+			if(ID == 12)
+			{
+				int coords[]  = new int[3];
+				for(int var1 = 0;var1 < 3;var1++)
+				{
+					coords[var1] = dat.readInt();
+				}
+				int length = dat.readInt();
+				StringBuilder sb = new StringBuilder();
+				for(int var1 = 0;var1 < length;var1++)
+				{
+					sb.append(dat.readChar());
+				}
+				String name = sb.toString();
+				return;
+			}
+			if(ID == 14)
+			{
+				int coords[]  = new int[3];
+				for(int var1 = 0;var1 < 3;var1++)
+				{
+					coords[var1] = dat.readInt();
+				}
+				TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+				TileEntityPressurePlate tpp = null;
+				if(te != null || te instanceof TileEntityPressurePlate)
+				{
+					tpp = (TileEntityPressurePlate)te;
+				}
+				int dimension = dat.readInt();
+				if(!PPRegistry.getContainsPressurePlate(coords[0], coords[1], coords[2], dimension))
+				{
+					PPRegistry.addPressurePlate(coords[0], coords[1], coords[2], dimension, false, null);
+				}
+				PPRegistry.setUsesPassword(coords[0], coords[1], coords[2], dimension, dat.readBoolean());
+				return;
+			}
+			if(ID == 16)
+			{
+				int coords[]  = new int[3];
+				for(int var1 = 0;var1 < 3;var1++)
+				{
+					coords[var1] = dat.readInt();
+				}
+				TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+				TileEntityPressurePlate tpp = null;
+				if(te != null || te instanceof TileEntityPressurePlate)
+				{
+					tpp = (TileEntityPressurePlate)te;
+				}
+				int dimension = dat.readInt();
+				if(tpp != null)
+				{
+					PPRegistry.removePressurePlate(tpp, dimension);
+				}
+				return;
+			}
+			if(ID == 17)
+			{
+				int coords[]  = new int[3];
+				for(int var1 = 0;var1 < 3;var1++)
+				{
+					coords[var1] = dat.readInt();
+				}
+				TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+				TileEntityPressurePlate tpp = null;
+				if(te != null || te instanceof TileEntityPressurePlate)
+				{
+					tpp = (TileEntityPressurePlate)te;
+				}
+				int dimension = dat.readInt();
+				if(tpp != null)
+				{
+					PPRegistry.addPressurePlate(tpp, dimension);
+				}
+				return;
 			}
 		}
 	}
@@ -482,12 +752,121 @@ public class PacketHandler implements IPacketHandler
    			{
    		        PacketSendManager.sendPressurePlateMobDataToClient(tpp);
    		        PacketSendManager.sendPressurePlatePlayerDataToClient(tpp);
+   		        PacketSendManager.sendSettingsDataToClient(tpp);
    			}
    			return;
 		}
 		if(ID == 7)
 		{
 			PPRegistry.loggedIn = true;
+		}
+		if(ID == 8)
+		{
+    		int coords[] = new int[3];
+    		for(int var1 = 0;var1 < 3;var1++)
+    		{
+    			coords[var1] = dat.readInt();
+    		}
+   			TileEntityPressurePlate tpp = null;
+   			if(world.getBlockTileEntity(coords[0], coords[1], coords[2]) instanceof TileEntityPressurePlate)
+   			{
+   				tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+   			}
+   			if(tpp != null)
+   			{
+   				int index = dat.readInt();
+   				tpp.switchSetting(index);
+   			}
+    		return;
+		}		
+		if(ID == 9)
+		{
+    		int coords[] = new int[3];
+    		for(int var1 = 0;var1 < 3;var1++)
+    		{
+    			coords[var1] = dat.readInt();
+    		}
+   			TileEntityPressurePlate tpp = null;
+   			if(world.getBlockTileEntity(coords[0], coords[1], coords[2]) instanceof TileEntityPressurePlate)
+   			{
+   				tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+   			}
+   			if(tpp != null)
+   			{
+   				int length = dat.readInt();
+   				StringBuilder sb = new StringBuilder();
+   				for(int var1 = 0;var1 < length;var1++)
+   				{
+   					sb.append(dat.readChar());
+   				}
+   				String s = sb.toString();
+   				tpp.password = s;
+   				PacketSendManager.sendPasswordSetToClient(tpp, player);
+   			}
+    		return;
+		}
+		if(ID == 10)
+		{
+    		int coords[] = new int[3];
+    		for(int var1 = 0;var1 < 3;var1++)
+    		{
+    			coords[var1] = dat.readInt();
+    		}
+   			TileEntityPressurePlate tpp = null;
+   			if(world.getBlockTileEntity(coords[0], coords[1], coords[2]) instanceof TileEntityPressurePlate)
+   			{
+   				tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+   			}
+   			if(tpp != null)
+   			{
+   				int length = dat.readInt();
+   				StringBuilder sb = new StringBuilder();
+   				for(int var1 = 0;var1 < length;var1++)
+   				{
+   					sb.append(dat.readChar());
+   				}
+   				String s = sb.toString();
+   				boolean b = tpp.password.matches(s);
+   				PacketSendManager.sendPasswordResponseToClient(tpp, b, player);
+   			}
+    		return;
+		}
+		if(ID == 11)
+		{
+    		int coords[] = new int[3];
+    		for(int var1 = 0;var1 < 3;var1++)
+    		{
+    			coords[var1] = dat.readInt();
+    		}
+   			TileEntityPressurePlate tpp = null;
+   			if(world.getBlockTileEntity(coords[0], coords[1], coords[2]) instanceof TileEntityPressurePlate)
+   			{
+   				tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+   			}
+   			if(tpp != null)
+   			{
+   				PacketSendManager.sendPasswordToClient(tpp, player);
+   			}
+    		return;
+		}
+		if(ID == 12)
+		{
+    		int coords[] = new int[3];
+    		for(int var1 = 0;var1 < 3;var1++)
+    		{
+    			coords[var1] = dat.readInt();
+    		}
+    		int GuiID = dat.readInt();
+   			TileEntityPressurePlate tpp = null;
+   			if(world.getBlockTileEntity(coords[0], coords[1], coords[2]) instanceof TileEntityPressurePlate)
+   			{
+   				tpp = (TileEntityPressurePlate)world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+   			}
+   			if(tpp != null)
+   			{
+   				thePlayer.openGui(IronPP.instance, GuiID, world, tpp.xCoord, tpp.yCoord, tpp.zCoord);
+   			}
+    		return;
 		}
 	}
 

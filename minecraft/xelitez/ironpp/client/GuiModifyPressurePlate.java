@@ -135,6 +135,7 @@ public class GuiModifyPressurePlate extends GuiScreen
 	            {
 	            	PacketSendManager.sendGuiReloaderToServer(((GuiAPressurePlate)this.parentGuiScreen).tpp);
 	            	((GuiAPressurePlate)this.parentGuiScreen).lineUp();
+	            	PacketSendManager.requestPPDataFromServer(((GuiAPressurePlate)this.parentGuiScreen).tpp);
 	            	this.duration = 0;
 	                this.mc.displayGuiScreen(this.parentGuiScreen);
 	            }
@@ -168,7 +169,6 @@ public class GuiModifyPressurePlate extends GuiScreen
     protected void keyTyped(char par1, int par2)
     {
         this.theGuiTextField.textboxKeyTyped(par1, par2);
-        ((GuiButton)this.controlList.get(0)).enabled = this.theGuiTextField.getText().trim().length() > 0;
 
         if (par1 == 13)
         {

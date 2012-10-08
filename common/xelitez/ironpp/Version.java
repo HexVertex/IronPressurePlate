@@ -3,8 +3,8 @@ package xelitez.ironpp;
 public class Version 
 {
 	public static int majorVersion = 3;
-	public static int minorVersion = 1;
-	public static int majorBuild = 4;
+	public static int minorVersion = 2;
+	public static int majorBuild = 0;
 	public static int minorBuild = 0;
 	public static String MC = "MC:1.3.2";
 	

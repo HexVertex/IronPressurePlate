@@ -20,14 +20,28 @@ public class CommonProxy implements IGuiHandler
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
-		if(te != null && te instanceof TileEntityPressurePlate)
+		switch(ID)	
 		{
-			TileEntityPressurePlate tpp = (TileEntityPressurePlate) te;
-			return new ContainerPressurePlate(tpp, player.inventory);
-		}
-		else
-		{
-			return null;
+		case 0:
+			if(te != null && te instanceof TileEntityPressurePlate)
+			{
+				TileEntityPressurePlate tpp = (TileEntityPressurePlate) te;
+				return new ContainerPressurePlate(tpp, player.inventory);
+			}
+			else
+			{
+				return null;
+			}
+		default:
+			if(te != null && te instanceof TileEntityPressurePlate)
+			{
+				TileEntityPressurePlate tpp = (TileEntityPressurePlate) te;
+				return new ContainerPressurePlate(tpp, player.inventory);
+			}
+			else
+			{
+				return null;
+			}
 		}
 	}
 

@@ -7,7 +7,10 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.Block;
 import net.minecraft.src.ChunkCache;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.EnumSkyBlock;
 import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NetHandler;
@@ -38,31 +41,29 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		pp = this;
 	}
 	
-	public static void addPressurePlate(TileEntityPressurePlate tpp, int dimension)
+	public static void addPressurePlate(int par1, int par2, int par3, int dimension, boolean b, ItemStack item)
 	{
 		int[] data = new int[3];
-		if(tpp.getStackInSlot(0) != null)
-		{
-			data[0] = tpp.getStackInSlot(0).itemID;
-			data[1] = tpp.getStackInSlot(0).getItemDamage();
-			data[2] = tpp.getStackInSlot(0).stackSize;
-		}
-		else
-		{
-			data[0] = 0;
-			data[1] = 0;
-			data[2] = 0;
-		}
 		for(int var1 = 0;var1 < PressurePlates.size();var1++)
 		{
 			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
-			if(tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.xCoord && tempdata.dimension == dimension)
+			if(tempdata.xCoord == par1 && tempdata.yCoord == par2 && tempdata.zCoord == par3 && tempdata.dimension == dimension)
 			{
 				return;
 			}
 		}
-		PressurePlates.add(new RegistrySettings(tpp.xCoord, tpp.yCoord, tpp.zCoord, data[0], data[1], data[2], tpp.worldObj.provider.worldType));
+		PressurePlates.add(new RegistrySettings(par1, par2, par3, item, dimension, b));
 		return;
+	}
+	
+	public static void addPressurePlate(TileEntityPressurePlate tpp, int dimension)
+	{
+		boolean b = false;
+		if(tpp.settings != null)
+		{
+			b = tpp.getIsEnabled(2);
+		}
+		addPressurePlate(tpp.xCoord, tpp.yCoord, tpp.zCoord, dimension, b, tpp.getStackInSlot(0));
 	}
 	
 	public static void removePressurePlate(TileEntityPressurePlate tpp, int dimension)
@@ -78,12 +79,12 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		}
 	}
 
-	public static boolean getContainsPressurePlate(TileEntityPressurePlate tpp, int dimension)
+	public static boolean getContainsPressurePlate(int i, int j, int k, int dimension)
 	{
 		for(int var1 = 0;var1 < PressurePlates.size();var1++)
 		{
 			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
-			if(tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.xCoord && tempdata.dimension == dimension)
+			if(tempdata.xCoord == i && tempdata.yCoord == j && tempdata.zCoord == k && tempdata.dimension == dimension)
 			{
 				return true;
 			}
@@ -91,26 +92,94 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		return false;
 	}
 	
-	public static ItemStack getItem(TileEntityPressurePlate tpp, int dimension)
+	public static boolean getContainsPressurePlate(TileEntityPressurePlate tpp, int dimension)
 	{
-		World world;
+		return getContainsPressurePlate(tpp.xCoord, tpp.yCoord, tpp.zCoord, dimension);
+	}
+	
+	public static ItemStack getItem(int x, int y, int z, int dimension)
+	{
 		for(int var1 = 0;var1 < PressurePlates.size();var1++)
 		{
 			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
-			if(tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.zCoord && dimension == tempdata.dimension)
+			if(tempdata.xCoord == x && tempdata.yCoord == y && tempdata.zCoord == z && dimension == tempdata.dimension)
 			{
-				if(tempdata.itemId == 0 && tempdata.stackSize == 0 && tempdata.itemDamage == 0)
-				{
-					return null;
-				}
-				else
-				{
-					return new ItemStack(tempdata.itemId, tempdata.stackSize, tempdata.itemDamage);
-				}
+				return tempdata.item;
 			}
 		}
 		return null;
 	}
+	
+	public static ItemStack getItem(TileEntityPressurePlate tpp, int dimension)
+	{
+		return getItem(tpp.xCoord, tpp.yCoord, tpp.zCoord, dimension);
+	}
+	
+	public static boolean getUsesPassword(int x, int y, int z, int dimension)
+	{
+		for(int var1 = 0;var1 < PressurePlates.size();var1++)
+		{
+			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
+			if(tempdata.xCoord == x && tempdata.yCoord == y && tempdata.zCoord == z && dimension == tempdata.dimension)
+			{
+				return tempdata.usesPassword;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean getUsesPassword(TileEntityPressurePlate tpp, int dimension)
+	{
+		return getUsesPassword(tpp.xCoord, tpp.yCoord, tpp.zCoord, dimension);
+	}
+	
+	public static void setUsesPassword(int x, int y, int z, int dimension, boolean b)
+	{
+		for(int var1 = 0;var1 < PressurePlates.size();var1++)
+		{
+			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
+			if(tempdata.xCoord == x && tempdata.yCoord == y && tempdata.zCoord == z && dimension == tempdata.dimension)
+			{
+				tempdata.usesPassword = b;
+				return;
+			}
+		}
+	}
+	
+	public static void setUsesPassword(TileEntityPressurePlate tpp, int dimension, boolean b)
+	{
+		setUsesPassword(tpp.xCoord, tpp.yCoord, tpp.zCoord, dimension, b);
+	}
+	
+	public static void setItem(int x, int y, int z, int dimension,ItemStack item)
+	{
+		for(int var1 = 0;var1 < PressurePlates.size();var1++)
+		{
+			RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
+			if(tempdata.xCoord == x && tempdata.yCoord == y && tempdata.zCoord == z && dimension == tempdata.dimension)
+			{
+				tempdata.item = item;
+				if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+				{
+					if(item != null)
+					{
+						PacketSendManager.sendItemStackToClients(x, y, z, item.itemID, item.getItemDamage(), item.stackSize, dimension);
+					}
+					else
+					{
+						PacketSendManager.sendItemStackToClients(x, y, z, 0, 0, 0, dimension);
+					}
+				}
+				return;
+			}
+		}	
+	}
+	
+	public static void setItem(TileEntityPressurePlate tpp, int dimension, ItemStack item)
+	{
+		setItem(tpp.xCoord, tpp.yCoord, tpp.zCoord, dimension, item);
+	}
+	
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler,
 			NetworkManager manager) 
@@ -161,12 +230,20 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) 
 	{
-		if(loggedIn && send && ((this.world != null && !this.world.isRemote) || FMLCommonHandler.instance().getSide().isServer()))
+		if(loggedIn && send)
 		{
 			for(int var1 = 0;var1 < PressurePlates.size();var1++)
 			{
 				RegistrySettings data = (RegistrySettings)PressurePlates.get(var1);
-				PacketSendManager.sendItemStackToClients(data.xCoord, data.yCoord, data.zCoord, data.itemId, data.itemDamage, data.stackSize, data.dimension);
+				if(data.item != null)
+				{
+					PacketSendManager.sendItemStackToClients(data.xCoord, data.yCoord, data.zCoord, data.item.itemID, data.item.getItemDamage(), data.item.stackSize, data.dimension);
+				}
+				else
+				{
+					PacketSendManager.sendItemStackToClients(data.xCoord, data.yCoord, data.zCoord, 0, 0, 0, data.dimension);
+				}
+				PacketSendManager.sendUsesPasswordToClient(data.xCoord, data.yCoord, data.zCoord, data.dimension, data.usesPassword);
 			}
 			loggedIn = false;
 			send = false;
@@ -197,20 +274,18 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 		public int xCoord;
 		public int yCoord;
 		public int zCoord;
-		public int itemId;
-		public int itemDamage;
-		public int stackSize;
+		public ItemStack item;
 		public int dimension;
+		public boolean usesPassword;
 		
-		public RegistrySettings(int par1, int par2, int par3, int par4, int par5, int par6, int par7)
+		public RegistrySettings(int par1, int par2, int par3, ItemStack item, int par7, boolean usesPassword)
 		{
 			this.xCoord = par1;
 			this.yCoord = par2;
 			this.zCoord = par3;
-			this.itemId = par4;
-			this.itemDamage = par5;
-			this.stackSize = par6;
+			this.item = item;
 			this.dimension = par7;
+			this.usesPassword = usesPassword;
 		}
 	}
 

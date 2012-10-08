@@ -15,13 +15,28 @@ public class ClientProxy extends CommonProxy
 			int x, int y, int z) 
 	{
 		TileEntity te = world.getBlockTileEntity(x, y, z);
-		if(te != null && te instanceof TileEntityPressurePlate)
+		switch(ID)
 		{
-			return new GuiAPressurePlate((TileEntityPressurePlate)te);
-		}
-		else
-		{
-			return null;
+		case 0:
+			if(te != null && te instanceof TileEntityPressurePlate)
+			{
+				return new GuiAPressurePlate((TileEntityPressurePlate)te);
+			}
+			else
+			{
+				return null;
+			}
+		case 1:
+			if(te != null && te instanceof TileEntityPressurePlate)
+			{
+				return new GuiPassword((TileEntityPressurePlate)te, false, x, y, z);
+			}
+			else
+			{
+				return null;
+			}
+		default:
+			return null;	
 		}
 	}
 	

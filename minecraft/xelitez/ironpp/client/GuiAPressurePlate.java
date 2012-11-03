@@ -243,6 +243,7 @@ public class GuiAPressurePlate extends GuiContainer
      */
     protected void mouseClicked(int i, int j, int k)
     {
+        boolean var9 = k == this.mc.gameSettings.keyBindPickBlock.keyCode + 100;
         if (k == 0 || k == 1)
         {
             Slot var4 = this.getSlotAtPosition(i, j);
@@ -263,8 +264,15 @@ public class GuiAPressurePlate extends GuiContainer
 
             if (var8 != -1)
             {
-                boolean var9 = var8 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
-                this.handleMouseClick(var4, var8, k, var9);
+                if (var9)
+                {
+                    this.handleMouseClick(var4, var8, k, 3);
+                }
+                else
+                {
+                    boolean var10 = var8 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
+                    this.handleMouseClick(var4, var8, k, var10 ? 1 : 0);
+                }
             }
         }
         int l = (width - xSize) / 2;
@@ -654,7 +662,7 @@ public class GuiAPressurePlate extends GuiContainer
             {
             	if(i >= 257 && i <= 262 && j >= 125 && j <= 130)
             	{
-            		this.func_74190_a("Add/Remove Players", k + 167, l + 149);
+            		this.drawCreativeTabHoveringText("Add/Remove Players", k + 167, l + 149);
             	}
             	if(i < 176 && i >= 0)
             	{
@@ -1205,7 +1213,7 @@ public class GuiAPressurePlate extends GuiContainer
     /**
      * draws the texts of the gui.
      */
-    protected void drawGuiContainerForegroundLayer()
+    protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
     	RenderHelper.disableStandardItemLighting();
     	FontRenderer var1 = game.fontRenderer;

@@ -48,9 +48,9 @@ import net.minecraftforge.common.Property;
 /**
  * Mod registration stuff.
  */
-@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.2")
+@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.2.1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, 
-	versionBounds = "[3.2]",
+	versionBounds = "[3.2.1]",
 	channels = {"IPP"},
 	packetHandler = xelitez.ironpp.PacketHandler.class,
 	connectionHandler = xelitez.ironpp.PPRegistry.class)
@@ -93,9 +93,9 @@ public class IronPP
     	try
     	{
     		P.load(); //loads the configuration file.
-    		BlockPPiD = P.getOrCreateBlockIdProperty("PressurePlateIronId", defaultPressurePlateIronId).getInt(150); //gets the ID that's currently set in the configuration file or sets it with the default.
-    		BlockAPPiD = P.getOrCreateBlockIdProperty("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(151);	
-    		Property PressurePlateIronTexture = P.getOrCreateBooleanProperty("PressurePlateIronCustomTexture", P.CATEGORY_GENERAL, false); //gets the boolean if the user wants to use a custom texture.
+    		BlockPPiD = P.getBlock("PressurePlateIronId", defaultPressurePlateIronId).getInt(150); //gets the ID that's currently set in the configuration file or sets it with the default.
+    		BlockAPPiD = P.getBlock("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(151);	
+    		Property PressurePlateIronTexture = P.get("PressurePlateIronCustomTexture", P.CATEGORY_GENERAL, false); //gets the boolean if the user wants to use a custom texture.
     		PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
     		customTexture = PressurePlateIronTexture.getBoolean(false);
     	}

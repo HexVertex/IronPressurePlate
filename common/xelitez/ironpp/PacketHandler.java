@@ -14,8 +14,8 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.INetworkManager;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.NetworkManager;
 import net.minecraft.src.PPManager;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
@@ -38,7 +38,7 @@ public class PacketHandler implements IPacketHandler
 	 * how to handle the packets.
 	 */
 	@Override
-	public void onPacketData(NetworkManager manager,
+	public void onPacketData(INetworkManager manager,
 			Packet250CustomPayload packet, Player player) 
 	{
 		ByteArrayDataInput dat = ByteStreams.newDataInput(packet.data);
@@ -73,7 +73,7 @@ public class PacketHandler implements IPacketHandler
 	 * @param dat		the data that it can read from
 	 * @param ID		the packet ID
 	 */
-	public void handleClientPacket(NetworkManager manager, Packet250CustomPayload packet, Player player, ByteArrayDataInput dat, short ID)
+	public void handleClientPacket(INetworkManager manager, Packet250CustomPayload packet, Player player, ByteArrayDataInput dat, short ID)
 	{
 		EntityPlayer thePlayer = (EntityPlayer)player;
 		World world = thePlayer.worldObj;
@@ -427,6 +427,16 @@ public class PacketHandler implements IPacketHandler
 					}
 					return;
 				}
+				if(ID == 18)
+				{
+					int guiID = dat.readInt();
+					if(FMLClientHandler.instance().getClient().currentScreen != null && FMLClientHandler.instance().getClient().currentScreen instanceof GuiPassword)
+					{
+						GuiPassword gui = (GuiPassword)FMLClientHandler.instance().getClient().currentScreen;
+						gui.set = guiID;
+					}
+					return;
+				}
 			}
 			if(ID == 7)
 			{
@@ -621,7 +631,7 @@ public class PacketHandler implements IPacketHandler
 	 * @param dat
 	 * @param ID
 	 */
-	public void handleServerPacket(NetworkManager manager, Packet250CustomPayload packet, Player player, ByteArrayDataInput dat, short ID)
+	public void handleServerPacket(INetworkManager manager, Packet250CustomPayload packet, Player player, ByteArrayDataInput dat, short ID)
 	{
 		EntityPlayer thePlayer = (EntityPlayer)player;
 		World world = thePlayer.worldObj;
@@ -867,6 +877,15 @@ public class PacketHandler implements IPacketHandler
    				thePlayer.openGui(IronPP.instance, GuiID, world, tpp.xCoord, tpp.yCoord, tpp.zCoord);
    			}
     		return;
+		}
+		if(ID == 13)
+		{
+    		int coords[] = new int[3];
+    		for(int var1 = 0;var1 < 3;var1++)
+    		{
+    			coords[var1] = dat.readInt();
+    		}
+    		world.setBlockWithNotify(coords[0], coords[1], coords[2], 0);
 		}
 	}
 

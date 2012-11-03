@@ -458,6 +458,33 @@ public class PacketSendManager
         sendPacketToServer(packet);
 	}
 	
+	public static void sendRemoveBlockPacketToServer(TileEntityPressurePlate tpp)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(true);
+        	data.writeShort(13);
+        	int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+        	for(int var1 = 0;var1 < 3;var1++)
+        	{
+        		data.writeInt(coords[var1]);
+        	}
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        sendPacketToServer(packet);
+	}
+	
 	/**
 	 * send a packet to all players that closes
 	 * the gui of the players if the gui of the
@@ -1002,6 +1029,29 @@ public class PacketSendManager
         packet.length = packet.data.length;
         
         sendPacketToAllPlayers(packet);
+	}
+	
+	public static void sendPPIntToClient(int i, EntityPlayer player)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        try
+        {
+        	data.writeBoolean(false);
+            data.writeShort(18);
+        	data.writeInt(i);
+        }
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        PacketDispatcher.sendPacketToPlayer(packet, (Player)player);
 	}
 
 }

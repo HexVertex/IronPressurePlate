@@ -104,15 +104,15 @@ public class BlockAPressurePlate extends BlockContainer
     		tpp.registerPlayer(((EntityPlayer)par5EntityLiving).username);
             if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
             {
-            	PacketSendManager.sendAddPressurePlateToClient(tpp, tpp.worldObj.provider.worldType);
-            	PacketSendManager.sendUsesPasswordToClient(par2, par3, par4, par1World.provider.worldType, tpp.getIsEnabled(2));
+            	PacketSendManager.sendAddPressurePlateToClient(tpp, tpp.worldObj.provider.dimensionId);
+            	PacketSendManager.sendUsesPasswordToClient(par2, par3, par4, par1World.provider.dimensionId, tpp.getIsEnabled(2));
             	if(tpp.item[0] != null)
             	{
-            		PacketSendManager.sendItemStackToClients(par2, par3, par4, tpp.item[0].itemID, tpp.item[0].getItemDamage(), tpp.item[0].stackSize, par1World.provider.worldType);
+            		PacketSendManager.sendItemStackToClients(par2, par3, par4, tpp.item[0].itemID, tpp.item[0].getItemDamage(), tpp.item[0].stackSize, par1World.provider.dimensionId);
             	}
             	else
             	{
-            		PacketSendManager.sendItemStackToClients(par2, par3, par4, 0, 0, 0, par1World.provider.worldType);
+            		PacketSendManager.sendItemStackToClients(par2, par3, par4, 0, 0, 0, par1World.provider.dimensionId);
             	}
             }
     	}
@@ -308,10 +308,10 @@ public class BlockAPressurePlate extends BlockContainer
                     }
                 }
             }
-            PPRegistry.removePressurePlate(var7, var7.worldObj.provider.worldType);
+            PPRegistry.removePressurePlate(var7, var7.worldObj.provider.dimensionId);
             if(!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
             {
-            	PacketSendManager.sendRemovePressurePlateToClient(var7, var7.worldObj.provider.worldType);
+            	PacketSendManager.sendRemovePressurePlateToClient(var7, var7.worldObj.provider.dimensionId);
             }
         }
 
@@ -375,9 +375,10 @@ public class BlockAPressurePlate extends BlockContainer
     	}
     	if(FMLCommonHandler.instance().getSide().isServer())
     	{
-    		if(PPRegistry.getUsesPassword((TileEntityPressurePlate)te, par1World.provider.worldType))
+    		if(PPRegistry.getUsesPassword((TileEntityPressurePlate)te, par1World.provider.dimensionId))
     		{
             	par5EntityPlayer.openGui(IronPP.instance, 1, par1World, par2, par3, par4);
+    			PacketSendManager.sendPPIntToClient(1, par5EntityPlayer);
             	return true;
     		}
     		else
@@ -390,9 +391,10 @@ public class BlockAPressurePlate extends BlockContainer
     	{
         	return true;
     	}
-		if(PPRegistry.getUsesPassword((TileEntityPressurePlate)te, par1World.provider.worldType))
+		if(PPRegistry.getUsesPassword((TileEntityPressurePlate)te, par1World.provider.dimensionId))
 		{
         	par5EntityPlayer.openGui(IronPP.instance, 1, par1World, par2, par3, par4);
+			PacketSendManager.sendPPIntToClient(1, par5EntityPlayer);
         	return true;
 		}
 		else
@@ -406,7 +408,7 @@ public class BlockAPressurePlate extends BlockContainer
     public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
 		World world = FMLClientHandler.instance().getClient().theWorld;
-		ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.worldType);
+		ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.dimensionId);
 		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
 		{
 			return this.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
@@ -418,7 +420,7 @@ public class BlockAPressurePlate extends BlockContainer
     public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
 		World world = FMLClientHandler.instance().getClient().theWorld;
-		ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.worldType);
+		ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.dimensionId);
 		if(item != null && item.itemID != IronPP.APressurePlateIron.blockID)
 		{
 			return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
@@ -426,6 +428,30 @@ public class BlockAPressurePlate extends BlockContainer
         return super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
     }
     
-    
-
+    @Override
+    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) 
+    {
+    	TileEntity te = world.getBlockTileEntity(x, y, z);
+    	if(te != null && te instanceof TileEntityPressurePlate)
+    	{
+    		TileEntityPressurePlate tpp = (TileEntityPressurePlate)te;
+    		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+    		{
+    			if(tpp.getIsEnabled(3) && !player.capabilities.isCreativeMode)
+    			{
+    				player.openGui(IronPP.instance, 1, world, x, y, z);
+    				PacketSendManager.sendPPIntToClient(2, player);
+    			}
+    			else
+    			{
+    				return world.setBlockWithNotify(x, y, z, 0);
+    			}
+    		}
+    		else
+    		{
+    			return false;
+    		}
+    	}
+        return true;
+    }
 }

@@ -81,9 +81,9 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     {
     	if(this.xCoord != 0 && this.yCoord != 0 && this.zCoord != 0 && register && this.worldObj != null)
     	{
-    		if(!PPRegistry.getContainsPressurePlate(this, this.worldObj.provider.worldType))
+    		if(!PPRegistry.getContainsPressurePlate(this, this.worldObj.provider.dimensionId))
     		{
-    			PPRegistry.addPressurePlate(this, this.worldObj.provider.worldType);
+    			PPRegistry.addPressurePlate(this, this.worldObj.provider.dimensionId);
     		}
     		register = false;
     	}
@@ -221,6 +221,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 	    	pps.addLineWithButton("Sound is:", "On", "Off", true, 1);
 	    	pps.addLineWithButton("Password", "Enabled", "Disabled", false, 2);
 	    	pps.addClickableLine("Set Password", 0);
+	    	pps.addLineWithButton("Ask password on break", "Yes", "No", false, 3);
 	    	pps.addLine("Note: if you have set no password but enabled password then just press enter if you get stuck on the gui screen");
 	    	for(int var1 = 0;var1 < pps.buttons.size();var1++)
 	    	{
@@ -426,8 +427,8 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 		}
 		if(index == 2)
 		{
-			PPRegistry.setUsesPassword(this, worldObj.provider.worldType, this.getIsEnabled(2));
-			PacketSendManager.sendUsesPasswordToClient(this.xCoord, this.yCoord, this.zCoord, this.worldObj.provider.worldType, this.getIsEnabled(2));
+			PPRegistry.setUsesPassword(this, worldObj.provider.dimensionId, this.getIsEnabled(2));
+			PacketSendManager.sendUsesPasswordToClient(this.xCoord, this.yCoord, this.zCoord, this.worldObj.provider.dimensionId, this.getIsEnabled(2));
 		}
 		PacketSendManager.sendSettingsDataToClient(this);
     }
@@ -641,7 +642,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         {
             par2ItemStack.stackSize = this.getInventoryStackLimit();
         }
-        PPRegistry.setItem(this, this.worldObj.provider.worldType, this.item[0]);
+        PPRegistry.setItem(this, this.worldObj.provider.dimensionId, this.item[0]);
         worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
 	}
 

@@ -15,7 +15,7 @@ import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NetHandler;
 import net.minecraft.src.NetLoginHandler;
-import net.minecraft.src.NetworkManager;
+import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet1Login;
 import net.minecraft.src.Tessellator;
 import net.minecraft.src.World;
@@ -182,7 +182,7 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 	
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler,
-			NetworkManager manager) 
+			INetworkManager manager) 
 	{
 		send = true;
 		PacketSendManager.SendIsReadyToClient(player);
@@ -190,34 +190,34 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 
 	@Override
 	public String connectionReceived(NetLoginHandler netHandler,
-			NetworkManager manager) {
+			INetworkManager manager) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, String server,
-			int port, NetworkManager manager) {
+			int port, INetworkManager manager) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void connectionOpened(NetHandler netClientHandler,
-			MinecraftServer server, NetworkManager manager) {
+			MinecraftServer server, INetworkManager manager) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void connectionClosed(NetworkManager manager) {
+	public void connectionClosed(INetworkManager manager) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void clientLoggedIn(NetHandler clientHandler,
-			NetworkManager manager, Packet1Login login) 
+			INetworkManager manager, Packet1Login login) 
 	{	
 	}
 

@@ -91,13 +91,13 @@ public class ContainerPressurePlate extends Container
 		return this.tpp.isUseableByPlayer(var1);
 	}
 	
-    public ItemStack transferStackInSlot(int par1)
+    public ItemStack func_82846_b(EntityPlayer par1EntityPlayer, int par2)
     {
         ItemStack var2 = null;
-        Slot var3 = (Slot)this.inventorySlots.get(par1);
+        Slot var3 = (Slot)this.inventorySlots.get(par2);
         if (var3 != null && !var3.getHasStack())
         {
-            if (par1 != 0)
+            if (par2 != 0)
             {
             	if(tpp.getStackInSlot(0) != null)
             	{
@@ -116,7 +116,6 @@ public class ContainerPressurePlate extends Container
 	                    var3.onSlotChanged();
 	                }
 
-	                var3.onPickupFromSlot(var4);
             	}
             }
         }
@@ -126,7 +125,7 @@ public class ContainerPressurePlate extends Container
             ItemStack var4 = var3.getStack();
             var2 = var4.copy();
 
-            if (par1 == 0)
+            if (par2 == 0)
             {
                 if (!this.mergeItemStack(var4, 1, 37, true))
                 {
@@ -171,7 +170,6 @@ public class ContainerPressurePlate extends Container
                 return null;
             }
 
-            var3.onPickupFromSlot(var4);
         }
 
         return var2;

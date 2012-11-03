@@ -23,7 +23,8 @@ public class GuiPassword extends GuiScreen
     private static int duration = 0;
     
     public TileEntityPressurePlate tpp;
-    private boolean set;
+    public int set;
+    private boolean sets;
     private boolean recieved = false;
     private boolean canExit = true;
     private int xCoord;
@@ -33,7 +34,8 @@ public class GuiPassword extends GuiScreen
     public GuiPassword(TileEntityPressurePlate tpp, boolean b, int par1, int par2, int par3)
     {
     	this.tpp = tpp;
-    	set = b;
+    	set = 0;
+    	this.sets = b;
     	this.xCoord = par1;
     	this.yCoord = par2;
     	this.zCoord = par3;
@@ -89,25 +91,28 @@ public class GuiPassword extends GuiScreen
 
         if (par1 == 13)
         {
-        	if(this.set)
+        	if(this.sets)
         	{
         		this.canExit = false;
         		PacketSendManager.sendNewPasswordToServer(tpp, this.theGuiTextField.getText().trim());
         	}
         	else
         	{
-        		this.canExit = false;
-        		PacketSendManager.sendPasswordToServer(tpp, this.theGuiTextField.getText().trim());
+        		if(this.set != 0)
+        		{
+            		this.canExit = false;
+        			PacketSendManager.sendPasswordToServer(tpp, this.theGuiTextField.getText().trim());
+        		}
         	}
         }
         if(par2 == Keyboard.KEY_ESCAPE)
         {
-        	if(this.set)
+        	if(this.sets)
         	{
         		if(this.canExit)
         		{
         			this.duration = 0;
-        			this.enterGui();
+        			PacketSendManager.sendOpenGuiPacketToServer(tpp, 0);
         		}
         	}
         	else
@@ -119,8 +124,15 @@ public class GuiPassword extends GuiScreen
     }
     
     public void enterGui()
-    {
-    	PacketSendManager.sendOpenGuiPacketToServer(tpp, 0);
+    {	
+    	if(set <= 1)
+    	{
+    		PacketSendManager.sendOpenGuiPacketToServer(tpp, 0);
+    	}
+    	if(set == 2)
+    	{
+    		PacketSendManager.sendRemoveBlockPacketToServer(tpp);
+    	}
     }
     
     public boolean doesGuiPauseGame()

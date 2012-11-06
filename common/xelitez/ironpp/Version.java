@@ -4,7 +4,7 @@ public class Version
 {
 	public static int majorVersion = 3;
 	public static int minorVersion = 2;
-	public static int majorBuild = 1;
+	public static int majorBuild = 2;
 	public static int minorBuild = 0;
 	public static String MC = "MC:1.4.2";
 	

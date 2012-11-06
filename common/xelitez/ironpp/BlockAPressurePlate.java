@@ -7,8 +7,6 @@
 
 package xelitez.ironpp;
 
-import ibxm.Player;
-
 import java.util.List;
 import java.util.Random;
 
@@ -339,9 +337,9 @@ public class BlockAPressurePlate extends BlockContainer
         return ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated;
     }
     
-    public boolean isIndirectlyPoweringTo(World par1World, int par2, int par3, int par4, int par5)
+    public boolean isIndirectlyPoweringTo(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return !(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated) ? false : par5 == 1;
+        return !((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? false : par5 == 1;
     }
     
     public boolean canProvidePower()

@@ -69,7 +69,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         int var7 = par3 & 15;
         if ((world.isRemote || var5.deferRender && Block.requiresSelfNotify[var5.getBlockID(var6, par2, var7) & 4095]))
         {
-            world.markBlockNeedsUpdate(par1, par2, par3);
+            world.markBlockForUpdate(par1, par2, par3);
         }
         if(!world.isRemote || FMLCommonHandler.instance().getSide().isServer())
         {	
@@ -643,7 +643,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
             par2ItemStack.stackSize = this.getInventoryStackLimit();
         }
         PPRegistry.setItem(this, this.worldObj.provider.dimensionId, this.item[0]);
-        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override

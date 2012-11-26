@@ -466,7 +466,7 @@ public class PacketHandler implements IPacketHandler
 						tpp.item[0] = null;
 					}
 					PPRegistry.setItem(coords[0], coords[1], coords[2], dimension, null);
-					world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
+					world.markBlockForUpdate(coords[0], coords[1], coords[2]);
 				}
 				else
 				{
@@ -475,7 +475,7 @@ public class PacketHandler implements IPacketHandler
 						tpp.item[0] = new ItemStack(itemId, stackSize, itemDamage);
 					}
 					PPRegistry.setItem(coords[0], coords[1], coords[2], dimension, new ItemStack(itemId, stackSize, itemDamage));
-					world.markBlockAsNeedsUpdate(coords[0], coords[1], coords[2]);
+					world.markBlockForUpdate(coords[0], coords[1], coords[2]);
 				}
 				return;
 			}
@@ -501,7 +501,7 @@ public class PacketHandler implements IPacketHandler
 				{
 					tpp.activated = dat.readBoolean();
 				}
-				world.markBlockNeedsUpdate(coords[0], coords[1], coords[2]);
+				world.markBlockForUpdate(coords[0], coords[1], coords[2]);
 				return;
 			}
 			if(ID == 9)

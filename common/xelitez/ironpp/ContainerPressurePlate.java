@@ -91,7 +91,7 @@ public class ContainerPressurePlate extends Container
 		return this.tpp.isUseableByPlayer(var1);
 	}
 	
-    public ItemStack func_82846_b(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
     {
         ItemStack var2 = null;
         Slot var3 = (Slot)this.inventorySlots.get(par2);

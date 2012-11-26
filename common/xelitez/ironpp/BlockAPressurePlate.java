@@ -225,7 +225,7 @@ public class BlockAPressurePlate extends BlockContainer
 	            tpp.setActivated(true, par1World, par2, par3, par4);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
-	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
+	            par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
 	            if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
 	            {
 	            	par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
@@ -237,7 +237,7 @@ public class BlockAPressurePlate extends BlockContainer
 	            tpp.setActivated(false, par1World, par2, par3, par4);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
-	            par1World.markBlocksDirty(par2, par3, par4, par2, par3, par4);
+	            par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
 	            if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
 	            {
 	            	par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
@@ -332,14 +332,14 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
     
-    public boolean isPoweringTo(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    public boolean isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
         return ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated;
     }
-    
-    public boolean isIndirectlyPoweringTo(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+
+    public boolean isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return !((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? false : par5 == 1;
+    	return !((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? false : par5 == 1;
     }
     
     public boolean canProvidePower()

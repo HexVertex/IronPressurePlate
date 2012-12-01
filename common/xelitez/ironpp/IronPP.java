@@ -7,6 +7,8 @@
 package xelitez.ironpp;
 
 import java.io.File;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 import java.util.logging.Level;
 
 import org.lwjgl.input.Keyboard;
@@ -68,6 +70,7 @@ public class IronPP
     public static Block PressurePlateIron;
     public static Block APressurePlateIron;
     private boolean customTexture;
+    private boolean checkForUpdates;
     
     /**
      * Temporary storage for the iron pressure plate block texture index.
@@ -95,9 +98,19 @@ public class IronPP
     		P.load(); //loads the configuration file.
     		BlockPPiD = P.getBlock("PressurePlateIronId", defaultPressurePlateIronId).getInt(150); //gets the ID that's currently set in the configuration file or sets it with the default.
     		BlockAPPiD = P.getBlock("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(151);	
-    		Property PressurePlateIronTexture = P.get("PressurePlateIronCustomTexture", P.CATEGORY_GENERAL, false); //gets the boolean if the user wants to use a custom texture.
+    		Property PressurePlateIronTexture = P.get(P.CATEGORY_GENERAL, "PressurePlateIronCustomTexture", false); //gets the boolean if the user wants to use a custom texture.
     		PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
+    		Property update = P.get("Updates", "Check for updates", true);
+    		Property ignoreMinorBuilds = P.get("Updates", "Ignore minor builds", true);
+    		Property ignoreOtherMCVersions = P.get("Updates", "Ignore other MC versions", false);
     		customTexture = PressurePlateIronTexture.getBoolean(false);
+    		checkForUpdates = update.getBoolean(true);
+    		Version.ignoremB = ignoreMinorBuilds.getBoolean(true);
+    		Version.ignoreMC = ignoreOtherMCVersions.getBoolean(false);
+    		if(checkForUpdates)
+    		{
+    			Version.checkForUpdates();
+    		}
     	}
     	catch(Exception E)
     	{

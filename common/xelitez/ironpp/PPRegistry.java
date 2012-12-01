@@ -219,6 +219,10 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
 	public void clientLoggedIn(NetHandler clientHandler,
 			INetworkManager manager, Packet1Login login) 
 	{	
+		if(Version.available)
+		{
+			clientHandler.getPlayer().addChatMessage("A new version of the \u00a7eIron Pressure Plate mod\u00a7f is available(" + Version.color + Version.newVersion + "\u00a7f)");
+		}
 	}
 
 	@Override

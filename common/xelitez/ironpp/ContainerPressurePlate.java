@@ -1,7 +1,7 @@
 /**
  * this is some sort of dummy class to be able to
  * save data and work with Guis
- * 
+ *
  * @author Kalvin
  */
 package xelitez.ironpp;
@@ -18,27 +18,29 @@ import net.minecraft.src.Slot;
 
 public class ContainerPressurePlate extends Container
 {
-	public TileEntityPressurePlate tpp;
-	private IInventory inventory;
-	
-	public ContainerPressurePlate(TileEntityPressurePlate tpp, InventoryPlayer par1InventoryPlayer)
-	{
-		this.tpp = tpp;
-		this.drawSlots(par1InventoryPlayer, tpp);
-	}
-	
-	public void drawSlots(IInventory par1IInventory, IInventory par2IInventory)
-	{
-		inventory = par2IInventory;
+    public TileEntityPressurePlate tpp;
+    private IInventory inventory;
+
+    public ContainerPressurePlate(TileEntityPressurePlate tpp, InventoryPlayer par1InventoryPlayer)
+    {
+        this.tpp = tpp;
+        this.drawSlots(par1InventoryPlayer, tpp);
+    }
+
+    public void drawSlots(IInventory par1IInventory, IInventory par2IInventory)
+    {
+        inventory = par2IInventory;
         int var4;
         int var5;
         par2IInventory.openChest();
+
         for (var5 = 0; var5 < par2IInventory.getSizeInventory(); ++var5)
         {
-        	this.addSlotToContainer(new SlotPP(par2IInventory, 0, -54, 154));
+            this.addSlotToContainer(new SlotPP(par2IInventory, 0, -54, 154));
         }
 
         int var6;
+
         for (var6 = 0; var6 < 3; ++var6)
         {
             for (int var7 = 0; var7 < 9; ++var7)
@@ -51,72 +53,74 @@ public class ContainerPressurePlate extends Container
         {
             this.addSlotToContainer(new Slot(par1IInventory, var6, -22, 132 - var6 * 18));
         }
-	}
-	
-	public void removeAllSlots()
-	{
-		this.inventorySlots.clear();
-	}
-	
+    }
+
+    public void removeAllSlots()
+    {
+        this.inventorySlots.clear();
+    }
+
     public Slot getSlot(int par1)
     {
-    	if(this.inventorySlots.size() > par1)
-    	{
-    		return (Slot)this.inventorySlots.get(par1);
-    	}
-    	return null;
+        if (this.inventorySlots.size() > par1)
+        {
+            return (Slot)this.inventorySlots.get(par1);
+        }
+
+        return null;
     }
-    
+
     public void putStackInSlot(int par1, ItemStack par2ItemStack)
     {
-    	if(this.getSlot(par1) != null)
-    	{
-    		this.getSlot(par1).putStack(par2ItemStack);
-    	}
+        if (this.getSlot(par1) != null)
+        {
+            this.getSlot(par1).putStack(par2ItemStack);
+        }
     }
-    
+
     public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
     {
         for (int var2 = 0; var2 < par1ArrayOfItemStack.length; ++var2)
         {
-        	if(this.getSlot(var2) != null)
-        	{
-        		this.getSlot(var2).putStack(par1ArrayOfItemStack[var2]);
-        	}
+            if (this.getSlot(var2) != null)
+            {
+                this.getSlot(var2).putStack(par1ArrayOfItemStack[var2]);
+            }
         }
     }
 
-	public boolean canInteractWith(EntityPlayer var1) 
-	{
-		return this.tpp.isUseableByPlayer(var1);
-	}
-	
+    public boolean canInteractWith(EntityPlayer var1)
+    {
+        return this.tpp.isUseableByPlayer(var1);
+    }
+
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
     {
         ItemStack var2 = null;
         Slot var3 = (Slot)this.inventorySlots.get(par2);
+
         if (var3 != null && !var3.getHasStack())
         {
             if (par2 != 0)
             {
-            	if(tpp.getStackInSlot(0) != null)
-            	{
+                if (tpp.getStackInSlot(0) != null)
+                {
                     ItemStack var4 = var3.getStack();
-	                if (!this.mergeItemStack(tpp.getStackInSlot(0), 1, 37, true))
-	                {
-	                    return null;
-	                }
-	                
-	                if (var4 == null || var4.stackSize == 0)
-	                {
-	                    ((Slot) this.inventorySlots.get(0)).putStack((ItemStack)null);
-	                }
-	                else
-	                {
-	                    var3.onSlotChanged();
-	                }
 
-            	}
+                    if (!this.mergeItemStack(tpp.getStackInSlot(0), 1, 37, true))
+                    {
+                        return null;
+                    }
+
+                    if (var4 == null || var4.stackSize == 0)
+                    {
+                        ((Slot) this.inventorySlots.get(0)).putStack((ItemStack)null);
+                    }
+                    else
+                    {
+                        var3.onSlotChanged();
+                    }
+                }
             }
         }
 
@@ -138,10 +142,10 @@ public class ContainerPressurePlate extends Container
                 {
                     return null;
                 }
-                
-                if(((Slot)this.inventorySlots.get(0)).getHasStack() && !this.mergeItemStack(tpp.getStackInSlot(0), 1, 37, true))
+
+                if (((Slot)this.inventorySlots.get(0)).getHasStack() && !this.mergeItemStack(tpp.getStackInSlot(0), 1, 37, true))
                 {
-                	return null;
+                    return null;
                 }
 
                 if (var4.hasTagCompound() && var4.stackSize == 1)
@@ -169,62 +173,68 @@ public class ContainerPressurePlate extends Container
             {
                 return null;
             }
-
         }
 
         return var2;
     }
-	
+
     public void switchMob(String var1)
-    {	
-    	if(var1 == "Players")
-    	{
-    		var1 = "humanoid";
-    	}
-    	if(var1 == "Items")
-    	{
-    		var1 = "Item";
-    	}
-    	for(int var4 = 0;var4 < tpp.allowedMobs.length;var4++)
-    	{
-    		PPList pp = tpp.allowedMobs[var4];
-    		if(pp.getMobname().matches(var1) && !pp.getEnabled())
-    		{
-    			tpp.allowedMobs[var4].enable();
-    			return;
-    		}
-    		if(pp.getMobname().matches(var1) && pp.getEnabled())
-    		{
-    			tpp.allowedMobs[var4].disable();
-    			return;
-    		}
-    	}
-    	return;
+    {
+        if (var1 == "Players")
+        {
+            var1 = "humanoid";
+        }
+
+        if (var1 == "Items")
+        {
+            var1 = "Item";
+        }
+
+        for (int var4 = 0; var4 < tpp.allowedMobs.length; var4++)
+        {
+            PPList pp = tpp.allowedMobs[var4];
+
+            if (pp.getMobname().matches(var1) && !pp.getEnabled())
+            {
+                tpp.allowedMobs[var4].enable();
+                return;
+            }
+
+            if (pp.getMobname().matches(var1) && pp.getEnabled())
+            {
+                tpp.allowedMobs[var4].disable();
+                return;
+            }
+        }
+
+        return;
     }
-    
+
     public void switchPlayer(String var1)
     {
-    	for(int var2 = 0;var2 < tpp.allowedPlayers.size();var2++)
-    	{
-    		PPPlayerList pp = (PPPlayerList)tpp.allowedPlayers.get(var2);
-    		if(pp.getUsername().matches(var1) && !pp.getEnabled())
-    		{
-    			pp.enable();
-    			return;
-    		}
-    		if(pp.getUsername().matches(var1) && pp.getEnabled())
-    		{
-    			pp.disable();
-    			return;
-    		}
-    	}
-    	return;
+        for (int var2 = 0; var2 < tpp.allowedPlayers.size(); var2++)
+        {
+            PPPlayerList pp = (PPPlayerList)tpp.allowedPlayers.get(var2);
+
+            if (pp.getUsername().matches(var1) && !pp.getEnabled())
+            {
+                pp.enable();
+                return;
+            }
+
+            if (pp.getUsername().matches(var1) && pp.getEnabled())
+            {
+                pp.disable();
+                return;
+            }
+        }
+
+        return;
     }
-    
+
     public void onCraftGuiClosed(EntityPlayer par1EntityPlayer)
     {
         super.onCraftGuiClosed(par1EntityPlayer);
         this.inventory.closeChest();
     }
-
 }

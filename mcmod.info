@@ -3,8 +3,7 @@
   "modid": "IronPP",
   "name": "Iron Pressure Plate",
   "description": "The Iron Pressure Plate mod is a mod the adds two pressure plates into the game, A Iron Pressure Plate which only triggers on players and an Advanced Iron Pressure Plate which you can configure yourself.\r\n\r\nLicense for usage is included in the zip file",
-  "version": "v3.1.2",
-  "mcversion": "1.3.2",
+  "mcversion": "1.4.2",
   "url": "",
   "updateUrl": "",
   "authors": [

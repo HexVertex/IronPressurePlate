@@ -17,8 +17,8 @@ public class Version
 {
     public static int majorVersion = 3;
     public static int minorVersion = 3;
-    public static int majorBuild = 0;
-    public static int minorBuild = 0;
+    public static int majorBuild = 1;
+    public static int minorBuild = 1;
     public static String MC = "MC:1.4.5";
 
     public static boolean ignoremB = true;
@@ -138,7 +138,7 @@ public class Version
 
         if ((!getVersion().matches(produceVersion(MV, mV, MB, mB)) || !MC.matches("MC:" + NMC)) && !produceVersion(MV, mV, MB, mB).matches("0"))
         {
-            if (!ignoreMC || (ignoreMC && MC.matches("MC:" + NMC)))
+            if ((ignoreMC && MC.matches("MC:" + NMC) || (!ignoreMC && !MC.matches("MC:" + NMC))) || ((ignoremB && !produceVersion(MV, mV, MB, 0).matches(produceVersion(majorVersion, minorVersion, majorBuild, 0))) || (!ignoremB && !getVersion().matches(produceVersion(MV, mV, MB, mB)))))
             {
                 available = true;
                 newVersion = produceVersion(MV, mV, MB, mB);
@@ -171,6 +171,11 @@ public class Version
                 if (MV != majorVersion)
                 {
                     color = "\u00a73";
+                }
+                
+                if (!MC.matches("MC:" + NMC) && !ignoreMC)
+                {
+                    color = "\u00a75";
                 }
             }
         }

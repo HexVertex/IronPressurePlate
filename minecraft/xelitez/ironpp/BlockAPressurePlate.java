@@ -10,36 +10,31 @@ package xelitez.ironpp;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockFence;
+import net.minecraft.block.EnumMobType;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
 import xelitez.ironpp.client.GuiAPressurePlate;
 import xelitez.ironpp.client.GuiModifyPressurePlate;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import cpw.mods.fml.server.FMLServerHandler;
-
-import net.minecraft.src.AxisAlignedBB;
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockContainer;
-import net.minecraft.src.BlockFence;
-import net.minecraft.src.ChunkCache;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityLiving;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EnumMobType;
-import net.minecraft.src.IBlockAccess;
-import net.minecraft.src.ItemBlock;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Material;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.PPManager;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.TileEntityChest;
-import net.minecraft.src.World;
-import net.minecraft.src.Entity;
 
 public class BlockAPressurePlate extends BlockContainer
 {
@@ -191,7 +186,7 @@ public class BlockAPressurePlate extends BlockContainer
         {
             for (int var10 = 0; var10 < var8.size(); var10++)
             {
-                if (var8.size() > 0 && (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName(PPManager.getEntityString((Entity)var8.get(var10)))))
+                if (var8.size() > 0 && (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName(EntityList.getEntityString((Entity)var8.get(var10)))))
                 {
                     var6 = true;
                 }
@@ -201,7 +196,7 @@ public class BlockAPressurePlate extends BlockContainer
                 {
                     if ((var8.get(var10) instanceof EntityPlayer))
                     {
-                        if (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName(PPManager.getEntityType((EntityLiving)var8.get(var10))))
+                        if (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).findMobName("humanoid"))
                         {
                             if (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).isPlayerInList(((EntityPlayer)var8.get(var10)).username))
                             {
@@ -311,7 +306,7 @@ public class BlockAPressurePlate extends BlockContainer
 
                         if (var9.hasTagCompound())
                         {
-                            var14.item.setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
+                            var14.func_92014_d().setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
                         }
                     }
                 }

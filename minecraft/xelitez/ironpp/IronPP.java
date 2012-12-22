@@ -20,9 +20,10 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
@@ -32,17 +33,15 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.EnumMobType;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Block;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EnumMobType;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.KeyBinding;
-import net.minecraft.src.Material;
-import net.minecraft.src.ModLoader;
-import net.minecraft.src.StatCollector;
-import net.minecraft.src.Item;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
@@ -149,8 +148,8 @@ public class IronPP
         //the next two methods creates the instances of the blocks used in this mod.
         PressurePlateIron = new BlockPressurePlate(BlockPPiD, Block.blockSteel.blockIndexInTexture, EnumMobType.players, Material.iron).setHardness(0.5F).setStepSound(Block.soundMetalFootstep).setBlockName("pressurePlate");
         APressurePlateIron = new BlockAPressurePlate(BlockAPPiD, PPT, Material.iron).setHardness(0.5F).setStepSound(Block.soundMetalFootstep).setBlockName("ApressurePlate");
-        GameRegistry.registerBlock(PressurePlateIron); //Registers the block in the game.(replaces ModLoaders registerBlock method)
-        GameRegistry.registerBlock(APressurePlateIron);
+        GameRegistry.registerBlock(PressurePlateIron, "Iron Pressure Plate"); //Registers the block in the game.(replaces ModLoaders registerBlock method)
+        GameRegistry.registerBlock(APressurePlateIron, "Advanced Iron Pressure Plate");
         LanguageRegistry.addName(APressurePlateIron, new StringBuilder().append("Advanced ").append(StatCollector.translateToLocal("tile.pressurePlate.name")).toString()); //adds a display name for Items or Blocks.(replaces ModLoaders addName method)
         GameRegistry.addRecipe(new ItemStack(PressurePlateIron, 1), new Object[] {"##", '#', Item.ingotIron}); //Registers a new recipe used in the crafting bench.(replaces ModLoaders addRecipe method)
         GameRegistry.addRecipe(new ItemStack(APressurePlateIron, 2), new Object[] {"###", "@#@", '#', Item.ingotIron, '@', Item.redstone});

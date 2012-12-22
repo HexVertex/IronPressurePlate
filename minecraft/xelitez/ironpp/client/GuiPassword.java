@@ -1,19 +1,17 @@
 package xelitez.ironpp.client;
 
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.ChatAllowedCharacters;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import xelitez.ironpp.IronPP;
 import xelitez.ironpp.PacketSendManager;
 import xelitez.ironpp.TileEntityPressurePlate;
-
-import net.minecraft.src.ChatAllowedCharacters;
-import net.minecraft.src.FontRenderer;
-import net.minecraft.src.Gui;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiScreen;
-import net.minecraft.src.GuiTextField;
-import net.minecraft.src.Tessellator;
 
 public class GuiPassword extends GuiScreen
 {

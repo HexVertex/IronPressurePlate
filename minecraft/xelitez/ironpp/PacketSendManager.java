@@ -21,10 +21,8 @@ import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.server.FMLServerHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Packet250CustomPayload;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.packet.Packet250CustomPayload;
 
 public class PacketSendManager
 {

@@ -10,19 +10,13 @@ import org.lwjgl.input.Keyboard;
 
 import xelitez.ironpp.client.KeyHandler;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.NetLoginHandler;
+import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.Block;
-import net.minecraft.src.ChunkCache;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EnumSkyBlock;
-import net.minecraft.src.IBlockAccess;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NetHandler;
-import net.minecraft.src.NetLoginHandler;
-import net.minecraft.src.INetworkManager;
-import net.minecraft.src.Packet1Login;
-import net.minecraft.src.Tessellator;
-import net.minecraft.src.World;
+import net.minecraft.world.World;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
@@ -242,7 +236,7 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
     {
         if (Version.available)
         {
-            clientHandler.getPlayer().addChatMessage("A new version of the \u00a7eIron Pressure Plate mod\u00a7f is available(" + Version.color + Version.newVersion + "\u00a7f). Press \u00a7e" + Keyboard.getKeyName(KeyHandler.instance().getKeyBindings()[0].keyCode) + "\u00a7f to open the download page.");
+            clientHandler.getPlayer().addChatMessage("A new version of the \u00a7eIron Pressure Plate mod\u00a7f is available (" + Version.color + Version.newVersion + "\u00a7f). Press \u00a7e" + Keyboard.getKeyName(KeyHandler.instance().getKeyBindings()[0].keyCode) + "\u00a7f to open the download page.");
         }
     }
 

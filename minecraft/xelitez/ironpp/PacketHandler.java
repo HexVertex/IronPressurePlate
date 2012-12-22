@@ -5,6 +5,12 @@
  */
 package xelitez.ironpp;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import xelitez.ironpp.PPSettings.SettingsButton;
 import xelitez.ironpp.client.GuiAPressurePlate;
 import xelitez.ironpp.client.GuiModifyPressurePlate;
@@ -13,14 +19,6 @@ import xelitez.ironpp.client.GuiPassword;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.INetworkManager;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.PPManager;
-import net.minecraft.src.Packet250CustomPayload;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
-import net.minecraft.src.WorldServer;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -94,7 +92,7 @@ public class PacketHandler implements IPacketHandler
 
                     if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
-                        PPManager.closeGuiScreen(thePlayer);
+                        thePlayer.closeScreen();
                     }
 
                     return;
@@ -246,7 +244,7 @@ public class PacketHandler implements IPacketHandler
 
                     if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
                     {
-                        PPManager.closeGuiScreen(thePlayer);
+                    	thePlayer.closeScreen();
                     }
                 }
 

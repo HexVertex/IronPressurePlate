@@ -9,17 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Side;
-
-import net.minecraft.src.CallableMinecraftVersion;
+import cpw.mods.fml.relauncher.Side;
 
 public class Version
 {
     public static int majorVersion = 3;
     public static int minorVersion = 3;
     public static int majorBuild = 1;
-    public static int minorBuild = 1;
-    public static String MC = "MC:1.4.5";
+    public static int minorBuild = 3;
+    public static String MC = "MC:1.4.6";
 
     public static boolean ignoremB = true;
     public static boolean ignoreMC = false;
@@ -122,7 +120,7 @@ public class Version
                     MB = Integer.parseInt(line);
                 }
 
-                if (line.contains("public static int minorBuild") && !line.contains("\"public static int minorBuild\"") && !ignoremB)
+                if (line.contains("public static int minorBuild") && !line.contains("\"public static int minorBuild\""))
                 {
                     line = line.substring(line.indexOf("= ") + 2, line.indexOf(';'));
                     mB = Integer.parseInt(line);

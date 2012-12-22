@@ -6,15 +6,12 @@
  */
 package xelitez.ironpp;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.InventoryPlayer;
-import net.minecraft.src.ItemBlock;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class ContainerPressurePlate extends Container
 {
@@ -36,7 +33,7 @@ public class ContainerPressurePlate extends Container
 
         for (var5 = 0; var5 < par2IInventory.getSizeInventory(); ++var5)
         {
-            this.addSlotToContainer(new SlotPP(par2IInventory, 0, -54, 154));
+            this.addSlotToContainer(new SlotPP(par2IInventory, 0, 65, 173));
         }
 
         int var6;
@@ -45,13 +42,13 @@ public class ContainerPressurePlate extends Container
         {
             for (int var7 = 0; var7 < 9; ++var7)
             {
-                this.addSlotToContainer(new Slot(par1IInventory, var7 + var6 * 9 + 9, -81 + var6 * 18, 132 - var7 * 18));
+                this.addSlotToContainer(new Slot(par1IInventory, var7 + var6 * 9 + 9, 38 + var6 * 18, 151 - var7 * 18));
             }
         }
 
         for (var6 = 0; var6 < 9; ++var6)
         {
-            this.addSlotToContainer(new Slot(par1IInventory, var6, -22, 132 - var6 * 18));
+            this.addSlotToContainer(new Slot(par1IInventory, var6, 97, 151 - var6 * 18));
         }
     }
 

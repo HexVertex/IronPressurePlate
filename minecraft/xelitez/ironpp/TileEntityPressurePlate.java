@@ -15,23 +15,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+
 import xelitez.ironpp.PPSettings.SettingsButton;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-
-import net.minecraft.src.Block;
-import net.minecraft.src.Chunk;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
 
 public class TileEntityPressurePlate extends TileEntity implements IInventory
 {
@@ -125,7 +126,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     {
         if (mobs.size() == 0)
         {
-            Field field = (net.minecraft.src.EntityList.class).getDeclaredFields()[1];
+            Field field = (EntityList.class).getDeclaredFields()[1];
             field.setAccessible(true);
             Map map = null;
 
@@ -146,18 +147,18 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 
                     try
                     {
-                        if ((net.minecraft.src.EntityLiving.class).isAssignableFrom(class1) && class1.getConstructor(new Class[]
+                        if ((EntityLiving.class).isAssignableFrom(class1) && class1.getConstructor(new Class[]
                                 {
-                                    net.minecraft.src.World.class
+                                    World.class
                                 }) != null && !Modifier.isAbstract(class1.getModifiers()))
                         {
                             String s1 = (String)map.get(class1);
                             living.add(s1);
                         }
 
-                        if ((net.minecraft.src.Entity.class).isAssignableFrom(class1) && !(net.minecraft.src.EntityLiving.class).isAssignableFrom(class1) && class1.getConstructor(new Class[]
+                        if ((Entity.class).isAssignableFrom(class1) && !(EntityLiving.class).isAssignableFrom(class1) && class1.getConstructor(new Class[]
                                 {
-                                    net.minecraft.src.World.class
+                                    World.class
                                 }) != null && !Modifier.isAbstract(class1.getModifiers()))
                         {
                             String s1 = (String)map.get(class1);

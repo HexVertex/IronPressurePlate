@@ -2,10 +2,9 @@ package xelitez.ironpp.client;
 
 import java.net.URI;
 
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiConfirmOpenLink;
-import net.minecraft.src.GuiScreen;
-import net.minecraft.src.StringTranslate;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.StringTranslate;
 
 public class ConfirmLink extends GuiScreen
 {

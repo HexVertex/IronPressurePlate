@@ -85,7 +85,7 @@ public class ConfirmLink extends GuiScreen
     {
         this.drawDefaultBackground();
         this.drawCenteredString(this.fontRenderer, this.copyLinkButton, this.width / 2, 110, 16764108);
-        this.drawCenteredString(this.fontRenderer, "https://github.com/XEZKalvin/IronPressurePlate/downloads", this.width / 2, 90, 16777215);
+        this.drawCenteredString(this.fontRenderer, "http://www.mediafire.com/?3mmgi2aglnxvo", this.width / 2, 90, 16777215);
         this.drawCenteredString(this.fontRenderer, this.message1, this.width / 2, 70, 16777215);
         super.drawScreen(par1, par2, par3);
     }

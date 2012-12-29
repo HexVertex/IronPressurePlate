@@ -8,13 +8,14 @@ import cpw.mods.fml.common.network.Player;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.INetworkManager;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.NetHandler;
-import net.minecraft.server.NetLoginHandler;
-import net.minecraft.server.Packet1Login;
-import net.minecraft.server.World;
+import net.minecraft.server.v1_4_6.Connection;
+import net.minecraft.server.v1_4_6.INetworkManager;
+import net.minecraft.server.v1_4_6.ItemStack;
+import net.minecraft.server.v1_4_6.MinecraftServer;
+import net.minecraft.server.v1_4_6.Packet1Login;
+import net.minecraft.server.v1_4_6.PendingConnection;
+import net.minecraft.server.v1_4_6.World;
+import org.lwjgl.input.Keyboard;
 import xelitez.ironpp.PPRegistry$RegistrySettings;
 
 public class PPRegistry implements IConnectionHandler, ITickHandler
@@ -186,24 +187,24 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
         setItem(var0.x, var0.y, var0.z, var1, var2);
     }
 
-    public void playerLoggedIn(Player var1, NetHandler var2, INetworkManager var3)
+    public void playerLoggedIn(Player var1, Connection var2, INetworkManager var3)
     {
         send = true;
         PacketSendManager.SendIsReadyToClient(var1);
     }
 
-    public String connectionReceived(NetLoginHandler var1, INetworkManager var2)
+    public String connectionReceived(PendingConnection var1, INetworkManager var2)
     {
         return null;
     }
 
-    public void connectionOpened(NetHandler var1, String var2, int var3, INetworkManager var4) {}
+    public void connectionOpened(Connection var1, String var2, int var3, INetworkManager var4) {}
 
-    public void connectionOpened(NetHandler var1, MinecraftServer var2, INetworkManager var3) {}
+    public void connectionOpened(Connection var1, MinecraftServer var2, INetworkManager var3) {}
 
     public void connectionClosed(INetworkManager var1) {}
 
-    public void clientLoggedIn(NetHandler var1, INetworkManager var2, Packet1Login var3) {}
+    public void clientLoggedIn(Connection var1, INetworkManager var2, Packet1Login var3) {}
 
     public void tickStart(EnumSet var1, Object ... var2) {}
 

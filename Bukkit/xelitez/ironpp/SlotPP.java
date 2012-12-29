@@ -1,9 +1,9 @@
 package xelitez.ironpp;
 
-import net.minecraft.server.IInventory;
-import net.minecraft.server.ItemBlock;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.Slot;
+import net.minecraft.server.v1_4_6.IInventory;
+import net.minecraft.server.v1_4_6.ItemBlock;
+import net.minecraft.server.v1_4_6.ItemStack;
+import net.minecraft.server.v1_4_6.Slot;
 
 public class SlotPP extends Slot
 {
@@ -12,9 +12,6 @@ public class SlotPP extends Slot
         super(var1, var2, var3, var4);
     }
 
-    /**
-     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
-     */
     public boolean isAllowed(ItemStack var1)
     {
         return var1.getItem() instanceof ItemBlock;

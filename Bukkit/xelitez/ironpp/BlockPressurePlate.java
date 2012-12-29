@@ -1,9 +1,9 @@
 package xelitez.ironpp;
 
-import net.minecraft.server.EnumMobType;
-import net.minecraft.server.Material;
+import net.minecraft.server.v1_4_6.EnumMobType;
+import net.minecraft.server.v1_4_6.Material;
 
-public class BlockPressurePlate extends net.minecraft.server.BlockPressurePlate
+public class BlockPressurePlate extends net.minecraft.server.v1_4_6.BlockPressurePlate
 {
     protected BlockPressurePlate(int var1, int var2, EnumMobType var3, Material var4)
     {

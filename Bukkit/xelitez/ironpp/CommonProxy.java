@@ -1,9 +1,9 @@
 package xelitez.ironpp;
 
 import cpw.mods.fml.common.network.IGuiHandler;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.TileEntity;
-import net.minecraft.server.World;
+import net.minecraft.server.v1_4_6.EntityHuman;
+import net.minecraft.server.v1_4_6.TileEntity;
+import net.minecraft.server.v1_4_6.World;
 
 public class CommonProxy implements IGuiHandler
 {

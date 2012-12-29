@@ -1,26 +1,26 @@
 package xelitez.ironpp;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Random;
-import net.minecraft.server.AxisAlignedBB;
-import net.minecraft.server.BlockContainer;
-import net.minecraft.server.BlockFence;
-import net.minecraft.server.CreativeModeTab;
-import net.minecraft.server.Entity;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.EntityItem;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.EnumMobType;
-import net.minecraft.server.IBlockAccess;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.Material;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.PPManager;
-import net.minecraft.server.TileEntity;
-import net.minecraft.server.World;
+import net.minecraft.server.v1_4_6.AxisAlignedBB;
+import net.minecraft.server.v1_4_6.BlockContainer;
+import net.minecraft.server.v1_4_6.BlockFence;
+import net.minecraft.server.v1_4_6.CreativeModeTab;
+import net.minecraft.server.v1_4_6.Entity;
+import net.minecraft.server.v1_4_6.EntityHuman;
+import net.minecraft.server.v1_4_6.EntityItem;
+import net.minecraft.server.v1_4_6.EntityLiving;
+import net.minecraft.server.v1_4_6.EntityTypes;
+import net.minecraft.server.v1_4_6.EnumMobType;
+import net.minecraft.server.v1_4_6.IBlockAccess;
+import net.minecraft.server.v1_4_6.ItemStack;
+import net.minecraft.server.v1_4_6.Material;
+import net.minecraft.server.v1_4_6.NBTTagCompound;
+import net.minecraft.server.v1_4_6.TileEntity;
+import net.minecraft.server.v1_4_6.World;
 
 public class BlockAPressurePlate extends BlockContainer
 {
@@ -39,35 +39,21 @@ public class BlockAPressurePlate extends BlockContainer
         this.textureId = var2;
     }
 
-    /**
-     * How many world ticks before ticking
-     */
     public int r_()
     {
         return 20;
     }
 
-    /**
-     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
-     * cleared to be reused)
-     */
     public AxisAlignedBB e(World var1, int var2, int var3, int var4)
     {
         return null;
     }
 
-    /**
-     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-     */
     public boolean c()
     {
         return false;
     }
 
-    /**
-     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-     */
     public boolean b()
     {
         return false;
@@ -78,25 +64,16 @@ public class BlockAPressurePlate extends BlockContainer
         return true;
     }
 
-    /**
-     * Returns a new instance of a block's tile entity class. Called on placing the block.
-     */
     public TileEntity a(World var1)
     {
         return new TileEntityPressurePlate();
     }
 
-    /**
-     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
-     */
     public boolean canPlace(World var1, int var2, int var3, int var4)
     {
-        return var1.t(var2, var3 - 1, var4) || BlockFence.c(var1.getTypeId(var2, var3 - 1, var4));
+        return var1.v(var2, var3 - 1, var4) || BlockFence.c(var1.getTypeId(var2, var3 - 1, var4));
     }
 
-    /**
-     * Called when the block is placed in the world.
-     */
     public void postPlace(World var1, int var2, int var3, int var4, EntityLiving var5)
     {
         if (var5 instanceof EntityHuman && var1.getTileEntity(var2, var3, var4) != null && var1.getTileEntity(var2, var3, var4) instanceof TileEntityPressurePlate)
@@ -121,15 +98,11 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
-    /**
-     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-     * their own) Args: x, y, z, neighbor blockID
-     */
     public void doPhysics(World var1, int var2, int var3, int var4, int var5)
     {
         boolean var6 = false;
 
-        if (!var1.t(var2, var3 - 1, var4) && !BlockFence.c(var1.getTypeId(var2, var3 - 1, var4)))
+        if (!var1.v(var2, var3 - 1, var4) && !BlockFence.c(var1.getTypeId(var2, var3 - 1, var4)))
         {
             var6 = true;
         }
@@ -141,9 +114,6 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
-    /**
-     * Ticks the block if it's been scheduled
-     */
     public void b(World var1, int var2, int var3, int var4, Random var5)
     {
         if (!var1.isStatic && ((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).activated)
@@ -152,9 +122,6 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
-    /**
-     * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
-     */
     public void a(World var1, int var2, int var3, int var4, Entity var5)
     {
         if (!var1.isStatic && !((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).activated)
@@ -189,7 +156,7 @@ public class BlockAPressurePlate extends BlockContainer
         {
             for (int var9 = 0; var9 < var8.size(); ++var9)
             {
-                if (var8.size() > 0 && ((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).findMobName(PPManager.getEntityString((Entity)var8.get(var9))))
+                if (var8.size() > 0 && ((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).findMobName(EntityTypes.b((Entity)var8.get(var9))))
                 {
                     var6 = true;
                 }
@@ -199,7 +166,7 @@ public class BlockAPressurePlate extends BlockContainer
                     ;
                 }
 
-                if (var8.get(var9) instanceof EntityHuman && ((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).findMobName(PPManager.getEntityType((EntityLiving)var8.get(var9))))
+                if (var8.get(var9) instanceof EntityHuman && ((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).findMobName("humanoid"))
                 {
                     if (((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).isPlayerInList(((EntityHuman)var8.get(var9)).name))
                     {
@@ -253,9 +220,6 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
-    /**
-     * ejects contained items into the world, and notifies neighbours of an update, as appropriate
-     */
     public void remove(World var1, int var2, int var3, int var4, int var5, int var6)
     {
         if (var6 > 0)
@@ -297,7 +261,7 @@ public class BlockAPressurePlate extends BlockContainer
 
                         if (var9.hasTag())
                         {
-                            var12.itemStack.setTag((NBTTagCompound)var9.getTag().clone());
+                            var12.getItemStack().setTag((NBTTagCompound)var9.getTag().clone());
                         }
                     }
                 }
@@ -312,12 +276,9 @@ public class BlockAPressurePlate extends BlockContainer
         }
 
         super.remove(var1, var2, var3, var4, var5, var6);
-        var1.q(var2, var3, var4);
+        var1.r(var2, var3, var4);
     }
 
-    /**
-     * Updates the blocks bounds based on its current state. Args: world, x, y, z
-     */
     public void updateShape(IBlockAccess var1, int var2, int var3, int var4)
     {
         boolean var5 = ((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).activated;
@@ -333,33 +294,21 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
-    /**
-     * Is this block powering the block on the specified side
-     */
     public boolean b(IBlockAccess var1, int var2, int var3, int var4, int var5)
     {
         return ((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).activated;
     }
 
-    /**
-     * Is this block indirectly powering the block on the specified side
-     */
     public boolean c(IBlockAccess var1, int var2, int var3, int var4, int var5)
     {
         return !((TileEntityPressurePlate)var1.getTileEntity(var2, var3, var4)).activated ? false : var5 == 1;
     }
 
-    /**
-     * Can this block provide power. Only wire currently seems to have this change based on its state.
-     */
     public boolean isPowerSource()
     {
         return true;
     }
 
-    /**
-     * Sets the block's bounds for rendering it as an item
-     */
     public void f()
     {
         float var1 = 0.5F;
@@ -368,18 +317,11 @@ public class BlockAPressurePlate extends BlockContainer
         this.a(0.5F - var1, 0.5F - var2, 0.5F - var3, 0.5F + var1, 0.5F + var2, 0.5F + var3);
     }
 
-    /**
-     * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
-     * and stop pistons
-     */
     public int q_()
     {
         return 1;
     }
 
-    /**
-     * Called upon block activation (right click on the block.)
-     */
     public boolean interact(World var1, int var2, int var3, int var4, EntityHuman var5, int var6, float var7, float var8, float var9)
     {
         TileEntity var10 = var1.getTileEntity(var2, var3, var4);

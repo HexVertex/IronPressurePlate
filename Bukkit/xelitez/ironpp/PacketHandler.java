@@ -4,13 +4,12 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.INetworkManager;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.PPManager;
-import net.minecraft.server.Packet250CustomPayload;
-import net.minecraft.server.TileEntity;
-import net.minecraft.server.World;
+import net.minecraft.server.v1_4_6.EntityHuman;
+import net.minecraft.server.v1_4_6.INetworkManager;
+import net.minecraft.server.v1_4_6.ItemStack;
+import net.minecraft.server.v1_4_6.Packet250CustomPayload;
+import net.minecraft.server.v1_4_6.TileEntity;
+import net.minecraft.server.v1_4_6.World;
 
 public class PacketHandler implements IPacketHandler
 {

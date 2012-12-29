@@ -6,15 +6,16 @@ import cpw.mods.fml.common.network.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.Packet250CustomPayload;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.v1_4_6.EntityHuman;
+import net.minecraft.server.v1_4_6.Packet250CustomPayload;
 
 public class PacketSendManager
 {
 
     private static void sendPacketToAllPlayers(Packet250CustomPayload var0)
     {
-        FMLCommonHandler.instance().getMinecraftServerInstance().getServerConfigurationManager().sendAll(var0);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendAll(var0);
     }
 
     public static void sendCloseGuiPacketToAllPlayers(TileEntityPressurePlate var0)

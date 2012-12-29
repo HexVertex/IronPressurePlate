@@ -1,30 +1,27 @@
 package xelitez.ironpp;
 
-import org.bukkit.craftbukkit.inventory.CraftInventory;
-import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.inventory.CraftInventoryView;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventoryView;
 import org.bukkit.inventory.InventoryView;
 
-import net.minecraft.server.Container;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.IInventory;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.PlayerInventory;
-import net.minecraft.server.Slot;
+import net.minecraft.server.v1_4_6.Container;
+import net.minecraft.server.v1_4_6.EntityHuman;
+import net.minecraft.server.v1_4_6.IInventory;
+import net.minecraft.server.v1_4_6.ItemStack;
+import net.minecraft.server.v1_4_6.PlayerInventory;
+import net.minecraft.server.v1_4_6.Slot;
 
 public class ContainerPressurePlate extends Container
 {
     public TileEntityPressurePlate tpp;
-    public HumanEntity player;
-    public IInventory inventory;
+    public EntityHuman player;
+    public InventoryView bukkitEntity;
+    private IInventory inventory;
 
     public ContainerPressurePlate(TileEntityPressurePlate var1, PlayerInventory var2)
     {
         this.tpp = var1;
-        player = var2.player.getBukkitEntity();
+        this.player = var2.player;
         this.drawSlots(var2, var1);
     }
 
@@ -35,7 +32,7 @@ public class ContainerPressurePlate extends Container
 
         for (int var4 = 0; var4 < var2.getSize(); ++var4)
         {
-            this.a(new SlotPP(var2, 0, -54, 154));
+            this.a((Slot)(new SlotPP(var2, 0, 65, 173)));
         }
 
         int var5;
@@ -44,29 +41,26 @@ public class ContainerPressurePlate extends Container
         {
             for (int var6 = 0; var6 < 9; ++var6)
             {
-                this.a(new Slot(var1, var6 + var5 * 9 + 9, -81 + var5 * 18, 132 - var6 * 18));
+                this.a(new Slot(var1, var6 + var5 * 9 + 9, 38 + var5 * 18, 151 - var6 * 18));
             }
         }
 
         for (var5 = 0; var5 < 9; ++var5)
         {
-            this.a(new Slot(var1, var5, -22, 132 - var5 * 18));
+            this.a(new Slot(var1, var5, 97, 151 - var5 * 18));
         }
     }
 
     public void removeAllSlots()
     {
-        this.b.clear();
+        this.c.clear();
     }
 
     public Slot getSlot(int var1)
     {
-        return this.b.size() > var1 ? (Slot)this.b.get(var1) : null;
+        return this.c.size() > var1 ? (Slot)this.c.get(var1) : null;
     }
 
-    /**
-     * args: slotID, itemStack to put in slot
-     */
     public void setItem(int var1, ItemStack var2)
     {
         if (this.getSlot(var1) != null)
@@ -86,18 +80,15 @@ public class ContainerPressurePlate extends Container
         }
     }
 
-    public boolean c(EntityHuman var1)
+    public boolean a(EntityHuman var1)
     {
-        return this.tpp.a(var1);
+        return this.tpp.a_(var1);
     }
 
-    /**
-     * Take a stack from the specified inventory slot.
-     */
     public ItemStack b(EntityHuman var1, int var2)
     {
         ItemStack var3 = null;
-        Slot var4 = (Slot)this.b.get(var2);
+        Slot var4 = (Slot)this.c.get(var2);
         ItemStack var5;
 
         if (var4 != null && !var4.d() && var2 != 0 && this.tpp.getItem(0) != null)
@@ -115,7 +106,7 @@ public class ContainerPressurePlate extends Container
             }
             else
             {
-                ((Slot)this.b.get(0)).set((ItemStack)null);
+                ((Slot)this.c.get(0)).set((ItemStack)null);
             }
         }
 
@@ -133,24 +124,24 @@ public class ContainerPressurePlate extends Container
             }
             else
             {
-                if (!((Slot)this.b.get(0)).isAllowed(var5))
+                if (!((Slot)this.c.get(0)).isAllowed(var5))
                 {
                     return null;
                 }
 
-                if (((Slot)this.b.get(0)).d() && !this.a(this.tpp.getItem(0), 1, 37, true))
+                if (((Slot)this.c.get(0)).d() && !this.a(this.tpp.getItem(0), 1, 37, true))
                 {
                     return null;
                 }
 
                 if (var5.hasTag() && var5.count == 1)
                 {
-                    ((Slot)this.b.get(0)).set(var5.cloneItemStack());
+                    ((Slot)this.c.get(0)).set(var5.cloneItemStack());
                     var5.count = 0;
                 }
                 else if (var5.count >= 1)
                 {
-                    ((Slot)this.b.get(0)).set(new ItemStack(var5.id, 1, var5.getData()));
+                    ((Slot)this.c.get(0)).set(new ItemStack(var5.id, 1, var5.getData()));
                     --var5.count;
                 }
             }
@@ -223,34 +214,25 @@ public class ContainerPressurePlate extends Container
         }
     }
 
-    /**
-     * Callback for when the crafting gui is closed.
-     */
-    public void a(EntityHuman var1)
+    public void b(EntityHuman var1)
     {
-        super.a(var1);
+        super.b(var1);
         this.inventory.f();
     }
-    
-    private CraftInventoryView bukkitEntity = null;
 
 	@Override
-	public CraftInventoryView getBukkitView() 
+	public InventoryView getBukkitView() 
 	{
-		if (this.bukkitEntity != null)
+		if(this.bukkitEntity != null)
 		{
 			return this.bukkitEntity;
 		}
-		CraftInventory inventory;
-		if (this.inventory instanceof PlayerInventory) 
+		if(tpp != null && player != null)
 		{
-		inventory = new CraftInventoryPlayer((PlayerInventory)this.inventory);
+			CraftInventory inv = new CraftInventory(this.tpp);
+			this.bukkitEntity = new CraftInventoryView(player.getBukkitEntity(), inv, this);
+			return this.bukkitEntity;
 		}
-		else
-		{
-			inventory = new CraftInventory(this.inventory);
-		}
-		this.bukkitEntity = new CraftInventoryView(this.player, inventory, this);
-		return this.bukkitEntity;
+		return null;
 	}
 }

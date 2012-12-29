@@ -1,6 +1,6 @@
 package xelitez.ironpp;
 
-import net.minecraft.server.ItemStack;
+import net.minecraft.server.v1_4_6.ItemStack;
 
 class PPRegistry$RegistrySettings
 {

@@ -11,21 +11,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 
-import net.minecraft.server.Block;
-import net.minecraft.server.Chunk;
-import net.minecraft.server.Entity;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.EntityTypes;
-import net.minecraft.server.IInventory;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.TileEntity;
-import net.minecraft.server.World;
+import net.minecraft.server.v1_4_6.Block;
+import net.minecraft.server.v1_4_6.Chunk;
+import net.minecraft.server.v1_4_6.Entity;
+import net.minecraft.server.v1_4_6.EntityHuman;
+import net.minecraft.server.v1_4_6.EntityLiving;
+import net.minecraft.server.v1_4_6.EntityTypes;
+import net.minecraft.server.v1_4_6.IInventory;
+import net.minecraft.server.v1_4_6.ItemStack;
+import net.minecraft.server.v1_4_6.NBTTagCompound;
+import net.minecraft.server.v1_4_6.NBTTagList;
+import net.minecraft.server.v1_4_6.TileEntity;
+import net.minecraft.server.v1_4_6.World;
 import xelitez.ironpp.PPSettings$SettingsButton;
 
 public class TileEntityPressurePlate extends TileEntity implements IInventory
@@ -44,6 +44,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     public PPSettings pps;
     public List settings;
     public String password = "";
+    public List viewers = new ArrayList();
 
     public TileEntityPressurePlate()
     {
@@ -71,10 +72,6 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         }
     }
 
-    /**
-     * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count
-     * ticks and creates a new spawn inside its implementation.
-     */
     public void g()
     {
         if (this.x != 0 && this.y != 0 && this.z != 0 && this.register && this.world != null)
@@ -423,9 +420,6 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         return ((PPSettings$SettingsButton)this.settings.get(var1)).enabled;
     }
 
-    /**
-     * Reads a tile entity from NBT.
-     */
     public void a(NBTTagCompound var1)
     {
         super.a(var1);
@@ -540,9 +534,6 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         this.scheduleUpdate(0);
     }
 
-    /**
-     * Writes a tile entity to NBT.
-     */
     public void b(NBTTagCompound var1)
     {
         super.b(var1);
@@ -609,26 +600,16 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         }
     }
 
-    /**
-     * Returns the number of slots in the inventory.
-     */
     public int getSize()
     {
         return this.item.length;
     }
 
-    /**
-     * Returns the stack in slot i
-     */
     public ItemStack getItem(int var1)
     {
         return this.item[var1];
     }
 
-    /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
-     */
     public ItemStack splitStack(int var1, int var2)
     {
         ItemStack var3 = this.getItem(var1);
@@ -653,10 +634,6 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         return var3;
     }
 
-    /**
-     * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
-     * like when you close a workbench GUI.
-     */
     public ItemStack splitWithoutUpdate(int var1)
     {
         ItemStack var2 = this.getItem(var1);
@@ -669,9 +646,6 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         return var2;
     }
 
-    /**
-     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     */
     public void setItem(int var1, ItemStack var2)
     {
         this.item[var1] = var2;
@@ -682,30 +656,20 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         }
 
         PPRegistry.setItem(this, this.world.worldProvider.dimension, this.item[0]);
-        this.world.i(this.x, this.y, this.z);
+        this.world.notify(this.x, this.y, this.z);
     }
 
-    /**
-     * Returns the name of the inventory.
-     */
     public String getName()
     {
         return "Advanced Pressure Plate";
     }
 
-    /**
-     * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended. *Isn't
-     * this more of a set than a get?*
-     */
     public int getMaxStackSize()
     {
         return 1;
     }
 
-    /**
-     * Do not make give this method the name canInteractWith because it clashes with Container
-     */
-    public boolean a(EntityHuman var1)
+    public boolean a_(EntityHuman var1)
     {
         return this.world.getTileEntity(this.x, this.y, this.z) != this ? false : var1.e((double)this.x + 0.5D, (double)this.y + 0.5D, (double)this.z + 0.5D) <= 64.0D;
     }
@@ -715,32 +679,29 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     public void f() {}
 
 	@Override
-	public ItemStack[] getContents() 
-	{
-		return this.item;
+	public ItemStack[] getContents() {
+		return item;
 	}
 
 	@Override
-	public void onOpen(CraftHumanEntity paramCraftHumanEntity) {
-		// TODO Auto-generated method stub
+	public List<HumanEntity> getViewers() {
+		return viewers;
+	}
+
+	@Override
+	public void onClose(CraftHumanEntity arg0) {
+		viewers.remove(arg0);
 		
 	}
 
 	@Override
-	public void onClose(CraftHumanEntity paramCraftHumanEntity) {
-		// TODO Auto-generated method stub
+	public void onOpen(CraftHumanEntity arg0) {
+		viewers.add(arg0);	
+	}
+
+	@Override
+	public void setMaxStackSize(int arg0) {
 		
-	}
-
-	@Override
-	public List<HumanEntity> getViewers() 
-	{
-		return null;
-	}
-
-	@Override
-	public void setMaxStackSize(int paramInt) {
-		// TODO Auto-generated method stub
 		
 	}
 }

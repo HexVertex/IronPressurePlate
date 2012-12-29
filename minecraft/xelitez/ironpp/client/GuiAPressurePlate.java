@@ -79,12 +79,6 @@ public class GuiAPressurePlate extends GuiContainer
     public int tab2Open = 0;
 
     /**
-     * the size of the Gui
-     */
-    protected int xSize = 385;
-    protected int ySize = 194;
-
-    /**
      * this method gets called every game update.
      * I use it to close the tab if Player is not enabled
      * and to change the scrolling if it is in an invalid state.
@@ -125,6 +119,8 @@ public class GuiAPressurePlate extends GuiContainer
     public GuiAPressurePlate(TileEntityPressurePlate tpp)
     {
         super(new ContainerPressurePlate(tpp, game.thePlayer.inventory));
+        xSize = 385;
+        ySize = 194;
         listHeight = 0;
         scrollY = 0;
         scrollHeight = 0;

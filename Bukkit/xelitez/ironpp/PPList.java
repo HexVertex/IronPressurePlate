@@ -1,6 +1,6 @@
 package xelitez.ironpp;
 
-import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.v1_4_6.NBTTagCompound;
 
 public class PPList
 {

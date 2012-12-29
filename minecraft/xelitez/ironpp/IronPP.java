@@ -49,7 +49,7 @@ import net.minecraftforge.common.Property;
 /**
  * Mod registration stuff.
  */
-@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.3.1")
+@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.3.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         versionBounds = "[3.3,3.4)",
         channels = {"IPP"},

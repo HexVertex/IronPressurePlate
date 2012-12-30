@@ -49,7 +49,9 @@ import net.minecraftforge.common.Property;
 /**
  * Mod registration stuff.
  */
-@Mod(modid = "IronPP", name = "Iron Pressure Plate mod", version = "3.3.2")
+@Mod(	modid = "IronPP", 
+		name = "Iron Pressure Plate mod",
+		version = "3.3.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         versionBounds = "[3.3,3.4)",
         channels = {"IPP"},
@@ -62,8 +64,8 @@ public class IronPP
     /**
      * Registers the default BlockIDs and the blocks.
      */
-    public int defaultPressurePlateIronId = 150;
-    public int defaultAPressurePlateIronId = 151;
+    public int defaultPressurePlateIronId = 2150;
+    public int defaultAPressurePlateIronId = 2151;
     private int BlockPPiD;
     private int BlockAPPiD;
     public static Block PressurePlateIron;
@@ -79,7 +81,7 @@ public class IronPP
     /**
      * Instances of the proxy and this class to be used by other classes.
      */
-    @SidedProxy(clientSide = "xelitez.ironpp.client.ClientProxy", serverSide = "xelitez.ironpp.CommonProxy")
+    @SidedProxy(clientSide = "xelitez.ironpp.client.ClientProxy", serverSide = "xelitez.ironpp.common.CommonProxy")
     public static CommonProxy proxy = new CommonProxy();
     @Instance
     public static IronPP instance;
@@ -96,8 +98,9 @@ public class IronPP
         try
         {
             P.load(); //loads the configuration file.
-            BlockPPiD = P.getBlock("PressurePlateIronId", defaultPressurePlateIronId).getInt(150); //gets the ID that's currently set in the configuration file or sets it with the default.
-            BlockAPPiD = P.getBlock("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(151);
+            BlockPPiD = P.getBlock("PressurePlateIronId", defaultPressurePlateIronId).getInt(defaultPressurePlateIronId); //gets the ID that's currently set in the configuration file or sets it with the default.
+            BlockAPPiD = P.getBlock("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(defaultAPressurePlateIronId);
+            System.out.println(BlockPPiD);
             Property PressurePlateIronTexture = P.get(P.CATEGORY_GENERAL, "PressurePlateIronCustomTexture", false); //gets the boolean if the user wants to use a custom texture.
             PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
             Property update = P.get("Updates", "Check for updates", true);

@@ -8,6 +8,14 @@ to the XEliteZ main thread and you have to notify
 kalvin(the mod creator) of what you're up to. 
 shortening the URL is not allowed for both 
 the download and the link to the main thread. 
+This also applies for bukkit ports but if you create a
+port you have to notify Kalvin on the minecraftforums
+that you've made a port and it may only be uploaded to
+mcportcentral.co.za after Kalvin has send a personal
+confirmation. Keep in mind that I will notify you back
+if I've made or will make my own port and that you
+are not allowed to update the port anymore unless
+you've been given permission to do so.
 
 you are not allowed to make a mod that copies
 too much code without giving any credit to this.

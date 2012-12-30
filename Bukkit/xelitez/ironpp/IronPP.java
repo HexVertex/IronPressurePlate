@@ -25,7 +25,7 @@ import net.minecraftforge.common.Property;
 @Mod(
         modid = "IronPP",
         name = "Iron Pressure Plate mod",
-        version = "3.3.1"
+        version = "3.3.2"
 )
 @NetworkMod(
         clientSideRequired = true,
@@ -38,8 +38,8 @@ import net.minecraftforge.common.Property;
 public class IronPP
 {
     Configuration P;
-    public int defaultPressurePlateIronId = 150;
-    public int defaultAPressurePlateIronId = 151;
+    public int defaultPressurePlateIronId = 2150;
+    public int defaultAPressurePlateIronId = 2151;
     private int BlockPPiD;
     private int BlockAPPiD;
     public static Block PressurePlateIron;
@@ -64,8 +64,8 @@ public class IronPP
         try
         {
             this.P.load();
-            this.BlockPPiD = this.P.getBlock("PressurePlateIronId", this.defaultPressurePlateIronId).getInt(150);
-            this.BlockAPPiD = this.P.getBlock("AdvancedPressurePlateIronId", this.defaultAPressurePlateIronId).getInt(151);
+            this.BlockPPiD = this.P.getBlock("PressurePlateIronId", this.defaultPressurePlateIronId).getInt(defaultPressurePlateIronId);
+            this.BlockAPPiD = this.P.getBlock("AdvancedPressurePlateIronId", this.defaultAPressurePlateIronId).getInt(defaultAPressurePlateIronId);
             Configuration var10001 = this.P;
             Property var2 = this.P.get("general", "PressurePlateIronCustomTexture", false);
             var2.comment = "set to true to enable custom textures which must be located in \'.minecraft/bin/minecraft.jar\' or the mod zip file as \'IronPP.png\'";

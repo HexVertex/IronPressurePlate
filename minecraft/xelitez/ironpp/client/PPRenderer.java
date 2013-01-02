@@ -79,10 +79,9 @@ public class PPRenderer implements ISimpleBlockRenderingHandler{
 			Block block, int modelId, RenderBlocks renderer) 
 	{
 		TileEntityPressurePlate tpp = (TileEntityPressurePlate)world.getBlockTileEntity(x, y, z);
-		ItemStack item;
 		if(PPRegistry.getItem(x, y, z, tpp.worldObj.provider.dimensionId) != null)
 		{
-			item = PPRegistry.getItem(x, y, z, tpp.worldObj.provider.dimensionId);
+			ItemStack item = PPRegistry.getItem(x, y, z, tpp.worldObj.provider.dimensionId);
 			ForgeHooksClient.bindTexture(Block.blocksList[item.itemID].getTextureFile(), 0);
 		}
 		renderer.uvRotateEast = 3;
@@ -95,6 +94,8 @@ public class PPRenderer implements ISimpleBlockRenderingHandler{
 		renderer.uvRotateNorth = 0;
 		renderer.uvRotateSouth = 0;
 		renderer.clearOverrideBlockTexture();
+		renderer.setRenderMinMax(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		ForgeHooksClient.unbindTexture();
 		return true;
 	}
 

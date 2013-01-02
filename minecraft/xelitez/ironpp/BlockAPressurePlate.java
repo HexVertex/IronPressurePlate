@@ -413,34 +413,6 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
-    {
-        World world = FMLClientHandler.instance().getClient().theWorld;
-        ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.dimensionId);
-
-        if (item != null && item.itemID != IronPP.APressurePlateIron.blockID)
-        {
-            return this.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
-        }
-
-        return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
-    }
-
-    @SideOnly(Side.CLIENT)
-    public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
-    {
-        World world = FMLClientHandler.instance().getClient().theWorld;
-        ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.dimensionId);
-
-        if (item != null && item.itemID != IronPP.APressurePlateIron.blockID)
-        {
-            return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
-        }
-
-        return super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
-    }
-
     @Override
     public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
     {
@@ -469,5 +441,10 @@ public class BlockAPressurePlate extends BlockContainer
         }
 
         return true;
+    }
+    
+    public int getRenderType()
+    {
+        return 2151;
     }
 }

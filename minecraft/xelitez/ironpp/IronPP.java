@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.lwjgl.input.Keyboard;
 
 import xelitez.ironpp.client.KeyHandler;
+import xelitez.ironpp.client.PPRenderer;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -51,7 +52,7 @@ import net.minecraftforge.common.Property;
  */
 @Mod(	modid = "IronPP", 
 		name = "Iron Pressure Plate mod",
-		version = "3.3.2")
+		version = "3.3.3")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         versionBounds = "[3.3,3.4)",
         channels = {"IPP"},
@@ -81,7 +82,7 @@ public class IronPP
     /**
      * Instances of the proxy and this class to be used by other classes.
      */
-    @SidedProxy(clientSide = "xelitez.ironpp.client.ClientProxy", serverSide = "xelitez.ironpp.common.CommonProxy")
+    @SidedProxy(clientSide = "xelitez.ironpp.client.ClientProxy", serverSide = "xelitez.ironpp.CommonProxy")
     public static CommonProxy proxy = new CommonProxy();
     @Instance
     public static IronPP instance;
@@ -100,7 +101,6 @@ public class IronPP
             P.load(); //loads the configuration file.
             BlockPPiD = P.getBlock("PressurePlateIronId", defaultPressurePlateIronId).getInt(defaultPressurePlateIronId); //gets the ID that's currently set in the configuration file or sets it with the default.
             BlockAPPiD = P.getBlock("AdvancedPressurePlateIronId", defaultAPressurePlateIronId).getInt(defaultAPressurePlateIronId);
-            System.out.println(BlockPPiD);
             Property PressurePlateIronTexture = P.get(P.CATEGORY_GENERAL, "PressurePlateIronCustomTexture", false); //gets the boolean if the user wants to use a custom texture.
             PressurePlateIronTexture.comment = "set to true to enable custom textures which must be located in '.minecraft/bin/minecraft.jar' or the mod zip file as 'IronPP.png'"; //adds a comment to the boolean section in the configuration.
             Property update = P.get("Updates", "Check for updates", true);
@@ -160,6 +160,10 @@ public class IronPP
         NetworkRegistry.instance().registerGuiHandler(instance, proxy); //Registers a GuiHandler assigned to this mod.(mostly for Network SMP Gui's)
         TickRegistry.registerTickHandler(new PPRegistry(), Side.CLIENT);
         TickRegistry.registerTickHandler(new PPRegistry(), Side.SERVER);
+        if(evt.getSide().isClient())
+        {
+        	RenderingRegistry.registerBlockHandler(2151, new PPRenderer());
+        }
         proxy.RegisterKeyHandler();
     }
 }

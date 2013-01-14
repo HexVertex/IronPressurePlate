@@ -28,7 +28,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler{
         float var9;
         float par3 = 1.0F;
         block.setBlockBoundsForItemRender();
-        renderer.updateCustomBlockBounds(block);
+        renderer.setRenderBoundsFromBlock(block);
         GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         var4.startDrawingQuads();
@@ -94,7 +94,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler{
 		renderer.uvRotateNorth = 0;
 		renderer.uvRotateSouth = 0;
 		renderer.clearOverrideBlockTexture();
-		renderer.setRenderMinMax(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		renderer.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		ForgeHooksClient.unbindTexture();
 		return true;
 	}

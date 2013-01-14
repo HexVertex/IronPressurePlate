@@ -3,12 +3,15 @@ package xelitez.ironpp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 
 public class Version
@@ -16,8 +19,8 @@ public class Version
     public static int majorVersion = 3;
     public static int minorVersion = 3;
     public static int majorBuild = 3;
-    public static int minorBuild = 9;
-    public static String MC = "MC:1.4.6";
+    public static int minorBuild = 11;
+    public static String MC = "MC:1.4.7";
 
     public static boolean ignoremB = true;
     public static boolean ignoreMC = false;
@@ -86,10 +89,13 @@ public class Version
         {
             FMLCommonHandler.instance().getMinecraftServerInstance().logger.fine("Unable to check for updates");
         }
-        catch (IOException e)
+        catch (ConnectException e)
         {
-            FMLCommonHandler.instance().getMinecraftServerInstance().logger.fine("Unable to check for updates");
-        }
+        	FMLLog.getLogger().log(Level.FINE, "Unable to connect to update page");
+        } 
+        catch (IOException e) {
+        	FMLLog.getLogger().log(Level.FINE, "Unable to check for updates");
+		}
 
         for (int i = 0; i < strings.size(); i++)
         {

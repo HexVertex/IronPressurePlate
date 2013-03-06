@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
@@ -18,7 +19,7 @@ public class Version
     public static int majorVersion = 3;
     public static int minorVersion = 3;
     public static int majorBuild = 4;
-    public static int minorBuild = 12;
+    public static int minorBuild = 13;
     public static String MC = "MC:1.4.7";
 
     public static boolean ignoremB = true;
@@ -159,44 +160,44 @@ public class Version
     		if ((ignoreMC && MC.matches("MC:" + NMC) || (!ignoreMC && !MC.matches("MC:" + NMC))) || ((ignoremB && !produceVersion(MV, mV, MB, 0).matches(produceVersion(majorVersion, minorVersion, majorBuild, 0))) || (!ignoremB && !getVersion().matches(produceVersion(MV, mV, MB, mB)))))
     		{
     			available = true;
-    			newVersion = produceVersion(MV, mV, MB, mB);
-    			
-    			if (!NMC.matches(""))
-    			{
-    				newVersion = newVersion + " for MC:" + NMC;
-    			}
-    			
-    			if (FMLCommonHandler.instance().getSide() == Side.SERVER && !registered)
-    			{
-    				IronPP.ippLog.info("A new version of the Iron Pressure Plate mod is available(" + newVersion + ")");
-    			}
-    			
-    			if (mB != minorBuild && !ignoremB)
-    			{
-    				color = "\u00a7b";
-    			}
-    			
-    			if (MB != majorBuild)
-    			{
-    				color = "\u00a7a";
-    			}
-    			
-    			if (mV != minorVersion)
-    			{
-    				color = "\u00a7e";
-    			}
-    			
-    			if (MV != majorVersion)
-    			{
-    				color = "\u00a73";
-    			}
-                	
-    			if (!MC.matches("MC:" + NMC) && !ignoreMC)
-    			{
-    				color = "\u00a75";
-    			}
     		}
     	}
-    }	
-    
+    	newVersion = produceVersion(MV, mV, MB, mB);
+    			
+    	if (!NMC.matches(""))
+    	{
+    		newVersion = newVersion + " for MC:" + NMC;
+    	}
+    			
+    	if (FMLCommonHandler.instance().getSide() == Side.SERVER && !registered)
+    	{
+    		IronPP.ippLog.info("A new version of the Iron Pressure Plate mod is available(" + newVersion + ")");
+    	}
+    	
+    	if (mB != minorBuild && !ignoremB)
+    	{
+    		color = "\u00a7b";
+    	}
+    	
+    	if (MB != majorBuild)
+    	{
+    		color = "\u00a7a";
+    	}
+    	
+    	if (mV != minorVersion)
+    	{
+    		color = "\u00a7e";
+    	}
+    	
+    	if (MV != majorVersion)
+    	{
+    		color = "\u00a73";
+    	}
+    	
+    	if (!MC.matches("MC:" + NMC) && !ignoreMC)
+    	{
+    		color = "\u00a75";
+    	}
+    }		
+    	
 }

@@ -27,7 +27,6 @@ public class ContainerPressurePlate extends Container
     public void drawSlots(IInventory par1IInventory, IInventory par2IInventory)
     {
         inventory = par2IInventory;
-        int var4;
         int var5;
         par2IInventory.openChest();
 

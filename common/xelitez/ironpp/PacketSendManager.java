@@ -18,8 +18,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.server.FMLServerHandler;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -172,7 +170,7 @@ public class PacketSendManager
         }
         catch (IOException e)
         {
-            gui.showText("Player adding failed", 20);
+            GuiModifyPressurePlate.showText("Player adding failed", 20);
             e.printStackTrace();
         }
 
@@ -223,7 +221,7 @@ public class PacketSendManager
         }
         catch (IOException e)
         {
-            gui.showText("Player removing failed", 20);
+            GuiModifyPressurePlate.showText("Player removing failed", 20);
             e.printStackTrace();
         }
 
@@ -892,9 +890,9 @@ public class PacketSendManager
                 data.writeInt(coords[var5]);
             }
 
-            data.writeInt(tpp.pps.buttons.size());
+            data.writeInt(PPSettings.buttons.size());
 
-            for (int var6 = 0; var6 < tpp.pps.buttons.size(); var6++)
+            for (int var6 = 0; var6 < PPSettings.buttons.size(); var6++)
             {
                 data.writeBoolean(tpp.getIsEnabled(var6));
             }

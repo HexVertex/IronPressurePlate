@@ -10,6 +10,7 @@ package xelitez.ironpp;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.EnumMobType;
@@ -27,14 +28,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import xelitez.ironpp.client.GuiAPressurePlate;
-import xelitez.ironpp.client.GuiModifyPressurePlate;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import cpw.mods.fml.server.FMLServerHandler;
 
 public class BlockAPressurePlate extends BlockContainer
 {
@@ -165,7 +162,7 @@ public class BlockAPressurePlate extends BlockContainer
         boolean var5 = ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated;
         boolean var6 = false;
         float var7 = 0.125F;
-        List var8 = null;
+        List<?> var8 = null;
 
         if (this.triggerMobType == EnumMobType.everything)
         {
@@ -421,7 +418,7 @@ public class BlockAPressurePlate extends BlockContainer
     	
     	if (item != null && item.itemID != IronPP.APressurePlateIron.blockID)
     	{
-    		return this.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
+    		return Block.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
     	}
     	
     	return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
@@ -435,7 +432,7 @@ public class BlockAPressurePlate extends BlockContainer
     
     	if (item != null && item.itemID != IronPP.APressurePlateIron.blockID)
     	{
-    		return this.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
+    		return Block.blocksList[item.itemID].colorMultiplier(par1IBlockAccess, par2, par3, par4);
     	}
     
     	return super.colorMultiplier(par1IBlockAccess, par2, par3, par4);

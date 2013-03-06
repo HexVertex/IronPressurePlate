@@ -6,7 +6,6 @@ import net.minecraft.world.World;
 import xelitez.ironpp.CommonProxy;
 import xelitez.ironpp.TileEntityPressurePlate;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -47,17 +46,5 @@ public class ClientProxy extends CommonProxy
     public World getClientWorld()
     {
         return FMLClientHandler.instance().getClient().theWorld;
-    }
-
-    @Override
-    public void RegisterKeyHandler()
-    {
-        KeyBindingRegistry.registerKeyBinding(new KeyHandler());
-    }
-
-    @Override
-    public String getKey(int i)
-    {
-        return KeyHandler.instance().getKey(i);
     }
 }

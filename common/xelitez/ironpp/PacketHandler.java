@@ -11,7 +11,6 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import xelitez.ironpp.PPSettings.SettingsButton;
 import xelitez.ironpp.client.GuiAPressurePlate;
 import xelitez.ironpp.client.GuiModifyPressurePlate;
 import xelitez.ironpp.client.GuiPassword;
@@ -20,11 +19,8 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.server.FMLServerHandler;
 
 public class PacketHandler implements IPacketHandler
 {
@@ -45,7 +41,7 @@ public class PacketHandler implements IPacketHandler
 
         if (ID == 0)
         {
-            System.out.println("Invalid IronPP Packet recieved");
+        	IronPP.ippLog.info("Invalid IronPP Packet recieved");
             return;
         }
 
@@ -59,7 +55,7 @@ public class PacketHandler implements IPacketHandler
         }
         else
         {
-            System.out.println("Invalid IronPP Packet recieved");
+        	IronPP.ippLog.info("Invalid IronPP Packet recieved");
         }
     }
 
@@ -242,7 +238,7 @@ public class PacketHandler implements IPacketHandler
                         coords[var1] = dat.readInt();
                     }
 
-                    if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+                    if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
                     	thePlayer.closeScreen();
                     }
@@ -257,9 +253,9 @@ public class PacketHandler implements IPacketHandler
                         coords[var1] = dat.readInt();
                     }
 
-                    if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+                    if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
-                        ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.allowedPlayers.clear();
+                        GuiAPressurePlate.tpp.allowedPlayers.clear();
                         int allowedPlayers = dat.readInt();
                         {
                             for (int var1 = 0; var1 < allowedPlayers; var1++)
@@ -273,10 +269,10 @@ public class PacketHandler implements IPacketHandler
                                 }
 
                                 boolean bool = dat.readBoolean();
-                                ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.setEnabledForPlayer(username, bool);
+                                GuiAPressurePlate.tpp.setEnabledForPlayer(username, bool);
                             }
 
-                            ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).lineUp();
+                            GuiAPressurePlate.lineUp();
                         }
                     }
 
@@ -294,9 +290,9 @@ public class PacketHandler implements IPacketHandler
 
                     int index = dat.readInt();
 
-                    if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+                    if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
-                        ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).switchbutton(index);
+                        GuiAPressurePlate.switchbutton(index);
                     }
 
                     return;
@@ -311,7 +307,7 @@ public class PacketHandler implements IPacketHandler
                         coords[var1] = dat.readInt();
                     }
 
-                    if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+                    if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
                         boolean bool = dat.readBoolean();
                         int usernamelength = dat.readInt();
@@ -348,7 +344,7 @@ public class PacketHandler implements IPacketHandler
                         coords[var1] = dat.readInt();
                     }
 
-                    if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+                    if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
                         boolean bool = dat.readBoolean();
                         int usernamelength = dat.readInt();
@@ -385,13 +381,13 @@ public class PacketHandler implements IPacketHandler
                         coords[var1] = dat.readInt();
                     }
 
-                    if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+                    if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
                         int index = dat.readInt();
 
-                        if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.settings.size() >= index)
+                        if (GuiAPressurePlate.tpp.settings.size() >= index)
                         {
-                            ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.switchSetting(index);
+                            GuiAPressurePlate.tpp.switchSetting(index);
                         }
                     }
 
@@ -407,24 +403,24 @@ public class PacketHandler implements IPacketHandler
                         coords[var1] = dat.readInt();
                     }
 
-                    if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.xCoord == coords[0] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.yCoord == coords[1] && ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.zCoord == coords[2])
+                    if (GuiAPressurePlate.tpp.xCoord == coords[0] && GuiAPressurePlate.tpp.yCoord == coords[1] && GuiAPressurePlate.tpp.zCoord == coords[2])
                     {
-                        if (((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.settings == null)
+                        if (GuiAPressurePlate.tpp.settings == null)
                         {
-                            ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.registerSettings();
+                            GuiAPressurePlate.tpp.registerSettings();
                         }
 
                         int var2 = dat.readInt();
 
                         for (int var3 = 0; var3 < var2; var3++)
                         {
-                            if (var3 <= ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.settings.size())
+                            if (var3 <= GuiAPressurePlate.tpp.settings.size())
                             {
-                                ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).tpp.setSetting(var3, dat.readBoolean());
+                                GuiAPressurePlate.tpp.setSetting(var3, dat.readBoolean());
                             }
                         }
 
-                        ((GuiAPressurePlate)GuiModifyPressurePlate.parentGuiScreen).LineUpSettings();
+                        GuiAPressurePlate.LineUpSettings();
                     }
 
                     return;
@@ -485,7 +481,7 @@ public class PacketHandler implements IPacketHandler
                         }
                         else
                         {
-                            gui.showText("Wrong Password!!!", 20);
+                            GuiPassword.showText("Wrong Password!!!", 20);
                         }
                     }
 
@@ -679,7 +675,8 @@ public class PacketHandler implements IPacketHandler
                     sb.append(dat.readChar());
                 }
 
-                String name = sb.toString();
+                sb.toString();
+                System.out.println("called");
                 return;
             }
 
@@ -693,11 +690,8 @@ public class PacketHandler implements IPacketHandler
                 }
 
                 TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
-                TileEntityPressurePlate tpp = null;
-
                 if (te != null || te instanceof TileEntityPressurePlate)
                 {
-                    tpp = (TileEntityPressurePlate)te;
                 }
 
                 int dimension = dat.readInt();

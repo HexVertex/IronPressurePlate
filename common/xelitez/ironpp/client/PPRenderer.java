@@ -2,7 +2,6 @@ package xelitez.ironpp.client;
 
 import org.lwjgl.opengl.GL11;
 
-import xelitez.ironpp.IronPP;
 import xelitez.ironpp.PPRegistry;
 import xelitez.ironpp.TileEntityPressurePlate;
 import net.minecraft.block.Block;
@@ -10,9 +9,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class PPRenderer implements ISimpleBlockRenderingHandler{

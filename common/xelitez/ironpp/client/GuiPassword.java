@@ -9,7 +9,6 @@ import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import xelitez.ironpp.IronPP;
 import xelitez.ironpp.PacketSendManager;
 import xelitez.ironpp.TileEntityPressurePlate;
 
@@ -25,18 +24,11 @@ public class GuiPassword extends GuiScreen
     private boolean sets;
     private boolean recieved = false;
     private boolean canExit = true;
-    private int xCoord;
-    private int yCoord;
-    private int zCoord;
-
     public GuiPassword(TileEntityPressurePlate tpp, boolean b, int par1, int par2, int par3)
     {
         this.tpp = tpp;
         set = 0;
         this.sets = b;
-        this.xCoord = par1;
-        this.yCoord = par2;
-        this.zCoord = par3;
         PacketSendManager.getPasswordFromServer(tpp);
     }
 
@@ -44,8 +36,8 @@ public class GuiPassword extends GuiScreen
     {
         Keyboard.enableRepeatEvents(true);
         this.controlList.clear();
-        this.theGuiTextField = new PasswordTextField(this.fontRenderer, this.width / 2 - 100, 60, 200, 20);
-        this.theGuiTextField.setFocused(true);
+        GuiPassword.theGuiTextField = new PasswordTextField(this.fontRenderer, this.width / 2 - 100, 60, 200, 20);
+        GuiPassword.theGuiTextField.setFocused(true);
     }
 
     public void drawScreen(int par1, int par2, float par3)
@@ -58,7 +50,7 @@ public class GuiPassword extends GuiScreen
             this.drawString(this.fontRenderer, text, this.width / 2 - 100, 85, 10526880);
         }
 
-        this.theGuiTextField.drawTextBox();
+        GuiPassword.theGuiTextField.drawTextBox();
         super.drawScreen(par1, par2, par3);
     }
 
@@ -71,7 +63,7 @@ public class GuiPassword extends GuiScreen
 
     public void updateScreen()
     {
-        this.theGuiTextField.updateCursorCounter();
+        GuiPassword.theGuiTextField.updateCursorCounter();
 
         if (duration > 0)
         {
@@ -83,11 +75,11 @@ public class GuiPassword extends GuiScreen
     {
         if (this.recieved)
         {
-            this.theGuiTextField.textboxKeyTyped(par1, par2);
+            GuiPassword.theGuiTextField.textboxKeyTyped(par1, par2);
         }
         else
         {
-            this.showText("Password not yet recieved", 20);
+            GuiPassword.showText("Password not yet recieved", 20);
         }
 
         if (par1 == 13)
@@ -95,14 +87,14 @@ public class GuiPassword extends GuiScreen
             if (this.sets)
             {
                 this.canExit = false;
-                PacketSendManager.sendNewPasswordToServer(tpp, this.theGuiTextField.getText().trim());
+                PacketSendManager.sendNewPasswordToServer(tpp, GuiPassword.theGuiTextField.getText().trim());
             }
             else
             {
                 if (this.set != 0)
                 {
                     this.canExit = false;
-                    PacketSendManager.sendPasswordToServer(tpp, this.theGuiTextField.getText().trim());
+                    PacketSendManager.sendPasswordToServer(tpp, GuiPassword.theGuiTextField.getText().trim());
                 }
             }
         }
@@ -113,13 +105,13 @@ public class GuiPassword extends GuiScreen
             {
                 if (this.canExit)
                 {
-                    this.duration = 0;
+                    GuiPassword.duration = 0;
                     PacketSendManager.sendOpenGuiPacketToServer(tpp, 0);
                 }
             }
             else
             {
-                this.duration = 0;
+                GuiPassword.duration = 0;
                 mc.thePlayer.closeScreen();
             }
         }
@@ -146,8 +138,8 @@ public class GuiPassword extends GuiScreen
     protected void mouseClicked(int par1, int par2, int par3)
     {
         super.mouseClicked(par1, par2, par3);
-        this.theGuiTextField.mouseClicked(par1, par2, par3);
-        this.theGuiTextField.setFocused(true);
+        GuiPassword.theGuiTextField.mouseClicked(par1, par2, par3);
+        GuiPassword.theGuiTextField.setFocused(true);
     }
 
     public void onGuiClosed()
@@ -262,8 +254,6 @@ public class GuiPassword extends GuiScreen
             int var4 = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
             int var5 = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
             int var6 = this.maxStringLength - this.text.length() - (var4 - this.selectionEnd);
-            boolean var7 = false;
-
             if (this.text.length() > 0)
             {
                 var2 = var2 + this.text.substring(0, var4);
@@ -725,16 +715,6 @@ public class GuiPassword extends GuiScreen
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
 
-        public void setMaxStringLength(int par1)
-        {
-            this.maxStringLength = par1;
-
-            if (this.text.length() > par1)
-            {
-                this.text = this.text.substring(0, par1);
-            }
-        }
-
         /**
          * returns the maximum number of character that can be contained in this textbox
          */
@@ -760,19 +740,6 @@ public class GuiPassword extends GuiScreen
         }
 
         /**
-         * enable drawing background and outline
-         */
-        public void setEnableBackgroundDrawing(boolean par1)
-        {
-            this.enableBackgroundDrawing = par1;
-        }
-
-        public void func_73794_g(int par1)
-        {
-            this.enabledColor = par1;
-        }
-
-        /**
          * setter for the focused field
          */
         public void setFocused(boolean par1)
@@ -783,14 +750,6 @@ public class GuiPassword extends GuiScreen
             }
 
             this.isFocused = par1;
-        }
-
-        /**
-         * getter for the focused field
-         */
-        public boolean isFocused()
-        {
-            return this.isFocused;
         }
 
         /**
@@ -862,22 +821,9 @@ public class GuiPassword extends GuiScreen
             }
         }
 
-        /**
-         * if true the textbox can lose focus by clicking elsewhere on the screen
-         */
-        public void setCanLoseFocus(boolean par1)
-        {
-            this.canLoseFocus = par1;
-        }
-
         public boolean func_73778_q()
         {
             return this.field_73823_s;
-        }
-
-        public void func_73790_e(boolean par1)
-        {
-            this.field_73823_s = par1;
         }
     }
 }

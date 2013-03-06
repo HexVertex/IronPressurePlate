@@ -5,18 +5,9 @@ import java.util.List;
 
 public class PPSettings
 {
-    public static List lines;
-    public static List buttons;
-    public static List settingsLines;
-    private static TileEntityPressurePlate tpp;
-
-    public PPSettings(TileEntityPressurePlate tpp)
-    {
-        lines = new ArrayList();
-        buttons = new ArrayList();
-        settingsLines = new ArrayList();
-        this.tpp = tpp;
-    }
+    public static List<String> lines = new ArrayList<String>();
+    public static List<SettingsButton> buttons = new ArrayList<SettingsButton>();
+    public static List<SettingsLine> settingsLines = new ArrayList<SettingsLine>();
 
     public static void addLine(String par1Str)
     {

@@ -8,8 +8,6 @@ package xelitez.ironpp.client;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import xelitez.ironpp.ContainerPressurePlate;
 import xelitez.ironpp.PPPlayerList;
 import xelitez.ironpp.PPSettings;
@@ -23,7 +21,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.inventory.Slot;
 import net.minecraft.util.StatCollector;
 
 public class GuiAPressurePlate extends GuiContainer
@@ -87,14 +84,14 @@ public class GuiAPressurePlate extends GuiContainer
     {
         if (game.theWorld.isRemote)
         {
-            if (!this.enabled[0] && this.tabOpen == 1)
+            if (!GuiAPressurePlate.enabled[0] && this.tabOpen == 1)
             {
                 this.tabOpen = 0;
             }
         }
         else
         {
-            if (!this.tpp.findMobName("humanoid") && this.tabOpen == 1)
+            if (!GuiAPressurePlate.tpp.findMobName("humanoid") && this.tabOpen == 1)
             {
                 this.tabOpen = 0;
             }
@@ -130,15 +127,15 @@ public class GuiAPressurePlate extends GuiContainer
         playerScrollY = 0;
         playerScrollHeight = 0;
         playerIsScrolling = false;
-        this.cpp = (ContainerPressurePlate)this.inventorySlots;
-        this.tpp = tpp;
-        enabled = new boolean[this.tpp.allowedMobs.length];
+        GuiAPressurePlate.cpp = (ContainerPressurePlate)this.inventorySlots;
+        GuiAPressurePlate.tpp = tpp;
+        enabled = new boolean[GuiAPressurePlate.tpp.allowedMobs.length];
 
-        for (int i = 0; i < this.tpp.allowedMobs.length; i++)
+        for (int i = 0; i < GuiAPressurePlate.tpp.allowedMobs.length; i++)
         {
-            if (this.tpp.allowedMobs[i] != null)
+            if (GuiAPressurePlate.tpp.allowedMobs[i] != null)
             {
-                this.enabled[i] = this.tpp.allowedMobs[i].getEnabled();
+                GuiAPressurePlate.enabled[i] = GuiAPressurePlate.tpp.allowedMobs[i].getEnabled();
             }
         }
 
@@ -157,7 +154,7 @@ public class GuiAPressurePlate extends GuiContainer
 
         if (game.theWorld.isRemote)
         {
-            PacketSendManager.requestPPDataFromServer(this.tpp);
+            PacketSendManager.requestPPDataFromServer(GuiAPressurePlate.tpp);
         }
     }
     
@@ -197,19 +194,19 @@ public class GuiAPressurePlate extends GuiContainer
 
     public static void LineUpSettings()
     {
-        enabledSettings = new boolean[tpp.pps.buttons.size()];
+        enabledSettings = new boolean[PPSettings.buttons.size()];
 
-        for (int i = 0; i < tpp.pps.buttons.size(); i++)
+        for (int i = 0; i < PPSettings.buttons.size(); i++)
         {
-            if (tpp.pps.buttons.get(i) != null)
+            if (PPSettings.buttons.get(i) != null)
             {
                 enabledSettings[i] = tpp.getIsEnabled(i);
             }
         }
 
-        if (tpp.pps.lines.size() > 0)
+        if (PPSettings.lines.size() > 0)
         {
-            settingsListHeight = 14 * ((tpp.pps.lines.size())) - 137;
+            settingsListHeight = 14 * ((PPSettings.lines.size())) - 137;
             settingsScrollHeight = (int)((137D / (double)(settingsListHeight + 137)) * 137D);
 
             if (settingsScrollHeight <= 0 || settingsScrollHeight >= 137)
@@ -289,7 +286,7 @@ public class GuiAPressurePlate extends GuiContainer
         {
             if (k == 0 && i >= 24 && i < 110 && j >= 16 && j < 154)
             {
-                for (int j1 = 0; j1 < tpp.pps.buttons.size(); j1++)
+                for (int j1 = 0; j1 < PPSettings.buttons.size(); j1++)
                 {
                     if (mouseInSettingsRadioButton(i, j, j1))
                     {
@@ -304,21 +301,21 @@ public class GuiAPressurePlate extends GuiContainer
                     }
                 }
 
-                for (int j1 = 0; j1 < tpp.pps.settingsLines.size(); j1++)
+                for (int j1 = 0; j1 < PPSettings.settingsLines.size(); j1++)
                 {
                     if (mouseInSettingsLine(i, j, j1))
                     {
                         switch (j1)
                         {
                             case 0:
-                                mc.displayGuiScreen(new GuiPassword(this.tpp, true, tpp.xCoord, tpp.yCoord, tpp.zCoord));
+                                mc.displayGuiScreen(new GuiPassword(GuiAPressurePlate.tpp, true, tpp.xCoord, tpp.yCoord, tpp.zCoord));
                         }
                     }
                 }
             }
         }
 
-        if (this.enabled[0])
+        if (GuiAPressurePlate.enabled[0])
         {
             if (k == 0 && i >= 295 && i <= 304 && j >= 5 &&  j <= 63)
             {
@@ -469,7 +466,7 @@ public class GuiAPressurePlate extends GuiContainer
             drawTexturedModalRect(j1 + 372, l1 + 61, 172, 161, 3, 2);
             drawTexturedModalRect(j1 + 374, l1 + 129, 0, 161, 1, 1);
 
-            if (this.playerScrollHeight == 118)
+            if (GuiAPressurePlate.playerScrollHeight == 118)
             {
                 drawTexturedModalRect(j1 + 362, l1 + 9, 120, 17, 5, 120);
             }
@@ -517,7 +514,7 @@ public class GuiAPressurePlate extends GuiContainer
                 int k1 = k + 129 + ((j2 & 1) != 0 ? 80 : 0);
                 int i2 = (l + 14 * (j2 >> 1) + 20) - scrollY;
 
-                if (this.enabled[j2])
+                if (GuiAPressurePlate.enabled[j2])
                 {
                     drawTexturedModalRect(k1, i2, 176 + 8, 0, 8, 9);
                 }
@@ -532,7 +529,7 @@ public class GuiAPressurePlate extends GuiContainer
 
         if (this.tabOpen == 1)
         {
-            this.lineUp();
+            GuiAPressurePlate.lineUp();
             playerClip(k, l);
 
             if (!game.theWorld.isRemote)
@@ -559,7 +556,7 @@ public class GuiAPressurePlate extends GuiContainer
                     int k1 = k + 299;
                     int i2 = (l - 8 + 14 * (j2) + 20) - playerScrollY;
 
-                    if (this.enabledPlayers[j2])
+                    if (GuiAPressurePlate.enabledPlayers[j2])
                     {
                         drawTexturedModalRect(k1, i2, 176 + 8, 0, 8, 9);
                     }
@@ -588,8 +585,6 @@ public class GuiAPressurePlate extends GuiContainer
         i -= k;
         j -= l;
         int k2 = Mouse.getDWheel();
-        int i2 = Mouse.getX();
-        int j2 = Mouse.getY();
 
         if (scrollHeight != 139)
         {
@@ -1003,14 +998,14 @@ public class GuiAPressurePlate extends GuiContainer
             drawTexturedModalRect(k + 19, l + 153, 4, 2, 1, 1);
             drawTexturedModalRect(k + 109, l + 15, 160, 18, 10, 130);
             drawTexturedModalRect(k + 109, l + 145, 160, 150, 10, 9);
-            this.lineUp();
+            GuiAPressurePlate.lineUp();
             this.settingsClip(k, l);
 
             if (!game.theWorld.isRemote)
             {
-                for (int j2 = 0; j2 < tpp.pps.buttons.size(); j2++)
+                for (int j2 = 0; j2 < PPSettings.buttons.size(); j2++)
                 {
-                    int var1 = (Integer)cpp.tpp.pps.buttons.get(j2);
+                    int var1 = PPSettings.buttons.get(j2).line;
                     int k1 = k + 99;
                     int i2 = (l - 8 + 14 * (var1) + 20) - settingsScrollY;
 
@@ -1026,14 +1021,14 @@ public class GuiAPressurePlate extends GuiContainer
             }
             else
             {
-                for (int j2 = 0; j2 < tpp.pps.buttons.size(); j2++)
+                for (int j2 = 0; j2 < PPSettings.buttons.size(); j2++)
                 {
                     PPSettings.SettingsButton var1 = (PPSettings.SettingsButton)cpp.tpp.settings.get(j2);
                     int var2 = var1.line;
                     int k1 = k + 26;
                     int i2 = (l - 8 + 14 * (var2) + 10) - settingsScrollY;
 
-                    if (this.tpp.getIsEnabled(j2))
+                    if (GuiAPressurePlate.tpp.getIsEnabled(j2))
                     {
                         drawTexturedModalRect(k1, i2, 176 + 8, 0, 8, 9);
                     }
@@ -1051,9 +1046,9 @@ public class GuiAPressurePlate extends GuiContainer
             var3.drawString("Settings", k + 24, l + 6, 0x404040);
             this.settingsClip(k, l);
 
-            for (int j2 = 0; j2 < tpp.pps.settingsLines.size(); j2++)
+            for (int j2 = 0; j2 < PPSettings.settingsLines.size(); j2++)
             {
-                SettingsLine var1 = (SettingsLine)tpp.pps.settingsLines.get(j2);
+                SettingsLine var1 = (SettingsLine)PPSettings.settingsLines.get(j2);
                 int var2 = var1.line;
                 int l1 = k + 25;
                 int i1 = (l + 14 * (var2) + 15) - settingsScrollY;
@@ -1069,14 +1064,14 @@ public class GuiAPressurePlate extends GuiContainer
 
             int var2 = 0;
 
-            for (var2 = 0; var2 < tpp.pps.lines.size(); var2++)
+            for (var2 = 0; var2 < PPSettings.lines.size(); var2++)
             {
                 int l1 = k + 25;
                 int i1 = (l + 14 * (var2) + 17) - settingsScrollY;
-                var3.drawString((String)tpp.pps.lines.get(var2), l1, i1, 0xffffff);
+                var3.drawString((String)PPSettings.lines.get(var2), l1, i1, 0xffffff);
             }
 
-            for (var2 = 0; var2 < tpp.pps.buttons.size(); var2++)
+            for (var2 = 0; var2 < PPSettings.buttons.size(); var2++)
             {
                 PPSettings.SettingsButton var4 = (PPSettings.SettingsButton)cpp.tpp.settings.get(var2);
                 int var5 = var4.line;
@@ -1127,7 +1122,7 @@ public class GuiAPressurePlate extends GuiContainer
         int i1 = 64 * scaling.getScaleFactor();
         int j1 = 118 * scaling.getScaleFactor();
 
-        if (this.playerScrollHeight == 118)
+        if (GuiAPressurePlate.playerScrollHeight == 118)
         {
             i1 = 69 * scaling.getScaleFactor();
         }
@@ -1184,7 +1179,7 @@ public class GuiAPressurePlate extends GuiContainer
 
     public boolean mouseInSettingsLine(int i, int j, int k)
     {
-        SettingsLine var1 = (SettingsLine)tpp.pps.settingsLines.get(k);
+        SettingsLine var1 = (SettingsLine)PPSettings.settingsLines.get(k);
         int l = 26;
         int i1 = (-17 + 14 * (var1.line) + 20) - settingsScrollY;
         return i >= l - 2 && i < l + 86 && j >= i1 - 2 && j < i1 + 10;
@@ -1292,7 +1287,7 @@ public class GuiAPressurePlate extends GuiContainer
 
         if (this.tabOpen == 1)
         {
-            this.lineUp();
+            GuiAPressurePlate.lineUp();
             playerClip(i, j);
 
             for (int k = 0; k < tpp.allowedPlayers.size(); k++)
@@ -1330,7 +1325,7 @@ public class GuiAPressurePlate extends GuiContainer
      */
     private void drawPlayerScrollBar()
     {
-        if (this.enabledPlayers.length != 0)
+        if (GuiAPressurePlate.enabledPlayers.length != 0)
         {
             int j = 0;
             int i = ((width - xSize) / 2) + 362;
@@ -1357,7 +1352,7 @@ public class GuiAPressurePlate extends GuiContainer
 
     private void drawSettingsScrollBar()
     {
-        if (this.tpp.pps.lines.size() != 0)
+        if (PPSettings.lines.size() != 0)
         {
             int j = 0;
             int i = ((width - xSize) / 2) + 112;
@@ -1370,7 +1365,7 @@ public class GuiAPressurePlate extends GuiContainer
             int k = j;
             drawTexturedModalRect(i, k, 176, 9, 5, 1);
 
-            if (this.tpp.pps.lines.size() != 0)
+            if (PPSettings.lines.size() != 0)
             {
                 for (k++; k < (j + settingsScrollHeight) - 1; k++)
                 {

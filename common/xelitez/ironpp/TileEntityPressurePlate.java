@@ -30,9 +30,7 @@ import net.minecraft.world.chunk.Chunk;
 
 import xelitez.ironpp.PPSettings.SettingsButton;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 
 public class TileEntityPressurePlate extends TileEntity implements IInventory
 {
@@ -41,17 +39,17 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
      * registeres the lists of mobs and players.
      */
     public PPList[] allowedMobs;
-    public List mobs  = new ArrayList();
-    public List allowedPlayers = new ArrayList();
-    List living = new ArrayList();
-    List other = new ArrayList();
+    public List<String> mobs  = new ArrayList<String>();
+    public List<PPPlayerList> allowedPlayers = new ArrayList<PPPlayerList>();
+    List<String> living = new ArrayList<String>();
+    List<String> other = new ArrayList<String>();
     public boolean update = false;
     private int countdown = 0;
     public boolean activated = false;
     private boolean check = false;
     private boolean register = false;
     public PPSettings pps;
-    public List settings;
+    public List<Object> settings;
     public String password = "";
 
     public TileEntityPressurePlate()
@@ -128,11 +126,11 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         {
             Field field = (EntityList.class).getDeclaredFields()[1];
             field.setAccessible(true);
-            Map map = null;
+            Map<?, ?> map = null;
 
             try
             {
-                map = (Map)field.get(null);
+                map = (Map<?, ?>)field.get(null);
             }
             catch (Exception exception)
             {
@@ -141,9 +139,9 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 
             if (map != null)
             {
-                for (Iterator iterator = map.keySet().iterator(); iterator.hasNext();)
+                for (Iterator<?> iterator = map.keySet().iterator(); iterator.hasNext();)
                 {
-                    Class class1 = (Class)iterator.next();
+                    Class<?> class1 = (Class<?>)iterator.next();
 
                     try
                     {
@@ -229,18 +227,12 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     {
         if (settings == null || settings.size() == 0)
         {
-            settings = new ArrayList();
-            pps = new PPSettings(this);
-            pps.addLineWithButton("Unlisted players are by default:", "Enabled", "Disabled", false, 0);
-            pps.addLineWithButton("Sound is:", "On", "Off", true, 1);
-            pps.addLineWithButton("Password", "Enabled", "Disabled", false, 2);
-            pps.addClickableLine("Set Password", 0);
-            pps.addLineWithButton("Ask password on break", "Yes", "No", false, 3);
-            pps.addLine("Note: if you have set no password but enabled password then just press enter if you get stuck on the gui screen");
+            settings = new ArrayList<Object>();
+            pps = new PPSettings();
 
-            for (int var1 = 0; var1 < pps.buttons.size(); var1++)
+            for (int var1 = 0; var1 < PPSettings.buttons.size(); var1++)
             {
-                settings.add(pps.buttons.get(var1));
+                settings.add(PPSettings.buttons.get(var1));
             }
         }
     }
@@ -542,7 +534,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         }
         catch (Exception e)
         {
-            FMLLog.log(Level.FINE, e, "no items found, adding...");
+            IronPP.ippLog.log(Level.FINE, "no items found, adding...");
             item = new ItemStack[1];
         }
 
@@ -556,7 +548,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
                 int var13 = var14.getByte("setting");
                 boolean var15 = var14.getBoolean("enabled");
 
-                if (var13 >= 0 && var13 < this.pps.buttons.size())
+                if (var13 >= 0 && var13 < PPSettings.buttons.size())
                 {
                     this.setSetting(var13, var15);
                 }
@@ -572,7 +564,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         }
         catch (Exception e)
         {
-            FMLLog.log(Level.FINE, e, "no password setting found, adding...");
+        	IronPP.ippLog.log(Level.FINE, "no password setting found, adding...");
             password = "";
         }
 
@@ -630,7 +622,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         par1NBTTagCompound.setTag("Items", var8);
         NBTTagList var9 = new NBTTagList();
 
-        for (int var3 = 0; var3 < this.pps.buttons.size(); var3++)
+        for (int var3 = 0; var3 < PPSettings.buttons.size(); var3++)
         {
             NBTTagCompound var4 = new NBTTagCompound();
             var4.setByte("setting", (byte)var3);

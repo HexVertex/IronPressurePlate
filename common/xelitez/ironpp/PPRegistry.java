@@ -1,14 +1,8 @@
 package xelitez.ironpp;
 
-import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-
-import xelitez.ironpp.client.KeyHandler;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
@@ -26,23 +20,22 @@ import cpw.mods.fml.common.network.Player;
 
 public class PPRegistry implements IConnectionHandler, ITickHandler
 {
-    private static List PressurePlates;
+    private static List<RegistrySettings> PressurePlates;
     public static boolean loggedIn = false;
     public static boolean send = false;
     public static boolean sendToServer = false;
     static World world = null;
     public static PPRegistry pp;
+    private boolean notify = false;
 
     public PPRegistry()
     {
-        this.PressurePlates = new ArrayList();
+        PPRegistry.PressurePlates = new ArrayList<RegistrySettings>();
         pp = this;
     }
 
     public static void addPressurePlate(int par1, int par2, int par3, int dimension, boolean b, ItemStack item)
     {
-        int[] data = new int[3];
-
         for (int var1 = 0; var1 < PressurePlates.size(); var1++)
         {
             RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
@@ -234,9 +227,14 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
     public void clientLoggedIn(NetHandler clientHandler,
             INetworkManager manager, Packet1Login login)
     {
-        if (Version.available)
+    	if (Version.notify && !this.notify && !Version.registered)
+    	{
+    		clientHandler.getPlayer().addChatMessage("\u00a7eIron Pressure Plate failed to register to the XEliteZ UpdateUtility. You should download it if you can. You can disable this message in the config file.");
+    		this.notify = true;
+    	}
+        if (Version.available && !Version.registered)
         {
-            clientHandler.getPlayer().addChatMessage("A new version of the \u00a7eIron Pressure Plate mod\u00a7f is available (" + Version.color + Version.newVersion + "\u00a7f). Press \u00a7e" + Keyboard.getKeyName(KeyHandler.instance().getKeyBindings()[0].keyCode) + "\u00a7f to open the download page.");
+            clientHandler.getPlayer().addChatMessage("A new version of the Iron Pressure Plate mod is avalable(" + Version.color + Version.newVersion + "\u00a7f).");
         }
     }
 
@@ -294,7 +292,7 @@ public class PPRegistry implements IConnectionHandler, ITickHandler
         return "IronPP";
     }
 
-    private static class RegistrySettings
+    public static class RegistrySettings
     {
         public int xCoord;
         public int yCoord;

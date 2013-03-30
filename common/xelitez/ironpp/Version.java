@@ -18,9 +18,9 @@ public class Version
 {
     public static int majorVersion = 3;
     public static int minorVersion = 3;
-    public static int majorBuild = 4;
-    public static int minorBuild = 13;
-    public static String MC = "MC:1.4.7";
+    public static int majorBuild = 5;
+    public static int minorBuild = 15;
+    public static String MC = "MC:1.5.1";
 
     public static boolean ignoremB = true;
     public static boolean ignoreMC = false;
@@ -110,6 +110,7 @@ public class Version
     	} 
     	catch (IOException e) {
     		IronPP.ippLog.log(Level.INFO, "Unable to check for updates");
+    		return;
     	}
     	
     	for (int i = 0; i < strings.size(); i++)

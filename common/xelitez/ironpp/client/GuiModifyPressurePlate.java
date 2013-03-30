@@ -59,21 +59,21 @@ public class GuiModifyPressurePlate extends GuiScreen
 
         if (theGuiTextField.getText().trim().matches(""))
         {
-            if (((GuiButton)this.controlList.get(0)).enabled || ((GuiButton)this.controlList.get(1)).enabled)
+            if (((GuiButton)this.buttonList.get(0)).enabled || ((GuiButton)this.buttonList.get(1)).enabled)
             {
-                ((GuiButton)this.controlList.get(0)).enabled = false;
+                ((GuiButton)this.buttonList.get(0)).enabled = false;
             }
 
-            ((GuiButton)this.controlList.get(1)).enabled = false;
+            ((GuiButton)this.buttonList.get(1)).enabled = false;
         }
         else
         {
-            if (!((GuiButton)this.controlList.get(0)).enabled || !((GuiButton)this.controlList.get(1)).enabled)
+            if (!((GuiButton)this.buttonList.get(0)).enabled || !((GuiButton)this.buttonList.get(1)).enabled)
             {
-                ((GuiButton)this.controlList.get(0)).enabled = true;
+                ((GuiButton)this.buttonList.get(0)).enabled = true;
             }
 
-            ((GuiButton)this.controlList.get(1)).enabled = true;
+            ((GuiButton)this.buttonList.get(1)).enabled = true;
         }
     }
 
@@ -84,10 +84,10 @@ public class GuiModifyPressurePlate extends GuiScreen
 	public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
-        this.controlList.clear();
-        this.controlList.add(new GuiButton(0, this.width / 2 - 180, this.height / 4 + 96 + 12, 90, 20, "Add"));
-        this.controlList.add(new GuiButton(1, this.width / 2 - 85, this.height / 4 + 96 + 12, 90, 20, "Remove"));
-        this.controlList.add(new GuiButton(2, this.width / 2 + 10, this.height / 4 + 96 + 12, 180, 20, "Exit"));
+        this.buttonList.clear();
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 180, this.height / 4 + 96 + 12, 90, 20, "Add"));
+        this.buttonList.add(new GuiButton(1, this.width / 2 - 85, this.height / 4 + 96 + 12, 90, 20, "Remove"));
+        this.buttonList.add(new GuiButton(2, this.width / 2 + 10, this.height / 4 + 96 + 12, 180, 20, "Exit"));
         GuiModifyPressurePlate.theGuiTextField = new GuiTextField(this.fontRenderer, this.width / 2 - 100, 60, 200, 20);
         GuiModifyPressurePlate.theGuiTextField.setFocused(true);
     }
@@ -181,7 +181,7 @@ public class GuiModifyPressurePlate extends GuiScreen
 
         if (par1 == 13)
         {
-            this.actionPerformed((GuiButton)this.controlList.get(0));
+            this.actionPerformed((GuiButton)this.buttonList.get(0));
         }
     }
 

@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -64,10 +64,8 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         this.activated = b;
         world.notifyBlockChange(par1, par2, par3, world.getBlockId(par1, par2, par3));
         Chunk var5 = world.getChunkFromChunkCoords(par1 >> 4, par3 >> 4);
-        int var6 = par1 & 15;
-        int var7 = par3 & 15;
 
-        if ((world.isRemote || var5.deferRender && Block.requiresSelfNotify[var5.getBlockID(var6, par2, var7) & 4095]))
+        if ((world.isRemote || var5.isChunkLoaded))
         {
             world.markBlockForUpdate(par1, par2, par3);
         }
@@ -727,4 +725,16 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     {
         // TODO Auto-generated method stub
     }
+
+	@Override
+	public boolean isInvNameLocalized() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
+	{
+		return itemstack.getItem() instanceof ItemBlock;
+	}
 }

@@ -15,6 +15,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.EnumMobType;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -25,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -39,38 +41,57 @@ public class BlockAPressurePlate extends BlockContainer
 
     private Random random = new Random();
 
-    protected BlockAPressurePlate(int par1, int par2, Material par3Material)
+    protected BlockAPressurePlate(int par1, String par2, Material par3Material)
     {
-        super(par1, par2, par3Material);
-        this.setRequiresSelfNotify();
+        super(par1, par3Material);
         this.triggerMobType = EnumMobType.everything;
         this.setCreativeTab(CreativeTabs.tabRedstone);
         this.setTickRandomly(true);
         float var5 = 0.0625F;
         this.setBlockBounds(var5, 0.0F, var5, 1.0F - var5, 0.03125F, 1.0F - var5);
-        this.blockIndexInTexture = par2;
+        this.func_94353_c_(1);
+    }
+    
+    protected void func_94353_c_(int par1)
+    {
+        boolean flag = 15 > 0;
+        float f = 0.0625F;
+
+        if (flag)
+        {
+            this.setBlockBounds(f, 0.0F, f, 1.0F - f, 0.03125F, 1.0F - f);
+        }
+        else
+        {
+            this.setBlockBounds(f, 0.0F, f, 1.0F - f, 0.0625F, 1.0F - f);
+        }
     }
 
-    public int tickRate()
+    @Override
+    public int tickRate(World par1)
     {
         return 20;
     }
 
+    @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4)
     {
         return null;
     }
 
+    @Override
     public boolean isOpaqueCube()
     {
         return false;
     }
 
+    @Override
     public boolean renderAsNormalBlock()
     {
         return false;
     }
 
+    @Override
     public boolean getBlocksMovement(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
         return true;
@@ -82,12 +103,14 @@ public class BlockAPressurePlate extends BlockContainer
         return new TileEntityPressurePlate();
     }
 
+    @Override
     public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4)
     {
-        return par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4) || BlockFence.isIdAFence(par1World.getBlockId(par2, par3 - 1, par4));
+        return par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4) || BlockFence.isIdAFence(par1World.getBlockId(par2, par3 - 1, par4)) || IronPP.getNonSolidBlockEnabled(par1World.getBlockId(par2, par3 - 1, par4), par1World.getBlockMetadata(par2, par3 - 1, par4));
     }
 
-    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving)
+    @Override
+    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving, ItemStack par6ItemStack)
     {
         if (par5EntityLiving instanceof EntityPlayer && par1World.getBlockTileEntity(par2, par3, par4) != null && par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)
         {
@@ -111,11 +134,12 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
+    @Override
     public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
     {
         boolean var6 = false;
 
-        if (!par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4) && !BlockFence.isIdAFence(par1World.getBlockId(par2, par3 - 1, par4)))
+        if (!par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4) && !BlockFence.isIdAFence(par1World.getBlockId(par2, par3 - 1, par4)) && !IronPP.getNonSolidBlockEnabled(par1World.getBlockId(par2, par3 - 1, par4), par1World.getBlockMetadata(par2, par3 - 1, par4)))
         {
             var6 = true;
         }
@@ -123,10 +147,11 @@ public class BlockAPressurePlate extends BlockContainer
         if (var6)
         {
             this.dropBlockAsItem(par1World, par2, par3, par4, par1World.getBlockMetadata(par2, par3, par4), 0);
-            par1World.setBlockWithNotify(par2, par3, par4, 0);
+            par1World.setBlockToAir(par2, par3, par4);
         }
     }
 
+    @Override
     public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random)
     {
         if (!par1World.isRemote)
@@ -138,6 +163,7 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
+    @Override
     public void onEntityCollidedWithBlock(World par1World, int par2, int par3, int par4, Entity par5Entity)
     {
         if (!par1World.isRemote)
@@ -166,17 +192,17 @@ public class BlockAPressurePlate extends BlockContainer
 
         if (this.triggerMobType == EnumMobType.everything)
         {
-            var8 = par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
+            var8 = par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
         }
 
         if (this.triggerMobType == EnumMobType.mobs)
         {
-            var8 = par1World.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
+            var8 = par1World.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
         }
 
         if (this.triggerMobType == EnumMobType.players)
         {
-            var8 = par1World.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
+            var8 = par1World.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
         }
 
         if (par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)
@@ -226,7 +252,7 @@ public class BlockAPressurePlate extends BlockContainer
                 par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
                 par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
 
-                if (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
+                if (par1World.getBlockTileEntity(par2, par3, par4) != null && ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
                 {
                     par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
                 }
@@ -239,7 +265,7 @@ public class BlockAPressurePlate extends BlockContainer
                 par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
                 par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
 
-                if (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
+                if (par1World.getBlockTileEntity(par2, par3, par4) != null && ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
                 {
                     par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
                 }
@@ -248,7 +274,7 @@ public class BlockAPressurePlate extends BlockContainer
 
         if (var6)
         {
-            par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate());
+            par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));
         }
     }
 
@@ -262,6 +288,7 @@ public class BlockAPressurePlate extends BlockContainer
      * @param par5		I think this is the block ID
      * @param par6		I think this is the Block Metadata
      */
+    @Override
     public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)
     {
         if (par6 > 0)
@@ -303,7 +330,7 @@ public class BlockAPressurePlate extends BlockContainer
 
                         if (var9.hasTagCompound())
                         {
-                            var14.func_92014_d().setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
+                            var14.getEntityItem().setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
                         }
                     }
                 }
@@ -321,6 +348,7 @@ public class BlockAPressurePlate extends BlockContainer
         par1World.removeBlockTileEntity(par2, par3, par4);
     }
 
+    @Override
     public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
         boolean var5 = ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated;
@@ -336,21 +364,25 @@ public class BlockAPressurePlate extends BlockContainer
         }
     }
 
-    public boolean isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    @Override
+    public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated;
+        return ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? 15 : 0;
     }
 
-    public boolean isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    @Override
+    public int isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return !((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? false : par5 == 1;
+        return par5 == 1 ? ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? 15 : 0 : 0;
     }
-
+    
+    @Override
     public boolean canProvidePower()
     {
         return true;
     }
 
+    @Override
     public void setBlockBoundsForItemRender()
     {
         float var1 = 0.5F;
@@ -359,6 +391,7 @@ public class BlockAPressurePlate extends BlockContainer
         this.setBlockBounds(0.5F - var1, 0.5F - var2, 0.5F - var3, 0.5F + var1, 0.5F + var2, 0.5F + var3);
     }
 
+    @Override
     public int getMobilityFlag()
     {
         return 1;
@@ -368,6 +401,7 @@ public class BlockAPressurePlate extends BlockContainer
      * sets what happens when you right click on the block.
      * it opens my Gui in this case.
      */
+    @Override
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {
         TileEntity te = par1World.getBlockTileEntity(par2, par3, par4);
@@ -411,7 +445,7 @@ public class BlockAPressurePlate extends BlockContainer
     }
     
     @SideOnly(Side.CLIENT)
-    public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
     	World world = FMLClientHandler.instance().getClient().theWorld;
     	ItemStack item = PPRegistry.getItem(par2, par3, par4, world.provider.dimensionId);
@@ -457,7 +491,7 @@ public class BlockAPressurePlate extends BlockContainer
                 }
                 else
                 {
-                    return world.setBlockWithNotify(x, y, z, 0);
+                    return world.setBlockToAir(x, y, z);
                 }
             }
             else
@@ -469,8 +503,14 @@ public class BlockAPressurePlate extends BlockContainer
         return true;
     }
     
+    @Override
     public int getRenderType()
     {
-        return 2151;
+        return IronPP.ppRenderer.getRenderId();
+    }
+    
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.blockIcon = Block.blockSteel.getBlockTextureFromSide(0);
     }
 }

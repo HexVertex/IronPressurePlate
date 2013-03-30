@@ -35,7 +35,7 @@ public class GuiPassword extends GuiScreen
     public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
-        this.controlList.clear();
+        this.buttonList.clear();
         GuiPassword.theGuiTextField = new PasswordTextField(this.fontRenderer, this.width / 2 - 100, 60, 200, 20);
         GuiPassword.theGuiTextField.setFocused(true);
     }

@@ -419,9 +419,8 @@ public class GuiAPressurePlate extends GuiContainer
 
         int k = (width - xSize) / 2;
         int l = (height - ySize) / 2;
-        int i1 = mc.renderEngine.getTexture("/gui/APP.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(i1);
+        mc.renderEngine.bindTexture("/gui/APP.png");
         int j1 = k;
         int l1 = l;
 
@@ -436,7 +435,7 @@ public class GuiAPressurePlate extends GuiContainer
         }
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(i1);
+        mc.renderEngine.bindTexture("/gui/APP.png");
         drawTexturedModalRect(j1 + 119, l1, 0, 0, 176, 166);
 
         if (this.scrollHeight == 139)

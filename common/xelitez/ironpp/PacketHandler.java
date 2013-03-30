@@ -676,7 +676,6 @@ public class PacketHandler implements IPacketHandler
                 }
 
                 sb.toString();
-                System.out.println("called");
                 return;
             }
 
@@ -1097,7 +1096,7 @@ public class PacketHandler implements IPacketHandler
                 coords[var1] = dat.readInt();
             }
 
-            world.setBlockWithNotify(coords[0], coords[1], coords[2], 0);
+            world.setBlockToAir(coords[0], coords[1], coords[2]);
         }
     }
 }

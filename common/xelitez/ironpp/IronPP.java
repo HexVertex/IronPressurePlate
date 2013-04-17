@@ -31,6 +31,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 
 import net.minecraft.block.Block;
@@ -47,7 +48,7 @@ import net.minecraftforge.common.Property;
  */
 @Mod(	modid = "IronPP", 
 		name = "Iron Pressure Plate mod",
-		version = "3.3.5")
+		version = "3.3.6")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         versionBounds = "[3.3,3.4)",
         channels = {"IPP"},
@@ -90,7 +91,7 @@ public class IronPP
     public void preload(FMLPreInitializationEvent evt)
     {
         evt.getModMetadata().version = Version.getVersion() + " for " + Version.MC;
-        P = new Configuration(new File("XEliteZ/IronPP.cfg")); //sets the file to create or load for the configuration file.
+        P = new Configuration(new File((File)FMLInjectionData.data()[6], "XEliteZ/IronPP.cfg")); //sets the file to create or load for the configuration file.
         ippLog = Logger.getLogger("IronPressurePlate");
         ippLog.setParent(FMLLog.getLogger());
         try

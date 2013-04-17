@@ -18,8 +18,8 @@ public class Version
 {
     public static int majorVersion = 3;
     public static int minorVersion = 3;
-    public static int majorBuild = 5;
-    public static int minorBuild = 15;
+    public static int majorBuild = 6;
+    public static int minorBuild = 16;
     public static String MC = "MC:1.5.1";
 
     public static boolean ignoremB = true;
@@ -170,7 +170,7 @@ public class Version
     		newVersion = newVersion + " for MC:" + NMC;
     	}
     			
-    	if (FMLCommonHandler.instance().getSide() == Side.SERVER && !registered)
+    	if (FMLCommonHandler.instance().getSide() == Side.SERVER && !registered && available)
     	{
     		IronPP.ippLog.info("A new version of the Iron Pressure Plate mod is available(" + newVersion + ")");
     	}

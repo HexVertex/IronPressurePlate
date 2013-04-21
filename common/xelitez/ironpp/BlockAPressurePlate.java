@@ -504,6 +504,7 @@ public class BlockAPressurePlate extends BlockContainer
     }
     
     @Override
+    @SideOnly(Side.CLIENT)
     public int getRenderType()
     {
         return IronPP.ppRenderer.getRenderId();

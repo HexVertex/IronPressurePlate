@@ -50,6 +50,12 @@ public class Update implements IXEZUpdate
 	@Override
 	public String getDownloadUrl() 
 	{
-		return null;
+		return "http://adf.ly/HH94L";
+	}
+
+	@Override
+	public String stringToDelete() 
+	{
+		return "IronPressurePlate";
 	}
 }

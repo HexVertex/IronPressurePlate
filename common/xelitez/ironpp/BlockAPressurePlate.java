@@ -452,10 +452,10 @@ public class BlockAPressurePlate extends BlockContainer
     	
     	if (item != null && item.itemID != IronPP.APressurePlateIron.blockID)
     	{
-    		return Block.blocksList[item.itemID].getBlockTextureFromSideAndMetadata(par5, item.getItemDamage());
+    		return Block.blocksList[item.itemID].getIcon(par5, item.getItemDamage());
     	}
     	
-    	return this.getBlockTextureFromSideAndMetadata(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
+    	return this.getIcon(par5, par1IBlockAccess.getBlockMetadata(par2, par3, par4));
     }
     
     @SideOnly(Side.CLIENT)
@@ -512,6 +512,6 @@ public class BlockAPressurePlate extends BlockContainer
     
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.blockIcon = Block.blockSteel.getBlockTextureFromSide(0);
+        this.blockIcon = Block.blockIron.getBlockTextureFromSide(0);
     }
 }

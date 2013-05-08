@@ -44,7 +44,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 		renderAllFaces(var4, renderer, block, metadata);
 		renderer.setRenderBounds(1.0D - 0.1875D, 0.0D, 0.1875D, 1.0D - edge, height, 1.0D - 0.1875D);
 		renderAllFaces(var4, renderer, block, metadata);
-		renderer.setOverrideBlockTexture(Block.blockSteel.getBlockTextureFromSide(0));
+		renderer.setOverrideBlockTexture(Block.blockIron.getBlockTextureFromSide(0));
 		renderer.setRenderBounds(0.1875D, 0.0D, 0.1875D, 1.0D - 0.1875D, height, 1.0D - 0.1875D);
 		renderAllFaces(var4, renderer, block, metadata);
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
@@ -60,7 +60,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
         float par3 = 1.0F;
         var4.startDrawingQuads();
         var4.setNormal(0.0F, -1.0F, 0.0F);
-        renderer.renderBottomFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(0, metadata));
+        renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, metadata));
         var4.draw();
 
         if (var5 && renderer.useInventoryTint)
@@ -74,7 +74,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 
         var4.startDrawingQuads();
         var4.setNormal(0.0F, 1.0F, 0.0F);
-        renderer.renderTopFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(1, metadata));
+        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, metadata));
         var4.draw();
 
         if (var5 && renderer.useInventoryTint)
@@ -84,19 +84,19 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 
         var4.startDrawingQuads();
         var4.setNormal(0.0F, 0.0F, -1.0F);
-        renderer.renderEastFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(2, metadata));
+        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
         var4.draw();
         var4.startDrawingQuads();
         var4.setNormal(0.0F, 0.0F, 1.0F);
-        renderer.renderWestFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(3, metadata));
+        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
         var4.draw();
         var4.startDrawingQuads();
         var4.setNormal(-1.0F, 0.0F, 0.0F);
-        renderer.renderNorthFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(4, metadata));
+        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
         var4.draw();
         var4.startDrawingQuads();
         var4.setNormal(1.0F, 0.0F, 0.0F);
-        renderer.renderSouthFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(5, metadata));
+        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
         var4.draw();
 	}
 
@@ -130,7 +130,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 			renderer.renderStandardBlock(block, x, y, z);
 			renderer.setRenderBounds(1.0D - 0.1875D, 0.0D, 0.1875D, 1.0D - edge, height, 1.0D - 0.1875D);
 			renderer.renderStandardBlock(block, x, y, z);
-			renderer.setOverrideBlockTexture(Block.blockSteel.getBlockTextureFromSide(0));
+			renderer.setOverrideBlockTexture(Block.blockIron.getBlockTextureFromSide(0));
 			renderer.setRenderBounds(0.1875D, 0.0D, 0.1875D, 1.0D - 0.1875D, height, 1.0D - 0.1875D);
 			renderer.renderStandardBlock(block, x, y, z);
 			if(block instanceof BlockAPressurePlate)

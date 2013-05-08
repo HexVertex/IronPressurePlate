@@ -58,4 +58,10 @@ public class Update implements IXEZUpdate
 	{
 		return "IronPressurePlate";
 	}
+
+	@Override
+	public boolean isCoreMod() 
+	{
+		return false;
+	}
 }

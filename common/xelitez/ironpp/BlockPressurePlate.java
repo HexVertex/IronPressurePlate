@@ -26,7 +26,7 @@ public class BlockPressurePlate extends net.minecraft.block.BlockPressurePlate
     
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.blockIcon = Block.blockSteel.getBlockTextureFromSide(0);
+        this.blockIcon = Block.blockIron.getBlockTextureFromSide(0);
     }
     
 }

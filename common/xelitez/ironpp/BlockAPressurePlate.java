@@ -504,10 +504,9 @@ public class BlockAPressurePlate extends BlockContainer
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
     public int getRenderType()
     {
-        return IronPP.ppRenderer.getRenderId();
+        return FMLCommonHandler.instance().getSide().isClient() ? IronPP.ppRenderer.getRenderId() : 0;
     }
     
     public void registerIcons(IconRegister par1IconRegister)

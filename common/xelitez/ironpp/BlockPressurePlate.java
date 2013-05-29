@@ -5,6 +5,7 @@
  */
 package xelitez.ironpp;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.EnumMobType;
 import net.minecraft.block.material.Material;
@@ -21,7 +22,7 @@ public class BlockPressurePlate extends net.minecraft.block.BlockPressurePlate
     @Override
     public int getRenderType()
     {
-        return IronPP.ppRenderer.getRenderId();
+        return FMLCommonHandler.instance().getSide().isClient() ? IronPP.ppRenderer.getRenderId() : 0;
     }
     
     public void registerIcons(IconRegister par1IconRegister)

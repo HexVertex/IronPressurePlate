@@ -48,9 +48,9 @@ import net.minecraftforge.common.Property;
  */
 @Mod(	modid = "IronPP", 
 		name = "Iron Pressure Plate mod",
-		version = "3.3.6")
+		version = "3.4.0")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
-        versionBounds = "[3.3,3.4)",
+        versionBounds = "[3.4,3.5)",
         channels = {"IPP"},
         packetHandler = xelitez.ironpp.PacketHandler.class,
         connectionHandler = xelitez.ironpp.PPRegistry.class)
@@ -71,6 +71,7 @@ public class IronPP
     public static Block APressurePlateIron;
     public static String customTexture;
     public boolean checkForUpdates;
+    public static int changeSpeedSpeed;
 
     /**
      * Instances of the proxy and this class to be used by other classes.
@@ -110,7 +111,8 @@ public class IronPP
             checkForUpdates = update.getBoolean(true);
             Version.ignoremB = ignoreMinorBuilds.getBoolean(true);
             Version.ignoreMC = ignoreOtherMCVersions.getBoolean(false);
-        }
+            changeSpeedSpeed = P.get(Configuration.CATEGORY_GENERAL, "ChangeSpeed", 5).getInt(5);
+            }
         catch (Exception E)
         {
             ippLog.log(Level.SEVERE, "Failed to load Iron Pressure Plate configuration", E);

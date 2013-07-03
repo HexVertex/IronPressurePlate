@@ -10,6 +10,7 @@ import xelitez.ironpp.TileEntityPressurePlate;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -47,7 +48,28 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 		renderer.setOverrideBlockTexture(Block.blockIron.getBlockTextureFromSide(0));
 		renderer.setRenderBounds(0.1875D, 0.0D, 0.1875D, 1.0D - 0.1875D, height, 1.0D - 0.1875D);
 		renderAllFaces(var4, renderer, block, metadata);
-        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		if(block instanceof BlockAPressurePlate)
+		{
+			renderer.setOverrideBlockTexture(Block.blockDiamond.getBlockTextureFromSide(0));
+	        GL11.glPushMatrix();
+	        GL11.glDisable(GL11.GL_LIGHTING);
+	        GL11.glTranslatef(0.5f, MathHelper.sin((float)((Math.PI / 180) * ((System.currentTimeMillis() / 40) % 180))) * 0.15f, 0.5F);
+	        GL11.glRotatef(((System.currentTimeMillis() / 5) % 360) * 1f, 0.0F, 1.0F, 0.0F);
+			var4.startDrawingQuads();
+			var4.addVertexWithUV(-0.2D, 0.24D, -0.2D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMinV());
+			var4.addVertexWithUV(0.2D, 0.24D, -0.2D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMinV());
+			var4.addVertexWithUV(0.2D, 0.24D, 0.2D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMaxV());
+			var4.addVertexWithUV(-0.2D, 0.24D, 0.2D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMaxV());
+			var4.draw();
+			var4.startDrawingQuads();
+			var4.addVertexWithUV(0.2D, 0.24D, 0.2D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMaxV());
+			var4.addVertexWithUV(0.2D, 0.24D, -0.2D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMinV());
+			var4.addVertexWithUV(-0.2D, 0.24D, -0.2D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMinV());
+			var4.addVertexWithUV(-0.2D, 0.24D, 0.2D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMaxV());
+			var4.draw();
+	        GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
         renderer.clearOverrideBlockTexture();
 	}
 	
@@ -104,6 +126,11 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z,
 			Block block, int modelId, RenderBlocks renderer) 
 	{
+		Tessellator tes = Tessellator.instance;
+		double cx = x + 0.5D;
+		double cy = y + 0.12D;
+		double cz = z + 0.5D;
+
 		renderer.uvRotateEast = 3;
 		renderer.uvRotateWest = 3;
 		renderer.uvRotateNorth = 3;
@@ -111,7 +138,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 		boolean activated;
 		if(block instanceof BlockAPressurePlate)
 		{
-			activated = ((TileEntityPressurePlate)world.getBlockTileEntity(x, y, z)).activated;
+			activated = ((TileEntityPressurePlate)world.getBlockTileEntity(x, y, z)).currentOutput > 0;
 		}
 		else
 		{
@@ -135,9 +162,25 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 			renderer.renderStandardBlock(block, x, y, z);
 			if(block instanceof BlockAPressurePlate)
 			{
+				tes.draw();
+				GL11.glDisable(GL11.GL_LIGHTING);
+				GL11.glPushMatrix();
+				tes.startDrawingQuads();
+				GL11.glTranslatef((float)cx, (float)cy, (float)cz);
 				renderer.setOverrideBlockTexture(Block.blockDiamond.getBlockTextureFromSide(0));
-				renderer.setRenderBounds(0.375D, height + 0.04D, 0.375D, 0.625D, height + 0.05D, 0.625D);
-				renderer.renderStandardBlock(block, x, y, z);
+				tes.addVertexWithUV(-0.1D, 0.0D, 0.1D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMinV());
+				tes.addVertexWithUV(0.1D, 0.0D, 0.1D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMinV());
+				tes.addVertexWithUV(0.1D, 0.0D, -0.1D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMaxV());
+				tes.addVertexWithUV(-0.1D, 0.0D, -0.1D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMaxV());
+				tes.draw();
+				tes.startDrawingQuads();
+				tes.addVertexWithUV(0.1D, 0.0D, 0.1D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMaxV());
+				tes.addVertexWithUV(0.1D, 0.0D, -0.1D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMinV());
+				tes.addVertexWithUV(-0.1D, 0.0D, -0.1D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMinV());
+				tes.addVertexWithUV(-0.1D, 0.0D, 0.1D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMaxV());
+				tes.draw();
+				GL11.glPopMatrix();
+				tes.startDrawingQuads();
 			}
 		}
 		else

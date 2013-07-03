@@ -604,7 +604,7 @@ public class PacketHandler implements IPacketHandler
 
                 if (tpp != null)
                 {
-                    tpp.activated = dat.readBoolean();
+                    tpp.currentOutput = dat.readInt();
                 }
 
                 world.markBlockForUpdate(coords[0], coords[1], coords[2]);
@@ -756,6 +756,31 @@ public class PacketHandler implements IPacketHandler
                 }
 
                 return;
+            }
+            if(ID == 19)
+            {
+                int coords[]  = new int[3];
+
+                for (int var1 = 0; var1 < 3; var1++)
+                {
+                    coords[var1] = dat.readInt();
+                }
+
+                TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+                if(te instanceof TileEntityPressurePlate)
+                {
+                	if(!(FMLClientHandler.instance().getClient().currentScreen instanceof GuiAPressurePlate))
+                	{
+                		((TileEntityPressurePlate) te).maxOutput = dat.readInt();
+                		((TileEntityPressurePlate) te).itemsForMax = dat.readInt();
+                	}
+                	else if(GuiAPressurePlate.tpp != te || GuiAPressurePlate.hasData == false)
+                	{
+                		((TileEntityPressurePlate) te).maxOutput = dat.readInt();
+                		((TileEntityPressurePlate) te).itemsForMax = dat.readInt();
+                		GuiAPressurePlate.hasData = true;
+                	}
+                }
             }
         }
     }
@@ -935,6 +960,7 @@ public class PacketHandler implements IPacketHandler
                 PacketSendManager.sendPressurePlateMobDataToClient(tpp);
                 PacketSendManager.sendPressurePlatePlayerDataToClient(tpp);
                 PacketSendManager.sendSettingsDataToClient(tpp);
+                PacketSendManager.sendChangedDataToClient(tpp);
             }
 
             return;
@@ -1097,6 +1123,22 @@ public class PacketHandler implements IPacketHandler
             }
 
             world.setBlockToAir(coords[0], coords[1], coords[2]);
+        }
+        if (ID == 14)
+        {
+            int coords[] = new int[3];
+
+            for (int var1 = 0; var1 < 3; var1++)
+            {
+                coords[var1] = dat.readInt();
+            }
+            TileEntity te = world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+            if(te instanceof TileEntityPressurePlate)
+            {
+            	((TileEntityPressurePlate) te).maxOutput = dat.readInt();
+            	((TileEntityPressurePlate) te).itemsForMax = dat.readInt();
+            	PacketSendManager.sendChangedDataToClient((TileEntityPressurePlate) te);
+            }
         }
     }
 }

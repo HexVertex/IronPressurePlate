@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
@@ -45,23 +46,93 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
     List<String> other = new ArrayList<String>();
     public boolean update = false;
     private int countdown = 0;
-    public boolean activated = false;
     private boolean check = false;
     private boolean register = false;
     public PPSettings pps;
     public List<Object> settings;
     public String password = "";
+    
+    public int maxOutput = 15;
+    public int itemsForMax = 64;
+    public int currentOutput = 0;
+    private boolean state = false;
+    public PPOutputSettings outSettings = null;
 
     public TileEntityPressurePlate()
     {
         registerMobs();
         this.registerSettings();
+        if(this.outSettings == null)
+        {
+        	outSettings = new PPOutputSettings(this);
+        }
         this.register = true;
     }
-
-    public void setActivated(boolean b, World world, int par1, int par2, int par3)
+    
+    public int calculateOut(List<?> entity)
     {
-        this.activated = b;
+    	int itemcount = 0;
+    	int tempOut = 0;
+    	for(Object obj : entity)
+    	{
+    		if(obj instanceof EntityItem)
+    		{
+    			itemcount += ((EntityItem) obj).getEntityItem().stackSize;
+    		}
+    		else
+    		{
+    			if(this.findMobName(EntityList.getEntityString((Entity)obj)) && this.getMobId(EntityList.getEntityString((Entity)obj)) != -1)
+    			{
+    				tempOut += outSettings.output.get(this.getMobId(EntityList.getEntityString((Entity)obj)));
+    			}
+    			if ((obj instanceof EntityPlayer))
+                {
+                    if (findMobName("humanoid"))
+                    {
+                        if (isPlayerInList(((EntityPlayer)obj).username))
+                        {
+                            if (isInPlayerList(((EntityPlayer)obj).username))
+                            {
+                            	tempOut += outSettings.output.get(this.getMobId("humanoid"));
+                            }
+                        }
+                        else
+                        {
+                            if (getIsEnabled(0))
+                            {
+                            	tempOut += outSettings.output.get(this.getMobId("humanoid"));
+                            }
+                        }
+                    }
+                }
+    		}
+    	}
+    	itemcount = itemcount > itemsForMax ?  itemsForMax : itemcount;
+    	tempOut += (int)((float)itemcount / (float)itemsForMax * (float)maxOutput);
+    	tempOut = tempOut > maxOutput ? maxOutput : tempOut;
+        return entity.isEmpty() ? 0 : tempOut;
+    }
+    
+    public int getMobId(String mob)
+    {
+    	for(int i = 0;i < this.allowedMobs.length;i++)
+    	{
+    		if(mob.matches(allowedMobs[i].getMobname()))
+    		{
+    			return i;
+    		}
+    	}
+    	return -1;
+    }
+    
+    public void setActivated(boolean b, World world, int par1, int par2, int par3, List<?> entity)
+    {
+        boolean stateTemp = state;
+        this.currentOutput = calculateOut(entity);
+        
+        state = currentOutput > 0;
+        
+        
         world.notifyBlockChange(par1, par2, par3, world.getBlockId(par1, par2, par3));
         Chunk var5 = world.getChunkFromChunkCoords(par1 >> 4, par3 >> 4);
 
@@ -72,7 +143,16 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 
         if (!world.isRemote || FMLCommonHandler.instance().getSide().isServer())
         {
-            PacketSendManager.sendBlockBooleanToClient(this, b);
+            PacketSendManager.sendBlockOutputToClient(this);
+        }
+        
+        if (stateTemp != state && state && this.getIsEnabled(1))
+        {
+            world.playSoundEffect((double)par1 + 0.5D, (double)par2 + 0.1D, (double)par3 + 0.5D, "random.click", 0.3F, 0.6F);
+        }
+        if (stateTemp != state && !state && this.getIsEnabled(1))
+        {
+            world.playSoundEffect((double)par1 + 0.5D, (double)par2 + 0.1D, (double)par3 + 0.5D, "random.click", 0.3F, 0.5F);
         }
     }
 
@@ -565,6 +645,16 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         	IronPP.ippLog.log(Level.FINE, "no password setting found, adding...");
             password = "";
         }
+        try
+        {
+            maxOutput = par1NBTTagCompound.getInteger("maxOutput");
+            itemsForMax = par1NBTTagCompound.getInteger("itemsForMax");
+            outSettings = new PPOutputSettings(this);
+            outSettings.readFromNBT(par1NBTTagCompound);
+        }
+        catch (Exception e)
+        {
+        }
 
         register = true;
         check = true;
@@ -630,6 +720,9 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
 
         par1NBTTagCompound.setTag("Settings", var9);
         par1NBTTagCompound.setString("password", password);
+        par1NBTTagCompound.setInteger("maxOutput", maxOutput);
+        par1NBTTagCompound.setInteger("itemsForMax", itemsForMax);
+        outSettings.saveToNBT(par1NBTTagCompound);
     }
 
     @Override

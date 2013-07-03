@@ -9,6 +9,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import xelitez.ironpp.ContainerPressurePlate;
+import xelitez.ironpp.IronPP;
 import xelitez.ironpp.PPPlayerList;
 import xelitez.ironpp.PPSettings;
 import xelitez.ironpp.PacketSendManager;
@@ -55,6 +56,9 @@ public class GuiAPressurePlate extends GuiContainer
     private int settingsScrollY;
     private static int settingsScrollHeight;
     private boolean settingsIsScrolling;
+    public static boolean hasData;
+    
+    private int mouseDownTime = 0;
 
     /**
      * sets the minecraft instance ready for usage.
@@ -154,6 +158,7 @@ public class GuiAPressurePlate extends GuiContainer
 
         if (game.theWorld.isRemote)
         {
+        	hasData = false;
             PacketSendManager.requestPPDataFromServer(GuiAPressurePlate.tpp);
         }
     }
@@ -371,6 +376,23 @@ public class GuiAPressurePlate extends GuiContainer
                 tab2Open = 0;
             }
         }
+        if (k == 0 && i >= 109 && i <= 118 && j >= 65 && j <= 100)
+        {
+            if (this.tab2Open == 0)
+            {
+                tab2Open = 3;
+                settingsScrollY = 0;
+                settingsIsScrolling = false;
+            }
+        }
+
+        if (k == 0 && i >= 26 && i <= 35 && j >= 65 && j <= 100)
+        {
+            if (this.tab2Open == 3)
+            {
+                tab2Open = 0;
+            }
+        }
     }
 
     /**
@@ -433,9 +455,12 @@ public class GuiAPressurePlate extends GuiContainer
         {
             drawSettingsTab(i, j);
         }
+        if (tab2Open == 0 || tab2Open == 3)
+        {
+            drawOutputTab(i - k, j - l);
+        }
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/gui/APP.png");
         drawTexturedModalRect(j1 + 119, l1, 0, 0, 176, 166);
 
         if (this.scrollHeight == 139)
@@ -903,10 +928,10 @@ public class GuiAPressurePlate extends GuiContainer
             {
                 for (int var2 = 0; var2 < 3; var2++)
                 {
-                    drawTexturedModalRect(i + 37 + var2 * 18, j + 6 + var1 * 18, 176, 60, 18, 18);
+                    drawTexturedModalRect(i + 37 + var2 * 18, j + 6 + var1 * 18, 199, 0 + ((var1 * var2) % 5) * 18, 18, 18);
                 }
 
-                drawTexturedModalRect(i + 96, j + 6 + var1 * 18, 176, 60, 18, 18);
+                drawTexturedModalRect(i + 96, j + 6 + var1 * 18, 199, 0 + ((var1) % 5) * 18, 18, 18);
             }
 
             drawTexturedModalRect(i + 91, j + 6, 194, 0, 5, 162);
@@ -916,7 +941,7 @@ public class GuiAPressurePlate extends GuiContainer
             drawTexturedModalRect(i + 33, j + 6, 0, 4, 4, 150);
             drawTexturedModalRect(i + 33, j + 156, 0, 149, 4, 17);
             drawTexturedModalRect(i + 37, j + 168, 10, 161, 23, 5);
-            drawTexturedModalRect(i + 64, j + 172, 176, 60, 18, 18);
+            drawTexturedModalRect(i + 64, j + 172, 199, 0, 18, 18);
             drawTexturedModalRect(i + 59, j + 172, 0, 144, 5, 22);
             drawTexturedModalRect(i + 64, j + 190, 5, 162, 18, 4);
             drawTexturedModalRect(i + 82, j + 172, 171, 144, 5, 22);
@@ -1088,6 +1113,131 @@ public class GuiAPressurePlate extends GuiContainer
             }
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            mc.renderEngine.bindTexture("/gui/APP.png");
+        }
+    }
+    
+    private void drawOutputTab(int i, int j)
+    {
+        int k = (width - xSize) / 2;
+        int l = (height - ySize) / 2;
+        
+        if(this.tab2Open == 0)
+        {
+            drawTexturedModalRect(k + 113, l + 65, 177, 12, 6, 20);
+            drawTexturedModalRect(k + 109, l + 65, 0, 0, 4, 20);
+            drawTexturedModalRect(k + 109, l + 85, 0, 150, 4, 16);
+            drawTexturedModalRect(k + 113, l + 85, 177, 44, 6, 16);
+            drawTexturedModalRect(k + 113, l + 92, 187, 17, 5, 5);
+        }
+        else
+        {
+        	drawTexturedModalRect(k + 30, l + 65, 177, 12, 6, 20);
+            drawTexturedModalRect(k + 26, l + 65, 0, 0, 4, 20);
+            drawTexturedModalRect(k + 26, l + 85, 0, 150, 4, 16);
+            drawTexturedModalRect(k + 30, l + 85, 177, 44, 6, 16);
+            drawTexturedModalRect(k + 30, l + 92, 187, 12, 5, 5);
+            
+            drawTexturedModalRect(k + 35, l + 61, 0, 0, 84, 5);
+            drawTexturedModalRect(k + 36, l + 66, 2, 3, 84, 2);
+            drawTexturedModalRect(k + 36, l + 68, 4, 3, 84, 15);
+            drawTexturedModalRect(k + 36, l + 83, 4, 3, 84, 15);
+            drawTexturedModalRect(k + 35, l + 101, 0, 162, 85, 15);
+            drawTexturedModalRect(k + 36, l + 98, 1, 160, 84, 3);
+            drawTexturedModalRect(k + 37, l + 98, 4, 160, 1, 1);
+            
+            drawRect(k + 84, l + 65, k + 117, l + 81, -6250336);
+            drawRect(k + 85, l + 66, k + 116, l + 80, -16777216);
+            drawRect(k + 84, l + 85, k + 117, l + 101, -6250336);
+            drawRect(k + 85, l + 86, k + 116, l + 100, -16777216);
+            
+            GL11.glColor4f(255.0f, 255.0f, 255.0f, 255.0f);
+            
+            drawTexturedModalRect(k + 110, l + 65, 176, 60, 7, 8);
+            drawTexturedModalRect(k + 110, l + 73, 183, 60, 7, 8);
+            drawTexturedModalRect(k + 110, l + 85, 176, 60, 7, 8);
+            drawTexturedModalRect(k + 110, l + 93, 183, 60, 7, 8);
+            
+        	if(Mouse.isButtonDown(0))
+        	{
+	            if(i >= 110 && i <= 116 && j >= 65 && j <= 72)
+	            {
+	            	if(this.mouseDownTime == 0 || (this.mouseDownTime >= 60 && this.mouseDownTime % IronPP.changeSpeedSpeed == 0))
+	            	{
+	            		if(tpp.maxOutput < 15)
+	            		{
+	            			tpp.maxOutput++;
+	            		}
+	            	}
+	            	this.mouseDownTime++;
+	            }
+	            else if(i >= 110 && i <= 116 && j >= 73 && j <= 80)
+	            {            	
+	            	if(this.mouseDownTime == 0 || (this.mouseDownTime >= 60 && this.mouseDownTime % IronPP.changeSpeedSpeed == 0))
+	            	{
+	            		if(tpp.maxOutput > 0)
+	            		{
+	            			tpp.maxOutput--;
+	            		}
+	            	}
+	            	this.mouseDownTime++;
+	            }
+	            else if(i >= 110 && i <= 116 && j >= 85 && j <= 92)
+	            {           
+	            	if(this.mouseDownTime == 0 || (this.mouseDownTime >= 60 && this.mouseDownTime % IronPP.changeSpeedSpeed == 0))
+	            	{
+	            		if(tpp.itemsForMax < 9999)
+	            		{
+	            			tpp.itemsForMax++;
+	            		}
+	            	}
+	            	this.mouseDownTime++;
+	            }
+	            else if(i >= 110 && i <= 116 && j >= 93 && j <= 100)
+	            {            	
+	            	if(this.mouseDownTime == 0 || (this.mouseDownTime >= 60 && this.mouseDownTime % IronPP.changeSpeedSpeed == 0))
+	            	{
+	            		if(tpp.itemsForMax > 0)
+	            		{
+	            			tpp.itemsForMax--;
+	            		}
+	            	}
+	            	this.mouseDownTime++;
+	            }
+        	}
+            else
+            {
+            	if(this.mouseDownTime != 0)
+            	{
+            		this.mouseDownTime = 0;
+            		PacketSendManager.sendChangedDataPacketToServer(tpp);
+            	}
+            }
+            
+        }
+    }
+    
+    private void drawOutputText(FontRenderer var1)
+    {
+        if (this.tab2Open == 0)
+        {
+            var1.drawString("O", 113, 69, 0x404040);
+            var1.drawString("u", 113, 75, 0x404040);
+            var1.drawString("t", 114, 83, 0x404040);
+        }
+        else
+        {
+            var1.drawString("O", 30, 69, 0x404040);
+            var1.drawString("u", 30, 75, 0x404040);
+            var1.drawString("t", 31, 83, 0x404040);
+            
+            var1.drawString("Max out:", 40, 69, 0x404040);
+            
+            var1.drawString("Items:", 40, 89, 0x404040);
+            
+            var1.drawString(new Integer(tpp.maxOutput).toString(), 86, 69, 14737632);
+            var1.drawString(new Integer(tpp.itemsForMax).toString(), 86, 89, 14737632);
+
         }
     }
 
@@ -1244,6 +1394,10 @@ public class GuiAPressurePlate extends GuiContainer
         if (this.tab2Open == 0 || this.tab2Open == 1)
         {
             drawTextureText(var1);
+        }
+        if (this.tab2Open == 0 || this.tab2Open == 3)
+        {
+            drawOutputText(var1);
         }
 
         int i = (width - xSize) / 2;

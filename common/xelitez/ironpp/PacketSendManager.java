@@ -505,6 +505,36 @@ public class PacketSendManager
         packet.length = packet.data.length;
         sendPacketToServer(packet);
     }
+    
+    public static void sendChangedDataPacketToServer(TileEntityPressurePlate tpp)
+    {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+
+        try
+        {
+            data.writeBoolean(true);
+            data.writeShort(14);
+            int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+
+            for (int var1 = 0; var1 < 3; var1++)
+            {
+                data.writeInt(coords[var1]);
+            }
+            data.writeInt(tpp.maxOutput);
+            data.writeInt(tpp.itemsForMax);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        sendPacketToServer(packet);
+    }
 
     /**
      * send a packet to all players that closes
@@ -792,7 +822,7 @@ public class PacketSendManager
         sendPacketToAllPlayers(packet);
     }
 
-    public static void sendBlockBooleanToClient(TileEntityPressurePlate tpp, boolean b)
+    public static void sendBlockOutputToClient(TileEntityPressurePlate tpp)
     {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(bytes);
@@ -808,7 +838,7 @@ public class PacketSendManager
                 data.writeInt(coords[var11]);
             }
 
-            data.writeBoolean(b);
+            data.writeInt(tpp.currentOutput);
         }
         catch (IOException e)
         {
@@ -1114,5 +1144,36 @@ public class PacketSendManager
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToPlayer(packet, (Player)player);
+    }
+    
+    public static void sendChangedDataToClient(TileEntityPressurePlate tpp)
+    {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+
+        try
+        {
+            data.writeBoolean(false);
+            data.writeShort(19);
+            int[] coords = {tpp.xCoord, tpp.yCoord, tpp.zCoord};
+
+            for (int var6 = 0; var6 < 3; var6++)
+            {
+                data.writeInt(coords[var6]);
+            }
+            
+            data.writeInt(tpp.maxOutput);
+            data.writeInt(tpp.itemsForMax);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "IPP";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToAllPlayers(packet);
     }
 }

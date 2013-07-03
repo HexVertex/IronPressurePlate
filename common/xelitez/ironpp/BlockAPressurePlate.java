@@ -156,10 +156,10 @@ public class BlockAPressurePlate extends BlockContainer
     {
         if (!par1World.isRemote)
         {
-            if (((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated)
-            {
-                this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4);
-            }
+        	if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).currentOutput != 0)
+        	{
+        		this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4);
+        	}
         }
     }
 
@@ -168,10 +168,11 @@ public class BlockAPressurePlate extends BlockContainer
     {
         if (!par1World.isRemote)
         {
-            if (!((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated)
-            {
-                this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4);
-            }
+            float var7 = 0.125F;
+        	if(((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).currentOutput != ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).calculateOut(par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)))) && ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).calculateOut(par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)))) != 0)
+        	{
+        		this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4);
+        	}
         }
     }
 
@@ -185,7 +186,6 @@ public class BlockAPressurePlate extends BlockContainer
      */
     private void setStateIfMobInteractsWithPlate(World par1World, int par2, int par3, int par4)
     {
-        boolean var5 = ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).activated;
         boolean var6 = false;
         float var7 = 0.125F;
         List<?> var8 = null;
@@ -244,37 +244,19 @@ public class BlockAPressurePlate extends BlockContainer
         if (par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)
         {
             TileEntityPressurePlate tpp = (TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4);
-
-            if (var6 && !var5)
+            
+            if (var6 || tpp.currentOutput > 0)
             {
-                tpp.setActivated(true, par1World, par2, par3, par4);
+                tpp.setActivated(true, par1World, par2, par3, par4, var8);
                 par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
                 par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
                 par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
 
-                if (par1World.getBlockTileEntity(par2, par3, par4) != null && ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
-                {
-                    par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
-                }
             }
-
-            if (!var6 && var5)
+            if(var6)
             {
-                tpp.setActivated(false, par1World, par2, par3, par4);
-                par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
-                par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
-                par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
-
-                if (par1World.getBlockTileEntity(par2, par3, par4) != null && ((TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4)).getIsEnabled(1))
-                {
-                    par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
-                }
+            	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));
             }
-        }
-
-        if (var6)
-        {
-            par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));
         }
     }
 
@@ -351,7 +333,7 @@ public class BlockAPressurePlate extends BlockContainer
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
-        boolean var5 = ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated;
+        boolean var5 = ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).currentOutput > 0;
         float var6 = 0.0625F;
 
         if (var5)
@@ -367,13 +349,13 @@ public class BlockAPressurePlate extends BlockContainer
     @Override
     public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? 15 : 0;
+    	return ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).currentOutput;
     }
 
     @Override
     public int isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        return par5 == 1 ? ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).activated ? 15 : 0 : 0;
+        return par5 == 1 ? ((TileEntityPressurePlate)par1IBlockAccess.getBlockTileEntity(par2, par3, par4)).currentOutput : 0;
     }
     
     @Override

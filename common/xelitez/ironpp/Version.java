@@ -17,9 +17,9 @@ import cpw.mods.fml.relauncher.Side;
 public class Version
 {
     public static int majorVersion = 3;
-    public static int minorVersion = 3;
-    public static int majorBuild = 7;
-    public static int minorBuild = 18;
+    public static int minorVersion = 4;
+    public static int majorBuild = 0;
+    public static int minorBuild = 19;
     public static String MC = "MC:1.5.2";
 
     public static boolean ignoremB = true;

@@ -22,10 +22,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 public class GuiAPressurePlate extends GuiContainer
 {
+	
+    private static final ResourceLocation texture = new ResourceLocation("ironpp:gui/APP.png");
     /**
      * two things I need to use in this mod.
      */
@@ -442,7 +445,7 @@ public class GuiAPressurePlate extends GuiContainer
         int k = (width - xSize) / 2;
         int l = (height - ySize) / 2;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/gui/APP.png");
+        this.mc.func_110434_K().func_110577_a(texture);
         int j1 = k;
         int l1 = l;
 
@@ -1113,7 +1116,7 @@ public class GuiAPressurePlate extends GuiContainer
             }
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
-            mc.renderEngine.bindTexture("/gui/APP.png");
+            this.mc.func_110434_K().func_110577_a(texture);
         }
     }
     

@@ -20,9 +20,7 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -88,7 +86,7 @@ public class IronPP
     /**
      * Since the INSTANCE is private I use this method to gain access to the class.
      */
-    @PreInit
+	@EventHandler
     public void preload(FMLPreInitializationEvent evt)
     {
         evt.getModMetadata().version = Version.getVersion() + " for " + Version.MC;
@@ -126,7 +124,7 @@ public class IronPP
      * forge load method to load and register everything needed.
      * @param evt
      */
-    @Init
+	@EventHandler
     public void load(FMLInitializationEvent evt)
     {
         //the next two methods creates the instances of the blocks used in this mod.

@@ -38,7 +38,7 @@ public class Update implements IXEZUpdate
 	@Override
 	public String getModIcon() 
 	{
-		return "/xezmods.png";
+		return "ironpp:xezmods.png";
 	}
 
 	@Override

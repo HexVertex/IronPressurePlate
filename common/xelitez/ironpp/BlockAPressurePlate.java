@@ -20,6 +20,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -110,12 +111,12 @@ public class BlockAPressurePlate extends BlockContainer
     }
 
     @Override
-    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving, ItemStack par6ItemStack)
+    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack)
     {
-        if (par5EntityLiving instanceof EntityPlayer && par1World.getBlockTileEntity(par2, par3, par4) != null && par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)
+        if (par5EntityLivingBase instanceof EntityPlayer && par1World.getBlockTileEntity(par2, par3, par4) != null && par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)
         {
             TileEntityPressurePlate tpp = (TileEntityPressurePlate)par1World.getBlockTileEntity(par2, par3, par4);
-            tpp.registerPlayer(((EntityPlayer)par5EntityLiving).username);
+            tpp.registerPlayer(((EntityPlayer)par5EntityLivingBase).username);
 
             if (!par1World.isRemote || FMLCommonHandler.instance().getSide().isServer())
             {

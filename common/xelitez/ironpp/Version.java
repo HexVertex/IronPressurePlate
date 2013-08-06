@@ -19,8 +19,8 @@ public class Version
     public static int majorVersion = 3;
     public static int minorVersion = 4;
     public static int majorBuild = 0;
-    public static int minorBuild = 19;
-    public static String MC = "MC:1.5.2";
+    public static int minorBuild = 20;
+    public static String MC = "MC:1.6.2";
 
     public static boolean ignoremB = true;
     public static boolean ignoreMC = false;
@@ -37,29 +37,17 @@ public class Version
 
     private static String produceVersion(int var1, int var2, int var3, int var4)
     {
-        boolean var5 = var2 != 0;
-        boolean var6 = var3 != 0;
-        boolean var7 = var4 != 0;
         StringBuilder Str1 = new StringBuilder();
         Str1.append(var1);
 
-        if (var5)
-        {
-            Str1.append(".");
-            Str1.append(var2);
-        }
+        Str1.append(".");
+        Str1.append(var2);
 
-        if (var6)
-        {
-            Str1.append(".");
-            Str1.append(var3);
-        }
+        Str1.append(".");
+        Str1.append(var3);
 
-        if (var7)
-        {
-            Str1.append(".");
-            Str1.append(var4);
-        }
+        Str1.append(".");
+        Str1.append(var4);
 
         return Str1.toString();
     }
@@ -155,7 +143,7 @@ public class Version
     			}
     		}
     	}
-    	
+		available = false;
     	if ((!getVersion().matches(produceVersion(MV, mV, MB, mB)) || !MC.matches("MC:" + NMC)) && !produceVersion(MV, mV, MB, mB).matches("0"))
     	{
     		if ((ignoreMC && MC.matches("MC:" + NMC) || (!ignoreMC && !MC.matches("MC:" + NMC))) || ((ignoremB && !produceVersion(MV, mV, MB, 0).matches(produceVersion(majorVersion, minorVersion, majorBuild, 0))) || (!ignoremB && !getVersion().matches(produceVersion(MV, mV, MB, mB)))))

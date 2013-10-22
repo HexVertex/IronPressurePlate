@@ -445,7 +445,7 @@ public class GuiAPressurePlate extends GuiContainer
         int k = (width - xSize) / 2;
         int l = (height - ySize) / 2;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.func_110434_K().func_110577_a(texture);
+        this.mc.getTextureManager().bindTexture(texture);
         int j1 = k;
         int l1 = l;
 
@@ -1116,7 +1116,7 @@ public class GuiAPressurePlate extends GuiContainer
             }
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
-            this.mc.func_110434_K().func_110577_a(texture);
+            this.mc.getTextureManager().bindTexture(texture);
         }
     }
     

@@ -4,12 +4,12 @@ code to learn and use in your own mods.
 if this mod isn't updated to the current
 version of minecraft yet you are allowed to
 update it. if you do so you have to add a link
-to the XEliteZ main thread and you have to notify
+to the [XEliteZ main thread](http://www.minecraftforum.net/topic/842232-) and you have to notify
 kalvin(the mod creator) of what you're up to. 
 shortening the URL is not allowed for both 
 the download and the link to the main thread. 
 This also applies for bukkit ports but if you create a
-port you have to notify Kalvin on the minecraftforums
+port you have to notify [Kalvin](http://www.minecraftforum.net/user/637707-) on the minecraftforums
 that you've made a port and it may only be uploaded to
 mcportcentral.co.za after Kalvin has send a personal
 confirmation. Keep in mind that I will notify you back

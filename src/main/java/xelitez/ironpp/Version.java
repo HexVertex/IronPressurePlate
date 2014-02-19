@@ -19,7 +19,7 @@ public class Version
     public static int majorVersion = 3;
     public static int minorVersion = 4;
     public static int majorBuild = 1;
-    public static int minorBuild = 22;
+    public static int minorBuild = 23;
     public static String MC = "MC:1.7.2";
 
     public static boolean ignoremB = true;
@@ -74,7 +74,7 @@ public class Version
     	
     	try
     	{	
-    		URL url = new URL("https://raw.github.com/XEZKalvin/IronPressurePlate/master/common/xelitez/ironpp/Version.java");
+    		URL url = new URL("https://raw2.github.com/XEZKalvin/IronPressurePlate/master/src/main/java/xelitez/ironpp/Version.java");
     		URLConnection connect = url.openConnection();
     		connect.setConnectTimeout(5000);
     		connect.setReadTimeout(5000);

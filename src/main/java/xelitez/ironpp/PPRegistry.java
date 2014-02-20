@@ -99,7 +99,7 @@ public class PPRegistry
     {
         for (int var1 = 0; var1 < PressurePlates.size(); var1++)
         {
-        	if(PressurePlates.size() >= var1)
+        	if(PressurePlates.size() <= var1)
         	{
         		return null;
         	}

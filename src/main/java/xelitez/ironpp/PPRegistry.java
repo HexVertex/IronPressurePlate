@@ -99,6 +99,10 @@ public class PPRegistry
     {
         for (int var1 = 0; var1 < PressurePlates.size(); var1++)
         {
+        	if(PressurePlates.size() >= var1)
+        	{
+        		return null;
+        	}
             RegistrySettings tempdata = (RegistrySettings)PressurePlates.get(var1);
 
             if (tempdata.xCoord == x && tempdata.yCoord == y && tempdata.zCoord == z && dimension == tempdata.dimension)

@@ -42,7 +42,7 @@ import net.minecraftforge.common.config.Property;
  */
 @Mod(	modid = "IronPP", 
 		name = "Iron Pressure Plate mod",
-		version = "3.4.1",
+		version = "3.4.2",
 		acceptableRemoteVersions = "[3.4,3.5)")
 public class IronPP
 {
@@ -102,6 +102,11 @@ public class IronPP
         {
             P.save(); //saves the configuration file.
         }
+        //the next two methods creates the instances of the blocks used in this mod.
+        PressurePlateIron = new BlockPressurePlate(customTexture, Sensitivity.players, Material.iron).setHardness(0.5F).setStepSound(Block.soundTypeMetal).setBlockName("pressurePlate").setBlockTextureName("iron_block");
+        APressurePlateIron = new BlockAPressurePlate(customTexture, Material.iron).setHardness(0.5F).setStepSound(Block.soundTypeMetal).setBlockName("pressurePlateAdvanced").setBlockTextureName("iron_block");
+        GameRegistry.registerBlock(PressurePlateIron, "MixedPressurePlate"); //Registers the block in the game.(replaces ModLoaders registerBlock method)
+        GameRegistry.registerBlock(APressurePlateIron, "AdvancedPressurePlate");
     }
     /**
      * forge load method to load and register everything needed.
@@ -110,11 +115,6 @@ public class IronPP
 	@EventHandler
     public void load(FMLInitializationEvent evt)
     {
-        //the next two methods creates the instances of the blocks used in this mod.
-        PressurePlateIron = new BlockPressurePlate(customTexture, Sensitivity.players, Material.iron).setHardness(0.5F).setStepSound(Block.soundTypeMetal).setBlockName("pressurePlate");
-        APressurePlateIron = new BlockAPressurePlate(customTexture, Material.iron).setHardness(0.5F).setStepSound(Block.soundTypeMetal).setBlockName("pressurePlateAdvanced");
-        GameRegistry.registerBlock(PressurePlateIron, "MixedPressurePlate"); //Registers the block in the game.(replaces ModLoaders registerBlock method)
-        GameRegistry.registerBlock(APressurePlateIron, "AdvancedPressurePlate");
         GameRegistry.addRecipe(new ItemStack(PressurePlateIron, 1), new Object[] {"@#@", '#', Items.iron_ingot, '@', Items.gold_ingot}); //Registers a new recipe used in the crafting bench.(replaces ModLoaders addRecipe method)
         GameRegistry.addRecipe(new ItemStack(APressurePlateIron, 2), new Object[] {" D ", "A#A", "@#@", '#', Items.iron_ingot, '@', Items.redstone, 'A', Items.gold_ingot, 'D', Items.diamond});
         GameRegistry.registerTileEntity(TileEntityPressurePlate.class, "Advanced Pressure Plate"); //registers the TileEntity of the advanced iron pressure plate.(replaces ModLoaders registerTileEntity method)

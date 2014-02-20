@@ -163,7 +163,6 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 			if(block instanceof BlockAPressurePlate)
 			{
 				tes.draw();
-				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPushMatrix();
 				tes.startDrawingQuads();
 				GL11.glTranslatef((float)cx, (float)cy, (float)cz);
@@ -174,6 +173,7 @@ public class PPRenderer implements ISimpleBlockRenderingHandler
 				tes.addVertexWithUV(-0.1D, 0.0D, -0.1D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMaxV());
 				tes.draw();
 				tes.startDrawingQuads();
+				GL11.glTranslatef(0.0F, 0.001F, 0.0F);
 				tes.addVertexWithUV(0.1D, 0.0D, 0.1D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMaxV());
 				tes.addVertexWithUV(0.1D, 0.0D, -0.1D, renderer.overrideBlockTexture.getMinU(), renderer.overrideBlockTexture.getMinV());
 				tes.addVertexWithUV(-0.1D, 0.0D, -0.1D, renderer.overrideBlockTexture.getMaxU(), renderer.overrideBlockTexture.getMinV());

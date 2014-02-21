@@ -32,6 +32,7 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPressurePlate.Sensitivity;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -163,16 +164,22 @@ public class IronPP
     
     private void registerNonSolidBlocks()
     {
-    	addNonSolidBlock(Block.getBlockFromName("glass"), 0);
-    	addNonSolidBlock(Block.getBlockFromName("leaves"), 0);
-    	addNonSolidBlock(Block.getBlockFromName("leaves"), 1);
-    	addNonSolidBlock(Block.getBlockFromName("leaves"), 2);
-    	addNonSolidBlock(Block.getBlockFromName("leaves"), 3);
-    	addNonSolidBlock(Block.getBlockFromName("snow_layer"), 7);
-    	addNonSolidBlock(Block.getBlockFromName("ice"), 0);
-    	addNonSolidBlock(Block.getBlockFromName("cactus"), 0);
-    	addNonSolidBlock(Block.getBlockFromName("tnt"), 0);
-    	addNonSolidBlock(Block.getBlockFromName("beacon"), 0);
+    	addNonSolidBlock(Blocks.glass, 0);
+    	addNonSolidBlock(Blocks.leaves, 0);
+    	addNonSolidBlock(Blocks.leaves, 1);
+    	addNonSolidBlock(Blocks.leaves, 2);
+    	addNonSolidBlock(Blocks.leaves, 3);
+    	addNonSolidBlock(Blocks.snow_layer, 7);
+    	addNonSolidBlock(Blocks.ice, 0);
+    	addNonSolidBlock(Blocks.cactus, 0);
+    	addNonSolidBlock(Blocks.tnt, 0);
+    	addNonSolidBlock(Blocks.beacon, 0);
+    	addNonSolidBlock(Blocks.leaves2, 0);
+    	addNonSolidBlock(Blocks.leaves2, 1);
+    	for(int i = 0;i < 16;i++)
+    	{
+        	addNonSolidBlock(Blocks.stained_glass, i);
+    	}
     }
     
     public static void addNonSolidBlock(Block block, int metadata)

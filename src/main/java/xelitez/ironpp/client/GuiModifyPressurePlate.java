@@ -5,14 +5,14 @@
  */
 package xelitez.ironpp.client;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+
 import org.lwjgl.input.Keyboard;
 
 import xelitez.ironpp.PacketSendManager;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.GuiButton;
 
 public class GuiModifyPressurePlate extends GuiScreen
 {

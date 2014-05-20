@@ -1,17 +1,18 @@
 package xelitez.ironpp.client;
 
-import org.lwjgl.opengl.GL11;
-
-import xelitez.ironpp.BlockAPressurePlate;
-import xelitez.ironpp.BlockPressurePlate;
-import xelitez.ironpp.PPRegistry;
-import xelitez.ironpp.TileEntityPressurePlate;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
+
+import org.lwjgl.opengl.GL11;
+
+import xelitez.ironpp.BlockAPressurePlate;
+import xelitez.ironpp.BlockPressurePlate;
+import xelitez.ironpp.PPRegistry;
+import xelitez.ironpp.TileEntityPressurePlate;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 

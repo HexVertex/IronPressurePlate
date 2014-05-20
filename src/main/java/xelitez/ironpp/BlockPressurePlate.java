@@ -5,10 +5,10 @@
  */
 package xelitez.ironpp;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class BlockPressurePlate extends net.minecraft.block.BlockPressurePlate
 {

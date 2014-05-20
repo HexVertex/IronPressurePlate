@@ -12,13 +12,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import xelitez.ironpp.client.GuiModifyPressurePlate;
-import xelitez.ironpp.netty.Packet;
-import xelitez.ironpp.netty.PacketPressurePlateData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import xelitez.ironpp.client.GuiModifyPressurePlate;
+import xelitez.ironpp.netty.Packet;
+import xelitez.ironpp.netty.PacketPressurePlateData;
 
 public class PacketSendManager
 {

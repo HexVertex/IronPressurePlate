@@ -6,6 +6,15 @@
 package xelitez.ironpp.client;
 
 import java.util.Arrays;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -14,18 +23,10 @@ import xelitez.ironpp.ContainerPressurePlate;
 import xelitez.ironpp.IronPP;
 import xelitez.ironpp.PPPlayerList;
 import xelitez.ironpp.PPSettings;
+import xelitez.ironpp.PPSettings.SettingsLine;
 import xelitez.ironpp.PacketSendManager;
 import xelitez.ironpp.TileEntityPressurePlate;
-import xelitez.ironpp.PPSettings.SettingsLine;
-
 import cpw.mods.fml.client.FMLClientHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
 public class GuiAPressurePlate extends GuiContainer
 {

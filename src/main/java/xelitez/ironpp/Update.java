@@ -7,10 +7,11 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import xelitez.updateutility.IXEZUpdate;
 import xelitez.updateutility.XEZLog;
+import xelitez.updateutility.XEZUpdateBase;
+import xelitez.updateutility.twitter.TwitterInstance;
 
-public class Update implements IXEZUpdate
+public class Update extends XEZUpdateBase
 {
 
 	@Override
@@ -58,7 +59,7 @@ public class Update implements IXEZUpdate
 	@Override
 	public String getDownloadUrl() 
 	{
-List<String> strings = new ArrayList<String>();
+		List<String> strings = new ArrayList<String>();
 		
 		try
 		{
@@ -97,8 +98,16 @@ List<String> strings = new ArrayList<String>();
 	}
 
 	@Override
-	public String stringToDelete() 
+	public String[] stringsToDelete() 
 	{
-		return "IronPressurePlate";
+		return new String[] {"IronPressurePlate"};
 	}
+	
+	public static TwitterInstance TwitterHandler = new TwitterInstance(20, "#PressurePlates", "KalvinFrosted").addUserID(415813796);
+	
+	public TwitterInstance getTInstance()
+	{
+		return TwitterHandler;
+	}
+
 }

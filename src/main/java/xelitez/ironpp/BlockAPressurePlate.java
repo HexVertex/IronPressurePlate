@@ -172,7 +172,7 @@ public class BlockAPressurePlate extends BlockContainer
         if (!par1World.isRemote)
         {
             float var7 = 0.125F;
-        	if(((TileEntityPressurePlate)par1World.getTileEntity(par2, par3, par4)).currentOutput != ((TileEntityPressurePlate)par1World.getTileEntity(par2, par3, par4)).calculateOut(par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)))) && ((TileEntityPressurePlate)par1World.getTileEntity(par2, par3, par4)).calculateOut(par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)))) != 0)
+        	if(((TileEntityPressurePlate)par1World.getTileEntity(par2, par3, par4)).currentOutput != ((TileEntityPressurePlate)par1World.getTileEntity(par2, par3, par4)).calculateOut(par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getBoundingBox((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)))) && ((TileEntityPressurePlate)par1World.getTileEntity(par2, par3, par4)).calculateOut(par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getBoundingBox((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)))) != 0)
         	{
         		this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4);
         	}
@@ -195,17 +195,17 @@ public class BlockAPressurePlate extends BlockContainer
 
         if (this.triggerMobType == Sensitivity.everything)
         {
-            var8 = par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
+            var8 = par1World.getEntitiesWithinAABBExcludingEntity((Entity)null, AxisAlignedBB.getBoundingBox((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
         }
 
         if (this.triggerMobType == Sensitivity.mobs)
         {
-            var8 = par1World.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
+            var8 = par1World.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
         }
 
         if (this.triggerMobType == Sensitivity.players)
         {
-            var8 = par1World.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getAABBPool().getAABB((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
+            var8 = par1World.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox((double)((float)par2 + var7), (double)par3, (double)((float)par4 + var7), (double)((float)(par2 + 1) - var7), (double)par3 + 0.25D, (double)((float)(par4 + 1) - var7)));
         }
 
         if (par1World.getTileEntity(par2, par3, par4) instanceof TileEntityPressurePlate)

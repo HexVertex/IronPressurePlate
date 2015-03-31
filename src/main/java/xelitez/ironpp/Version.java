@@ -18,9 +18,9 @@ public class Version
 {
     public static int majorVersion = 3;
     public static int minorVersion = 4;
-    public static int majorBuild = 2;
-    public static int minorBuild = 27;
-    public static String MC = "MC:1.7.2";
+    public static int majorBuild = 3;
+    public static int minorBuild = 28;
+    public static String MC = "MC:1.7.10";
 
     public static boolean ignoremB = true;
     public static boolean ignoreMC = false;

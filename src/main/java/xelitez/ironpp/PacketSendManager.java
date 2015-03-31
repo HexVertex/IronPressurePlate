@@ -30,7 +30,7 @@ public class PacketSendManager
      */
     private static void sendPacketToServer(Packet packet)
     {
-        IronPP.pipeline.sendToServer(packet);
+        IronPP.network.sendToServer(packet);
     }
 
     /**
@@ -41,7 +41,7 @@ public class PacketSendManager
      */
     private static void sendPacketToAllPlayers(Packet packet)
     {
-    	IronPP.pipeline.sendToAll(packet);
+    	IronPP.network.sendToAll(packet);
     }
 
     /**
@@ -777,7 +777,7 @@ public class PacketSendManager
         }
 
         PacketPressurePlateData packet = new PacketPressurePlateData(bytes.toByteArray());
-        IronPP.pipeline.sendTo(packet, player);
+        IronPP.network.sendTo(packet, player);
     }
 
     public static void sendSwitchSettingButtonToClient(TileEntityPressurePlate tpp, int index)
@@ -888,7 +888,7 @@ public class PacketSendManager
         }
 
         PacketPressurePlateData packet = new PacketPressurePlateData(bytes.toByteArray());
-        IronPP.pipeline.sendTo(packet, player);
+        IronPP.network.sendTo(packet, player);
     }
 
     public static void sendUsesPasswordToClient(int xCoord, int yCoord, int zCoord, int dimension, Boolean b)
@@ -942,7 +942,7 @@ public class PacketSendManager
         }
 
         PacketPressurePlateData packet = new PacketPressurePlateData(bytes.toByteArray());
-        IronPP.pipeline.sendTo(packet, player);
+        IronPP.network.sendTo(packet, player);
     }
 
     public static void sendRemovePressurePlateToClient(TileEntityPressurePlate tpp, int dimension)
@@ -1013,7 +1013,7 @@ public class PacketSendManager
         }
 
         PacketPressurePlateData packet = new PacketPressurePlateData(bytes.toByteArray());
-        IronPP.pipeline.sendTo(packet, player);
+        IronPP.network.sendTo(packet, player);
     }
     
     public static void sendChangedDataToClient(TileEntityPressurePlate tpp)

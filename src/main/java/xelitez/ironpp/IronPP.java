@@ -24,7 +24,7 @@ import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 
 import xelitez.ironpp.client.PPRenderer;
-import xelitez.ironpp.netty.Pipeline;
+import xelitez.ironpp.netty.PacketPressurePlateData;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -34,18 +34,19 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Mod registration stuff.
  */
 @Mod(	modid = "IronPP", 
 		name = "Iron Pressure Plate mod",
-		version = "3.4.2",
+		version = "3.4.3",
 		acceptableRemoteVersions = "[3.4,3.5)")
 public class IronPP
 {
@@ -71,7 +72,7 @@ public class IronPP
     public static IronPP instance;
 	public static ISimpleBlockRenderingHandler ppRenderer;
 	
-	public static final Pipeline pipeline = new Pipeline();
+	public static SimpleNetworkWrapper network;
 
     /**
      * Since the INSTANCE is private I use this method to gain access to the class.
@@ -128,7 +129,9 @@ public class IronPP
         	ppRenderer = new PPRenderer(RenderingRegistry.getNextAvailableRenderId());
         	RenderingRegistry.registerBlockHandler(ppRenderer);
         }
-        pipeline.initalise();
+    	network = NetworkRegistry.INSTANCE.newSimpleChannel("IPP");
+    	network.registerMessage(xelitez.ironpp.netty.PacketHandler.class, PacketPressurePlateData.class, 0, Side.CLIENT);
+    	network.registerMessage(xelitez.ironpp.netty.PacketHandler.class, PacketPressurePlateData.class, 1, Side.SERVER);
         proxy.RegisterKeyHandler();
         PPSettings.addLineWithButton("Unlisted players are by default:", "Enabled", "Disabled", false, 0);
         PPSettings.addLineWithButton("Sound is:", "On", "Off", true, 1);
@@ -156,12 +159,6 @@ public class IronPP
             }
         }
     	registerNonSolidBlocks();
-    }
-	
-	@EventHandler
-    public void postload(FMLPostInitializationEvent evt)
-    {
-		pipeline.postInitialise();
     }
     
     private void registerNonSolidBlocks()

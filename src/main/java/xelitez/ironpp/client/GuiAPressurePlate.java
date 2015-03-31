@@ -518,7 +518,7 @@ public class GuiAPressurePlate extends GuiContainer
             drawSettingsScrollBar();
         }
 
-        scaling = new ScaledResolution(game.gameSettings, game.displayWidth, game.displayHeight);
+        scaling = new ScaledResolution(game, game.displayWidth, game.displayHeight);
         clip(k, l);
 
         if (!game.theWorld.isRemote)

@@ -22,14 +22,12 @@ public class GuiPassword extends GuiScreen
     public TileEntityPressurePlate tpp;
     public int set;
     private boolean sets;
-    private boolean recieved = false;
     private boolean canExit = true;
     public GuiPassword(TileEntityPressurePlate tpp, boolean b, int par1, int par2, int par3)
     {
         this.tpp = tpp;
         set = 0;
         this.sets = b;
-        PacketSendManager.getPasswordFromServer(tpp);
     }
 
     public void initGui()
@@ -45,7 +43,7 @@ public class GuiPassword extends GuiScreen
         this.drawDefaultBackground();
         this.drawCenteredString(this.fontRendererObj, "Enter Password", this.width / 2, 20, 16777215);
 
-        if (duration > 0)
+        if (duration > 0 || duration == -1)
         {
             this.drawString(this.fontRendererObj, text, this.width / 2 - 100, 85, 10526880);
         }
@@ -73,14 +71,7 @@ public class GuiPassword extends GuiScreen
 
     protected void keyTyped(char par1, int par2)
     {
-        if (this.recieved)
-        {
-            GuiPassword.theGuiTextField.textboxKeyTyped(par1, par2);
-        }
-        else
-        {
-            GuiPassword.showText("Password not yet recieved", 20);
-        }
+        GuiPassword.theGuiTextField.textboxKeyTyped(par1, par2);
 
         if (par1 == 13)
         {
@@ -95,6 +86,7 @@ public class GuiPassword extends GuiScreen
                 {
                     this.canExit = false;
                     PacketSendManager.sendPasswordToServer(tpp, GuiPassword.theGuiTextField.getText().trim());
+                    showText("Verifying...", -1);
                 }
             }
         }
@@ -119,6 +111,7 @@ public class GuiPassword extends GuiScreen
 
     public void enterGui()
     {
+    	showText("", 0);
         if (set <= 1)
         {
             PacketSendManager.sendOpenGuiPacketToServer(tpp, 0);
@@ -145,12 +138,6 @@ public class GuiPassword extends GuiScreen
     public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
-    }
-
-    public void setPassword(String pass)
-    {
-        tpp.password = pass;
-        this.recieved = true;
     }
 
     private static class PasswordTextField extends Gui

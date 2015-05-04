@@ -5,11 +5,21 @@ import java.util.List;
 
 public class PPSettings
 {
-    public static List<String> lines = new ArrayList<String>();
-    public static List<SettingsButton> buttons = new ArrayList<SettingsButton>();
-    public static List<SettingsLine> settingsLines = new ArrayList<SettingsLine>();
+    public List<String> lines = new ArrayList<String>();
+    public List<SettingsButton> buttons = new ArrayList<SettingsButton>();
+    public List<SettingsLine> settingsLines = new ArrayList<SettingsLine>();
 
-    public static void addLine(String par1Str)
+    public PPSettings()
+    {
+        this.addLineWithButton("Unlisted players are by default:", "Enabled", "Disabled", false, 0);
+        this.addLineWithButton("Sound is:", "On", "Off", true, 1);
+        this.addLineWithButton("Password", "Enabled", "Disabled", false, 2);
+        this.addClickableLine("Set Password", 0);
+        this.addLineWithButton("Ask password on break", "Yes", "No", false, 3);
+        this.addLine("Note: if you have set no password but enabled password then just press enter if you get stuck on the gui screen");
+    }
+    
+    public void addLine(String par1Str)
     {
         String var1 = "";
         int i = 14;
@@ -47,7 +57,7 @@ public class PPSettings
         lines.add(par1Str);
     }
 
-    public static void addLineWithButton(String par1Str, String par2Str, String par3Str, boolean enabled, int ID)
+    public void addLineWithButton(String par1Str, String par2Str, String par3Str, boolean enabled, int ID)
     {
         for (int var1 = 0; var1 < buttons.size(); var1++)
         {
@@ -64,7 +74,7 @@ public class PPSettings
         buttons.add(new SettingsButton(lines.size(), par2Str, par3Str, enabled, ID));
     }
 
-    public static void addClickableLine(String s, int ID)
+    public void addClickableLine(String s, int ID)
     {
         for (int var1 = 0; var1 < settingsLines.size(); var1++)
         {

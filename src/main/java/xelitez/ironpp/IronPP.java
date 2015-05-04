@@ -46,7 +46,7 @@ import cpw.mods.fml.relauncher.Side;
  */
 @Mod(	modid = "IronPP", 
 		name = "Iron Pressure Plate mod",
-		version = "3.4.3",
+		version = "3.4.4",
 		acceptableRemoteVersions = "[3.4,3.5)")
 public class IronPP
 {
@@ -133,12 +133,7 @@ public class IronPP
     	network.registerMessage(xelitez.ironpp.netty.PacketHandler.class, PacketPressurePlateData.class, 0, Side.CLIENT);
     	network.registerMessage(xelitez.ironpp.netty.PacketHandler.class, PacketPressurePlateData.class, 1, Side.SERVER);
         proxy.RegisterKeyHandler();
-        PPSettings.addLineWithButton("Unlisted players are by default:", "Enabled", "Disabled", false, 0);
-        PPSettings.addLineWithButton("Sound is:", "On", "Off", true, 1);
-        PPSettings.addLineWithButton("Password", "Enabled", "Disabled", false, 2);
-        PPSettings.addClickableLine("Set Password", 0);
-        PPSettings.addLineWithButton("Ask password on break", "Yes", "No", false, 3);
-        PPSettings.addLine("Note: if you have set no password but enabled password then just press enter if you get stuck on the gui screen");
+        
         try
         {
             if (checkForUpdates)

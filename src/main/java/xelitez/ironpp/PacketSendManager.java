@@ -821,9 +821,9 @@ public class PacketSendManager
                 data.writeInt(coords[var5]);
             }
 
-            data.writeInt(PPSettings.buttons.size());
+            data.writeInt(tpp.pps.buttons.size());
 
-            for (int var6 = 0; var6 < PPSettings.buttons.size(); var6++)
+            for (int var6 = 0; var6 < tpp.pps.buttons.size(); var6++)
             {
                 data.writeBoolean(tpp.getIsEnabled(var6));
             }

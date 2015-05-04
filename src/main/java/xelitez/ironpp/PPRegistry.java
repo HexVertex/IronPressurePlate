@@ -44,7 +44,6 @@ public class PPRegistry
                 return;
             }
         }
-
         PressurePlates.add(new RegistrySettings(par1, par2, par3, item, dimension, b));
         return;
     }
@@ -70,7 +69,7 @@ public class PPRegistry
             if (tempdata.xCoord == tpp.xCoord && tempdata.yCoord == tpp.yCoord && tempdata.zCoord == tpp.zCoord && tempdata.dimension == dimension)
             {
                 PressurePlates.remove(var1);
-                return;
+                continue;
             }
         }
     }

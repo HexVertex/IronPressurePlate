@@ -207,19 +207,19 @@ public class GuiAPressurePlate extends GuiContainer
 
     public static void LineUpSettings()
     {
-        enabledSettings = new boolean[PPSettings.buttons.size()];
+        enabledSettings = new boolean[tpp.pps.buttons.size()];
 
-        for (int i = 0; i < PPSettings.buttons.size(); i++)
+        for (int i = 0; i < tpp.pps.buttons.size(); i++)
         {
-            if (PPSettings.buttons.get(i) != null)
+            if (tpp.pps.buttons.get(i) != null)
             {
                 enabledSettings[i] = tpp.getIsEnabled(i);
             }
         }
 
-        if (PPSettings.lines.size() > 0)
+        if (tpp.pps.lines.size() > 0)
         {
-            settingsListHeight = 14 * ((PPSettings.lines.size())) - 137;
+            settingsListHeight = 14 * ((tpp.pps.lines.size())) - 137;
             settingsScrollHeight = (int)((137D / (double)(settingsListHeight + 137)) * 137D);
 
             if (settingsScrollHeight <= 0 || settingsScrollHeight >= 137)
@@ -299,7 +299,7 @@ public class GuiAPressurePlate extends GuiContainer
         {
             if (k == 0 && i >= 24 && i < 110 && j >= 16 && j < 154)
             {
-                for (int j1 = 0; j1 < PPSettings.buttons.size(); j1++)
+                for (int j1 = 0; j1 < tpp.pps.buttons.size(); j1++)
                 {
                     if (mouseInSettingsRadioButton(i, j, j1))
                     {
@@ -314,7 +314,7 @@ public class GuiAPressurePlate extends GuiContainer
                     }
                 }
 
-                for (int j1 = 0; j1 < PPSettings.settingsLines.size(); j1++)
+                for (int j1 = 0; j1 < tpp.pps.settingsLines.size(); j1++)
                 {
                     if (mouseInSettingsLine(i, j, j1))
                     {
@@ -1034,9 +1034,9 @@ public class GuiAPressurePlate extends GuiContainer
 
             if (!game.theWorld.isRemote)
             {
-                for (int j2 = 0; j2 < PPSettings.buttons.size(); j2++)
+                for (int j2 = 0; j2 < tpp.pps.buttons.size(); j2++)
                 {
-                    int var1 = PPSettings.buttons.get(j2).line;
+                    int var1 = tpp.pps.buttons.get(j2).line;
                     int k1 = k + 99;
                     int i2 = (l - 8 + 14 * (var1) + 20) - settingsScrollY;
 
@@ -1052,7 +1052,7 @@ public class GuiAPressurePlate extends GuiContainer
             }
             else
             {
-                for (int j2 = 0; j2 < PPSettings.buttons.size(); j2++)
+                for (int j2 = 0; j2 < tpp.pps.buttons.size(); j2++)
                 {
                     PPSettings.SettingsButton var1 = (PPSettings.SettingsButton)cpp.tpp.settings.get(j2);
                     int var2 = var1.line;
@@ -1077,9 +1077,9 @@ public class GuiAPressurePlate extends GuiContainer
             var3.drawString("Settings", k + 24, l + 6, 0x404040);
             this.settingsClip(k, l);
 
-            for (int j2 = 0; j2 < PPSettings.settingsLines.size(); j2++)
+            for (int j2 = 0; j2 < tpp.pps.settingsLines.size(); j2++)
             {
-                SettingsLine var1 = (SettingsLine)PPSettings.settingsLines.get(j2);
+                SettingsLine var1 = (SettingsLine)tpp.pps.settingsLines.get(j2);
                 int var2 = var1.line;
                 int l1 = k + 25;
                 int i1 = (l + 14 * (var2) + 15) - settingsScrollY;
@@ -1095,14 +1095,14 @@ public class GuiAPressurePlate extends GuiContainer
 
             int var2 = 0;
 
-            for (var2 = 0; var2 < PPSettings.lines.size(); var2++)
+            for (var2 = 0; var2 < tpp.pps.lines.size(); var2++)
             {
                 int l1 = k + 25;
                 int i1 = (l + 14 * (var2) + 17) - settingsScrollY;
-                var3.drawString((String)PPSettings.lines.get(var2), l1, i1, 0xffffff);
+                var3.drawString((String)tpp.pps.lines.get(var2), l1, i1, 0xffffff);
             }
 
-            for (var2 = 0; var2 < PPSettings.buttons.size(); var2++)
+            for (var2 = 0; var2 < tpp.pps.buttons.size(); var2++)
             {
                 PPSettings.SettingsButton var4 = (PPSettings.SettingsButton)cpp.tpp.settings.get(var2);
                 int var5 = var4.line;
@@ -1339,7 +1339,7 @@ public class GuiAPressurePlate extends GuiContainer
 
     public boolean mouseInSettingsLine(int i, int j, int k)
     {
-        SettingsLine var1 = (SettingsLine)PPSettings.settingsLines.get(k);
+        SettingsLine var1 = (SettingsLine)tpp.pps.settingsLines.get(k);
         int l = 26;
         int i1 = (-17 + 14 * (var1.line) + 20) - settingsScrollY;
         return i >= l - 2 && i < l + 86 && j >= i1 - 2 && j < i1 + 10;
@@ -1516,7 +1516,7 @@ public class GuiAPressurePlate extends GuiContainer
 
     private void drawSettingsScrollBar()
     {
-        if (PPSettings.lines.size() != 0)
+        if (tpp.pps.lines.size() != 0)
         {
             int j = 0;
             int i = ((width - xSize) / 2) + 112;
@@ -1529,7 +1529,7 @@ public class GuiAPressurePlate extends GuiContainer
             int k = j;
             drawTexturedModalRect(i, k, 176, 9, 5, 1);
 
-            if (PPSettings.lines.size() != 0)
+            if (tpp.pps.lines.size() != 0)
             {
                 for (k++; k < (j + settingsScrollHeight) - 1; k++)
                 {

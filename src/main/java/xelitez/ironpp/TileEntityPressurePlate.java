@@ -297,9 +297,9 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
             settings = new ArrayList<Object>();
             pps = new PPSettings();
 
-            for (int var1 = 0; var1 < PPSettings.buttons.size(); var1++)
+            for (int var1 = 0; var1 < pps.buttons.size(); var1++)
             {
-                settings.add(PPSettings.buttons.get(var1));
+                settings.add(pps.buttons.get(var1));
             }
         }
     }
@@ -615,7 +615,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
                 int var13 = var14.getByte("setting");
                 boolean var15 = var14.getBoolean("enabled");
 
-                if (var13 >= 0 && var13 < PPSettings.buttons.size())
+                if (var13 >= 0 && var13 < pps.buttons.size())
                 {
                     this.setSetting(var13, var15);
                 }
@@ -699,7 +699,7 @@ public class TileEntityPressurePlate extends TileEntity implements IInventory
         par1NBTTagCompound.setTag("Items", var8);
         NBTTagList var9 = new NBTTagList();
 
-        for (int var3 = 0; var3 < PPSettings.buttons.size(); var3++)
+        for (int var3 = 0; var3 < pps.buttons.size(); var3++)
         {
             NBTTagCompound var4 = new NBTTagCompound();
             var4.setByte("setting", (byte)var3);

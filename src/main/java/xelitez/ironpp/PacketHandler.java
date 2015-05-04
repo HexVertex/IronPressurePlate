@@ -456,28 +456,6 @@ public class PacketHandler
 
                 if (ID == 15)
                 {
-                    int coords[]  = new int[3];
-
-                    for (int var1 = 0; var1 < 3; var1++)
-                    {
-                        coords[var1] = dat.readInt();
-                    }
-
-                    int length = dat.readInt();
-                    StringBuilder sb = new StringBuilder();
-
-                    for (int var1 = 0; var1 < length; var1++)
-                    {
-                        sb.append(dat.readChar());
-                    }
-
-                    String password = sb.toString();
-
-                    if (((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp != null && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.xCoord == coords[0] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.yCoord == coords[1] && ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).tpp.zCoord == coords[2])
-                    {
-                        ((GuiPassword)FMLClientHandler.instance().getClient().currentScreen).setPassword(password);
-                    }
-
                     return;
                 }
 
